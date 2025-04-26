@@ -1,9 +1,11 @@
 "use client"
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {useProtectedRoute} from "@/hook/useProtectedRoute";
 import Sidebar from "@/components/Sidebar";
 import MobileMenuNavBar from "@/components/MobileMenuNavBar";
 import MobileMenuLinks from "@/components/MobileMenuLinks";
+import {useUser} from "@clerk/nextjs";
+import {AddUserToDB} from "@/app/actions";
 
 type Props = {
     children: React.ReactNode;
@@ -11,6 +13,14 @@ type Props = {
 export default function AuthLayout({children}: Props) {
     const [isOpen, setIsOpen] = useState(false);
     const { isLoaded, isSignedIn } = useProtectedRoute();
+    const {user} = useUser()
+
+
+    useEffect(() => {
+        if (isLoaded && isSignedIn && user?.primaryEmailAddress?.emailAddress) {
+            AddUserToDB(user.primaryEmailAddress.emailAddress);
+        }
+    }, [isLoaded, isSignedIn, user]);
 
     if (!isLoaded || !isSignedIn) return null;
 

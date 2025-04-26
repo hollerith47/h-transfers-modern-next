@@ -17,7 +17,7 @@ export const links = [
         icon: Wallet
     },
     {
-        href: "/auth/calculator",
+        href: "/admin/calculator",
         label: "Calculator",
         icon: Calculator,
     },

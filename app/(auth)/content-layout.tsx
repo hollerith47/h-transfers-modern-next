@@ -14,7 +14,7 @@ export default function ContentLayout({children, title, description, action}: Pr
                 </div>
                 {action || "action"}
             </header>
-            {children}
+                {children}
         </>
     );
 }
