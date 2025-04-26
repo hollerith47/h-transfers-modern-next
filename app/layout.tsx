@@ -2,6 +2,7 @@ import type {Metadata} from "next";
 import {Inter, Roboto_Mono} from 'next/font/google'
 import "./globals.css";
 import {ClerkProvider} from "@clerk/nextjs";
+import { Toaster } from 'sonner';
 
 const inter = Inter({
     subsets: ['latin'],
@@ -29,6 +30,7 @@ export default function RootLayout({children}: Readonly<{ children: React.ReactN
             <html lang="en" data-theme="corporate" className={`${inter.variable} ${roboto_mono.variable} antialiased`}>
             <body id="top">
             {children}
+            <Toaster richColors position="bottom-right" />
             </body>
             </html>
         </ClerkProvider>

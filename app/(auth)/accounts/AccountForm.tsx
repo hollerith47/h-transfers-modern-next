@@ -1,13 +1,12 @@
 "use client";
-import { useState} from "react";
+import {useState} from "react";
 import {useUser} from "@clerk/nextjs";
 import {Banknote, ListOrdered, Wallet, X} from "lucide-react";
 import TextFieldInput from "@/components/TextFieldInput";
 import CurrencySelectInput from "@/components/CurrencySelectInput";
 import EmojiPicker from "emoji-picker-react";
 import {AddAccount} from "@/app/actions";
-import { toast } from 'sonner';
-import Notification from "@/components/Notification";
+import {toast} from 'sonner';
 
 export default function AccountForm() {
     const {user} = useUser();
@@ -16,32 +15,23 @@ export default function AccountForm() {
     const [accountCurrency, setAccountCurrency] = useState('');
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const [accountSelectedEmoji, setAccountSelectedEmoji] = useState('');
-    const [notificationMessage, setNotificationMessage] = useState("");
 
     const handleSelectedEmoji = (emojiObject: { emoji: string }) => {
         setAccountSelectedEmoji(emojiObject.emoji);
         setShowEmojiPicker(false);
     }
 
-    const handleCloseNotification =() => {
-        setNotificationMessage("")
-    }
 
     const handleCreateAccount = async () => {
-        const amount = parseFloat(accountInitialBalance);
-        if (isNaN(amount) || amount <= 0) {
-            toast.error('Invalid amount');
-            return;
-        }
         try {
             await toast.promise(
-                AddAccount(
-                    user?.primaryEmailAddress?.emailAddress as string,
-                    accountName,
-                    amount,
-                    accountSelectedEmoji,
-                    accountCurrency
-                ),
+                AddAccount({
+                    email: user?.primaryEmailAddress?.emailAddress as string,
+                    name: accountName,
+                    amount: parseFloat(accountInitialBalance),
+                    emoji: accountSelectedEmoji,
+                    currency: accountCurrency
+                }),
                 {
                     loading: 'Creating account...',
                     success: 'Account created successfully!',
@@ -56,7 +46,6 @@ export default function AccountForm() {
                 setAccountInitialBalance("");
                 setAccountCurrency("");
             }
-            setNotificationMessage("Account created successfully")
 
         } catch (error) {
             console.log("error while creating account", error);
@@ -65,12 +54,9 @@ export default function AccountForm() {
 
     return (
         <>
-            {notificationMessage && (
-                <Notification message={notificationMessage} onClose={handleCloseNotification} />
-            )}
-            <button className="btn"
+            <button className="btn hover:bg-primary hover:text-white"
                     onClick={() => (document.getElementById('my_modal_3') as HTMLDialogElement).showModal()}>
-                Create New Account
+                Create New Account <Wallet className="text-gray-500" />
             </button>
             <dialog id="my_modal_3" className="modal">
                 <div className="modal-box">
