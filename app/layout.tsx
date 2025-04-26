@@ -2,7 +2,9 @@ import type {Metadata} from "next";
 import {Inter, Roboto_Mono} from 'next/font/google'
 import "./globals.css";
 import {ClerkProvider} from "@clerk/nextjs";
-import { Toaster } from 'sonner';
+import {Toaster} from 'sonner';
+import React from "react";
+import Providers from "@/app/providers";
 
 const inter = Inter({
     subsets: ['latin'],
@@ -29,8 +31,10 @@ export default function RootLayout({children}: Readonly<{ children: React.ReactN
         <ClerkProvider publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}>
             <html lang="en" data-theme="corporate" className={`${inter.variable} ${roboto_mono.variable} antialiased`}>
             <body id="top">
-            {children}
-            <Toaster richColors position="bottom-right" />
+            <Providers>
+                {children}
+                <Toaster richColors position="bottom-right"/>
+            </Providers>
             </body>
             </html>
         </ClerkProvider>

@@ -44,7 +44,7 @@ export default function AccountItem({account}: Props) {
             <div className="flex justify-between items-center mt-5 text-gray-500">
                 <span>{totalOutcomeTransactions} {account.currency} spent</span>
                 {/*TODO:: reste a savoir s'il faut utiliser totalIncomeTransactions ou totalAvailable*/}
-                <span>{totalAvailable} {account.currency} available</span>
+                {/*<span>{totalAvailable} {account.currency} available</span>*/}
                 <span>{totalIncomeTransactions} {account.currency} entries</span>
             </div>
             <div>

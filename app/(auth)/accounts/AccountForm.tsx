@@ -7,37 +7,31 @@ import CurrencySelectInput from "@/components/CurrencySelectInput";
 import EmojiPicker from "emoji-picker-react";
 import {AddAccount} from "@/app/actions";
 import {toast} from 'sonner';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 export default function AccountForm() {
     const {user} = useUser();
+    const queryClient = useQueryClient();
+
     const [accountName, setAccountName] = useState('');
     const [accountInitialBalance, setAccountInitialBalance] = useState('');
     const [accountCurrency, setAccountCurrency] = useState('');
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const [accountSelectedEmoji, setAccountSelectedEmoji] = useState('');
 
-    const handleSelectedEmoji = (emojiObject: { emoji: string }) => {
-        setAccountSelectedEmoji(emojiObject.emoji);
-        setShowEmojiPicker(false);
-    }
-
-
-    const handleCreateAccount = async () => {
-        try {
-            await toast.promise(
-                AddAccount({
-                    email: user?.primaryEmailAddress?.emailAddress as string,
-                    name: accountName,
-                    amount: parseFloat(accountInitialBalance),
-                    emoji: accountSelectedEmoji,
-                    currency: accountCurrency
-                }),
-                {
-                    loading: 'Creating account...',
-                    success: 'Account created successfully!',
-                    error: 'Failed to create account.',
-                }
-            );
+    const mutation = useMutation({
+        mutationFn: async () => {
+            return AddAccount({
+                email: user?.primaryEmailAddress?.emailAddress as string,
+                name: accountName,
+                amount: parseFloat(accountInitialBalance),
+                emoji: accountSelectedEmoji,
+                currency: accountCurrency
+            });
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['accounts', user?.primaryEmailAddress?.emailAddress] });
+            toast.success('Account created successfully!');
             const modal = document.getElementById("my_modal_3") as HTMLDialogElement;
             if (modal) {
                 modal.close();
@@ -46,11 +40,25 @@ export default function AccountForm() {
                 setAccountInitialBalance("");
                 setAccountCurrency("");
             }
-
-        } catch (error) {
-            console.log("error while creating account", error);
+        },
+        onError: () => {
+            toast.error('Failed to create account.');
         }
+    });
+
+    const handleSelectedEmoji = (emojiObject: { emoji: string }) => {
+        setAccountSelectedEmoji(emojiObject.emoji);
+        setShowEmojiPicker(false);
     }
+
+    const handleCreateAccount = async () => {
+        toast.promise(mutation.mutateAsync(), {
+            loading: 'Creating account...',
+            success: 'Account created successfully!',
+            error: 'Failed to create account.',
+        });
+    };
+
 
     return (
         <>
