@@ -1,6 +1,7 @@
 import type {Metadata} from "next";
-import { Inter, Roboto_Mono } from 'next/font/google'
+import {Inter, Roboto_Mono} from 'next/font/google'
 import "./globals.css";
+import {ClerkProvider} from "@clerk/nextjs";
 
 const inter = Inter({
     subsets: ['latin'],
@@ -22,12 +23,14 @@ export const metadata: Metadata = {
     description: "H Transfert application de gestion de transfert pour les administrateurs et gestionnaire",
 };
 
-export default function RootLayout({children}: Readonly<{children: React.ReactNode}>) {
+export default function RootLayout({children}: Readonly<{ children: React.ReactNode }>) {
     return (
-        <html lang="en" data-theme="corporate" className={`${inter.variable} ${roboto_mono.variable} antialiased`}>
-        <body id="top">
-        {children}
-        </body>
-        </html>
+        <ClerkProvider publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}>
+            <html lang="en" data-theme="corporate" className={`${inter.variable} ${roboto_mono.variable} antialiased`}>
+            <body id="top">
+            {children}
+            </body>
+            </html>
+        </ClerkProvider>
     );
 }

@@ -1,9 +1,11 @@
+import {UserProfile} from "@clerk/nextjs";
+
 export const metadata = {
     title: "Profile",
 }
 
 export default function Page() {
     return (
-        <h2>Profile Page</h2>
+        <UserProfile path="/profile" />
     );
 }

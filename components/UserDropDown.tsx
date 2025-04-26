@@ -1,33 +1,34 @@
 import Image from "next/image";
 import {ChevronUp, CircleUserRound, LogOut} from "lucide-react";
 import Link from "next/link";
-import {usePathname, useRouter} from "next/navigation";
+import {usePathname} from "next/navigation";
+import {SignOutButton, useUser} from "@clerk/nextjs";
 
-export default function UserDropDown({position}: { position: "top" | "bottom" }) {
+type Props = {
+    position?: "top" | "bottom"
+}
+
+export default function UserDropDown({position}: Props) {
     const pathname = usePathname();
-    const router = useRouter();
-
-    function handleLogOut(){
-        router.push("/landing")
-    }
+    const {user} = useUser();
 
     return (
-        <div className={`dropdown dropdown-${position} dropdown-end grid gap-1`}>
+        <div className={`dropdown ${position ? "dropdown-" + position : "dropdown-top"} dropdown-end grid gap-1`}>
             <div tabIndex={0} className="flex items-center justify-start">
                 <div role="button" className="avatar">
-                    <div className="w-12 rounded-full">
+                    <div className="w-10 rounded-full">
                         <Image
-                            src="/logo.png"
-                            alt={"avatar"}
-                            width={60}
-                            height={60}
+                            src={user?.imageUrl || "/logo.png"}
+                            alt={user?.fullName || "user profile"}
+                            width={40}
+                            height={40}
                         />
                     </div>
                 </div>
-                <div>
+                <div className="ml-2">
                     <p className="text-xs">
-                        <strong className="block font-medium">Herman Makiese</strong>
-                        <span> hermanhmakiese@gmail.com </span>
+                        <strong className="block font-medium">{user?.fullName}</strong>
+                        <span>{user?.emailAddresses[0].emailAddress}</span>
                     </p>
                 </div>
                 <ChevronUp className="size-4 ml-2 text-zinc-500"/>
@@ -39,7 +40,11 @@ export default function UserDropDown({position}: { position: "top" | "bottom" })
                     <CircleUserRound className="mr-2 size-4"/>
                     <span>Profile</span>
                 </Link>
-                <button onClick={handleLogOut} className="btn btn-ghost justify-start"><LogOut/><span>Log out</span></button>
+                <SignOutButton redirectUrl="/sign-in">
+                    <button className="btn btn-ghost justify-start">
+                        <LogOut/><span>Log out</span>
+                    </button>
+                </SignOutButton>
             </ul>
         </div>
     );

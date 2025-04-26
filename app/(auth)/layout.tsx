@@ -1,15 +1,18 @@
-"use client";
+"use client"
+import {useState} from "react";
+import {useProtectedRoute} from "@/hook/useProtectedRoute";
 import Sidebar from "@/components/Sidebar";
 import MobileMenuNavBar from "@/components/MobileMenuNavBar";
 import MobileMenuLinks from "@/components/MobileMenuLinks";
-import { useState } from "react";
 
 type Props = {
     children: React.ReactNode;
 };
-
-export default function AuthLayout({ children }: Props) {
+export default function AuthLayout({children}: Props) {
     const [isOpen, setIsOpen] = useState(false);
+    const { isLoaded, isSignedIn } = useProtectedRoute();
+
+    if (!isLoaded || !isSignedIn) return null;
 
     return (
         <div className="flex min-h-svh relative">
@@ -39,5 +42,7 @@ export default function AuthLayout({ children }: Props) {
                 </div>
             </main>
         </div>
-    );
+    )
 }
+
+

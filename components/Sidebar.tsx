@@ -35,7 +35,7 @@ export const links = [
 
 export default function Sidebar() {
     const pathname = usePathname();
-    // console.log(pathname)
+
     return (
         <div className="flex flex-col justify-between h-full gap-4 py-2">
             <div>
@@ -54,7 +54,7 @@ export default function Sidebar() {
                 </nav>
             </div>
             <div className="flex h-14 items-center border-t border-base-300 px-4 hover:cursor-pointer hover:bg-gray-200">
-                <UserDropDown position="top"/>
+                <UserDropDown />
             </div>
         </div>
     );

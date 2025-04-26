@@ -3,6 +3,6 @@ export const metadata = {
 }
 export default function Page() {
     return (
-        <h2>Auth Page</h2>
+        <h2>Auth  Calculator Page</h2>
     );
 }
