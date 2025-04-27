@@ -9,9 +9,13 @@ export default function Page() {
 
 
     return (
-        <ContentLayout title="Accounts" description="Listes de tout les comptes actifs">
-            <AccountForm/>
-            <AccountContainer />
+        <ContentLayout
+            title="Accounts"
+            description="Listes de tout les comptes actifs"
+            action={<AccountForm/>}
+        >
+
+            <AccountContainer/>
         </ContentLayout>
     );
 }

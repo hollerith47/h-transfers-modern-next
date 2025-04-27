@@ -8,30 +8,24 @@ export const AddAccountSchema = z.object({
     currency: z.string().min(1),
 });
 
-export const GetAccountsSchema = z.object({
+export const ByEmailSchema = z.object({
     email: z.string().email(),
 });
 
-export const AddUserSchema = z.object({
-    email: z.string().email(),
+export const AccountIdSchema = z.object({
+    accountId: z.string(),
 });
 
-
-export interface Budget {
-    id: string;
-    createdAt: Date;
-    name: string;
-    amount: number;
-    emoji: string | null;
-    transactions?: Transaction[];
-}
-
-export interface Transaction {
-    id: string;
-    amount: number;
-    emoji: string | null;
-    description: string
-    createdAt: Date;
-    budgetName?: string;
-    budgetId?: string | null;
-}
+export const TransactionTypeSchema = z.enum(["income", "outcome"]);
+export const AddTransactionSchema = z.object({
+    accountId: z.string(),
+    description: z.string().min(1, "Description requise"),
+    amount: z.number().nonnegative("Le montant doit être ≥ 0"),
+    commission: z.number().nonnegative("La commission doit быть ≥ 0").default(0),
+    clientAmount: z.number().nonnegative("La commission doit быть ≥ 0").default(0),
+    paidAmount: z.number().nonnegative("Le montant payé doit être ≥ 0").optional(),
+    paidCurrency: z.string().min(1).optional(),
+    type: TransactionTypeSchema,
+    clientId: z.string().uuid().optional(),
+    emoji: z.string().min(1).optional(),
+})

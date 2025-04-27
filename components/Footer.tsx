@@ -1,7 +1,9 @@
 import Logo from "@/components/Logo";
 import Link from "next/link";
 
+const year = new Date().getFullYear();
 export default function Footer() {
+
     return (
         <footer className="bg-gray-100">
             <div className="relative px-5 max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8 lg:pt-24">
@@ -61,7 +63,7 @@ export default function Footer() {
                 </div>
 
                 <p className="mt-12 text-center text-sm text-gray-500 lg:text-right">
-                    Copyright &copy; {new Date().getFullYear()}. All rights reserved.
+                    Copyright &copy; {year}. All rights reserved.
                 </p>
             </div>
         </footer>

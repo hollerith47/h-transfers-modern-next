@@ -1,16 +1,10 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
-  output   = "node_modules/@prisma/client"
+  // output   = "node_modules/@prisma/client"
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
@@ -26,21 +20,41 @@ model Account {
   id           String        @id @default(uuid())
   name         String
   amount       Float
+  currency     String
+  emoji        String?
   userId       String
   user         User          @relation(fields: [userId], references: [id])
-  emoji        String?
-  currency     String
   transactions Transaction[]
   createdAt    DateTime      @default(now())
 }
 
+model Client {
+  id           String        @id @default(uuid())
+  name         String
+  email        String? // optionnel
+  phone        String? // optionnel
+  createdAt    DateTime      @default(now())
+  transactions Transaction[]
+}
+
+enum TransactionType {
+  income
+  outcome
+}
+
 model Transaction {
-  id          String   @id @default(uuid())
-  description String
-  amount      Float
-  type        String   @default("income")
-  accountId   String?
-  account     Account? @relation(fields: [accountId], references: [id])
-  emoji       String?
-  createdAt   DateTime @default(now())
+  id           String          @id @default(uuid())
+  description  String
+  amount       Float // montant bruts
+  commission   Float?          @default(0) // frais éventuels
+  clientAmount Float           @default(0) // amount - commission
+  paidAmount   Float? // ce qui a été réellement versé au client
+  paidCurrency String? // devise de paidAmount
+  type         TransactionType @default(income)
+  accountId    String?
+  account      Account?        @relation(fields: [accountId], references: [id])
+  clientId     String?
+  client       Client?         @relation(fields: [clientId], references: [id])
+  emoji        String?
+  createdAt    DateTime        @default(now())
 }

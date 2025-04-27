@@ -1,8 +1,11 @@
+import {JSX, ReactNode} from "react";
+
+
 type Props = {
     title: string;
     description: string;
-    action?: React.ReactNode;
-    children: React.ReactNode;
+    action?: ReactNode | JSX.Element | undefined;
+    children: ReactNode;
 }
 export default function ContentLayout({children, title, description, action}: Props) {
     return (
@@ -12,7 +15,7 @@ export default function ContentLayout({children, title, description, action}: Pr
                     <h2 className="text-2xl font-bold tracking-tight mb-2">{title || "Title"}</h2>
                     <p className='text-muted-foreground'>{description || "Description"}</p>
                 </div>
-                {action || "action"}
+                {action }
             </header>
                 {children}
         </>

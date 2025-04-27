@@ -1,5 +1,5 @@
 "use client";
-import {useState} from "react";
+import { useState} from "react";
 import {useUser} from "@clerk/nextjs";
 import {Banknote, ListOrdered, Wallet, X} from "lucide-react";
 import TextFieldInput from "@/components/TextFieldInput";
@@ -62,9 +62,9 @@ export default function AccountForm() {
 
     return (
         <>
-            <button className="btn hover:bg-primary hover:text-white"
+            <button className="btn btn-primary flex items-center gap-2"
                     onClick={() => (document.getElementById('my_modal_3') as HTMLDialogElement).showModal()}>
-                Create New Account <Wallet className="text-gray-500" />
+                Create New Account <Wallet  />
             </button>
             <dialog id="my_modal_3" className="modal">
                 <div className="modal-box">

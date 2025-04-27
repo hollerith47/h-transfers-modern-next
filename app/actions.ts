@@ -2,11 +2,12 @@
 
 import {z} from 'zod';
 import {prisma} from "@/lib/prisma";
-import {AddAccountSchema, AddUserSchema, GetAccountsSchema} from "@/schema";
-import {Account} from "@/types";
+import {AccountIdSchema, AddAccountSchema, AddTransactionSchema, ByEmailSchema} from "@/schema";
+import {Account, Transaction} from "@/types";
+import {getTotalByType} from "@/utils/getTotalByType";
 
-export async function AddUserToDB(data: z.infer<typeof AddUserSchema>) {
-    const validated = AddUserSchema.safeParse(data);
+export async function AddUserToDB(data: z.infer<typeof ByEmailSchema>) {
+    const validated = ByEmailSchema.safeParse(data);
     if (!validated.success) {
         throw new Error('Invalid email format');
     }
@@ -49,8 +50,8 @@ export async function AddAccount(formData: z.infer<typeof AddAccountSchema>) {
 
 }
 
-export async function getAccountsByUser(data: z.infer<typeof GetAccountsSchema>):Promise<Account[]> {
-    const validated = GetAccountsSchema.safeParse(data);
+export async function getAccountsByUser(data: z.infer<typeof ByEmailSchema>):Promise<Account[]> {
+    const validated = ByEmailSchema.safeParse(data);
     if (!validated.success) {
         throw new Error('Invalid email format');
     }
@@ -60,7 +61,7 @@ export async function getAccountsByUser(data: z.infer<typeof GetAccountsSchema>)
         include: {
             accounts: {
                 include: {
-                    transactions: true,
+                    transactions: true
                 },
             },
         },
@@ -69,22 +70,115 @@ export async function getAccountsByUser(data: z.infer<typeof GetAccountsSchema>)
     if (!user) {
         throw new Error('User not found');
     }
-    return user.accounts.map((account) => ({
-        id: account.id,
-        name: account.name,
-        amount: account.amount,
-        currency: account.currency,
-        emoji: account.emoji,
-        createdAt: account.createdAt,
-        transactions: account.transactions?.map((transaction) => ({
-            id: transaction.id,
-            amount: transaction.amount,
-            type: transaction.type,
-            emoji: transaction.emoji,
-            description: transaction.description,
-            createdAt: transaction.createdAt,
-            accountName: transaction.accountName, // ou undefined selon besoin
-            accountId: transaction.accountId,
+
+    return user.accounts.map((acct) => ({
+        id: acct.id,
+        name: acct.name,
+        amount: acct.amount,
+        currency: acct.currency,
+        emoji: acct.emoji,
+        createdAt: acct.createdAt,
+        transactions: acct.transactions.map((tx): Transaction => ({
+            id: tx.id,
+            description: tx.description,
+            amount: tx.amount,
+            commission: tx.commission,
+            clientAmount: tx.clientAmount,
+            paidAmount: tx.paidAmount ?? 0,
+            paidCurrency: tx.paidCurrency ?? "",
+            type: tx.type,            // "income" | "outcome"
+            emoji: tx.emoji,
+            createdAt: tx.createdAt,
+            accountId: tx.accountId,
+            accountName: acct.name,   // le nom du compte parent
+            clientId: tx.clientId,
+            clientName: tx.client?.name ?? "",
         })),
     }));
+}
+
+
+export async function getTransactionsByAccountId(data: z.infer<typeof AccountIdSchema>):Promise<Account>{
+    const validated = AccountIdSchema.safeParse(data);
+    if (!validated.success) {
+        throw new Error('Invalid email format');
+    }
+    const { accountId } = validated.data;
+    const account = await prisma.account.findUnique({
+        where: {
+            id: accountId
+        },
+        include : {
+            transactions: true,
+        }
+    });
+
+
+    if (!account) {
+        throw new Error('Account not found');
+    }
+
+    return account
+}
+
+export async function createTransaction(data: z.infer<typeof AddTransactionSchema>):Promise<Transaction>{
+    const validated = AddTransactionSchema.safeParse(data);
+    if (!validated.success) {
+        console.log(validated.error)
+        throw new Error('Error while validating transaction data');
+    }
+
+    const {
+        accountId,
+        description,
+        amount,
+        commission,
+        paidAmount,
+        paidCurrency,
+        type,
+        clientAmount,
+        clientId,
+        emoji,
+    } = validated.data;
+
+    const account = await prisma.account.findUnique({
+        where: {
+            id: accountId
+        },
+        include : {
+            transactions: true,
+        }
+    });
+
+    if (!account) {
+        throw new Error('Account not found');
+    }
+
+    // if (type === "outcome") {
+    //     const totalIncomeTransactions = getTotalByType(account.transactions, "income");
+    //     const totalOutcomeTransactions = getTotalByType(account.transactions, "outcome");
+    //     const startingAmount = account.amount ?? 0;
+    //     const remainingAmount = startingAmount + totalIncomeTransactions - totalOutcomeTransactions;
+    //
+    //     console.log({remainingAmount, amount})
+    //     if (amount > remainingAmount) {
+    //         throw new Error("Not enough funds");
+    //     }
+    //
+    // }
+
+    await prisma.transaction.create({
+        data: {
+            description,
+            amount,
+            commission,
+            clientAmount,
+            paidAmount,
+            paidCurrency,
+            type,
+            accountId,
+            clientId,
+            emoji,
+        }
+    });
 }

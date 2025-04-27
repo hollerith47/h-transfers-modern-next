@@ -13,6 +13,11 @@ const nextConfig: NextConfig = {
             },
         ],
     },
+    experimental: {
+        serverActions: {
+            allowedOrigins: ['localhost'],
+        },
+    },
 };
 
 export default nextConfig;

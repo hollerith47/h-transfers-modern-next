@@ -1,8 +1,8 @@
-import { PrismaClient } from "@prisma/client";
-import { withAccelerate } from "@prisma/extension-accelerate";
+// import { PrismaClient } from "@prisma/client";
+import {PrismaClient} from "@prisma/client";
 
 const prismaClientSingleton = () => {
-    return new PrismaClient().$extends(withAccelerate());
+    return new PrismaClient();
 };
 
 const globalForPrisma = globalThis as unknown as {

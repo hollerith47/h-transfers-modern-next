@@ -39,12 +39,12 @@ export default function AccountContainer() {
         return <div>Failed to load accounts.</div>;
     }
 
-    // console.log(accounts)
+    console.log(accounts)
 
     return (
         <ul className="grid md:grid-cols-2 xl:grid-cols-3 gap-4 mt-5">
             {accounts.map(account => (
-                <Link href={""} key={account.id}>
+                <Link href={`/manage/${account.id}`} key={account.id}>
                     <AccountItem account={account} />
                 </Link>
             ))}

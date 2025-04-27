@@ -1,21 +1,18 @@
-import {Account, Transaction} from "@/types";
+import {Account } from "@/types";
+import {getTotalByType} from "@/utils/getTotalByType";
 
 type Props = {
     account: Account
 };
 
-function getTotalByType(transactions: Transaction[] | undefined, type: "income" | "outcome"): number {
-    return transactions?.reduce((sum: number, transaction: Transaction) => {
-        return transaction.type === type ? sum + transaction.amount : sum;
-    }, 0) || 0;
-}
+
 
 export default function AccountItem({account}: Props) {
     const transactionCount = account.transactions?.length || 0;
     const totalIncomeTransactions = getTotalByType(account.transactions, "income");
     const totalOutcomeTransactions = getTotalByType(account.transactions, "outcome");
     const startingAmount = account.amount ?? 0;
-    const balance = (account.amount ?? 0) + totalIncomeTransactions - totalOutcomeTransactions;
+    const balance = startingAmount + totalIncomeTransactions - totalOutcomeTransactions;
 
     const totalAvailable = startingAmount + totalIncomeTransactions;
     const progressValue = totalAvailable > 0
