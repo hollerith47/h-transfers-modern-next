@@ -20,6 +20,7 @@ export default function AccountForm() {
     const [accountSelectedEmoji, setAccountSelectedEmoji] = useState('');
 
     const mutation = useMutation({
+
         mutationFn: async () => {
             return AddAccount({
                 email: user?.primaryEmailAddress?.emailAddress as string,

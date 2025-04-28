@@ -29,3 +29,5 @@ export const AddTransactionSchema = z.object({
     clientId: z.string().uuid().optional(),
     emoji: z.string().min(1).optional(),
 })
+
+export const TransactionFormSchema = AddTransactionSchema.omit({ accountId: true });

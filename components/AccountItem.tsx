@@ -19,6 +19,8 @@ export default function AccountItem({account}: Props) {
         ? Math.min((totalOutcomeTransactions / totalAvailable) * 100, 100)
         : 0;
 
+    console.log({totalAvailable,balance, totalOutcomeTransactions, totalIncomeTransactions ,startingAmount})
+
 
     return (
         <li key={account.id} className="p-4 border-2 border-base-300 rounded-xl list-none hover:shadow-xl hover:border-primary">

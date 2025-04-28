@@ -1,91 +1,73 @@
 "use client";
 import TextFieldInput from "@/components/TextFieldInput";
 import {useEffect, useState} from "react";
-import {Account} from "@/types";
 import {ArrowLeftRight, Banknote, ListOrdered, NotebookPen, X} from "lucide-react";
 import CurrencySelectInput from "@/components/CurrencySelectInput";
 import SelectTransactType from "@/components/SelectTransactType";
 import {countCommission} from "@/utils/countCommission";
-import {useMutation, useQueryClient} from '@tanstack/react-query';
-import {createTransaction} from "@/app/actions";
 import {toast} from "sonner";
+import { TransactionFormSchema} from "@/schema";
+import {z} from "zod";
 
 type Props = {
-    account: Account
+    accountCurrency: string;
+    onSubmit: (data: z.infer<typeof TransactionFormSchema>) => void;
 };
 
-export default function TransactionForm({account}: Props) {
-    const queryClient = useQueryClient();
-    const accountId = account.id;
-    const accountCurrency = account.currency;
+export default function TransactionForm({ accountCurrency, onSubmit }: Props) {
     const [description, setDescription] = useState("");
     const [amount, setAmount] = useState("");
     const [commission, setCommission] = useState<number>(0);
     const [clientAmount, setClientAmount] = useState<number>(0);
     const [paidAmount, setPaidAmount] = useState("");
-    const [transactType, setTransactType] = useState("");
     const [paidCurrency, setPaidCurrency] = useState("");
+    const [transactType, setTransactType] = useState("");
 
-    const mutation = useMutation({
-
-        mutationFn: async () => {
-            return createTransaction({
+    const handleCreate = () => {
+        try {
+            // on valide via Zod
+            const data = TransactionFormSchema.parse({
                 description,
                 amount: parseFloat(amount),
                 commission,
                 clientAmount,
-                paidAmount: parseFloat(paidAmount),
+                paidAmount: parseFloat(paidAmount) || 0,
                 paidCurrency,
                 type: transactType,
-                accountId,
             });
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries({queryKey: ['transactions', account.id]});
-            // toast.success('Transaction created successfully!');
+            // console.log(data)
+            onSubmit(data);
             const modal = document.getElementById("my_modal_4") as HTMLDialogElement;
             if (modal) {
                 modal.close();
-                setPaidCurrency("");
+                setTransactType("")
+                setAmount("");
                 setCommission(0);
+                setClientAmount(0);
+                setPaidAmount("");
+                setTransactType("")
+                setPaidCurrency("");
                 setDescription("")
             }
-        },
-        onError: () => {
-            // toast.error('Failed to create transaction.');
+        } catch (err) {
+            toast.error("Error while creating transactions");
+            console.log(err)
         }
-    });
-
-    const handleCreateTransaction = async () => {
-        const data = {
-            description,
-            amount: parseFloat(amount),
-            commission,
-            clientAmount,
-            paidAmount,
-            paidCurrency,
-            type: transactType,
-            accountId,
-        }
-        toast.promise(mutation.mutateAsync(), {
-            loading: 'Creating transaction...',
-            success: 'Transaction created successfully!',
-            error: 'Failed to create transaction.',
-        });
-        console.log(data)
-
-    }
+    };
 
     useEffect(() => {
-        if (amount && (accountCurrency === "USD" || accountCurrency === "EUR")) {
-            const montant = parseFloat(amount);
-            setCommission(parseFloat(countCommission(montant)));
-            setPaidCurrency("RUB")
-            if (commission) {
-                setClientAmount(montant - commission)
-            }
+        const m = parseFloat(amount) || 0;
+        if ((accountCurrency === "USD" || accountCurrency === "EUR") && m > 0) {
+            const comm = parseFloat(countCommission(m));
+            setCommission(comm);
+            setClientAmount(m - comm);
+            setPaidCurrency("RUB");
+        } else {
+            setCommission(0);
+            setClientAmount(m);
         }
-    }, [amount, commission, clientAmount, paidAmount, paidCurrency, transactType])
+    }, [amount, accountCurrency]);
+
     return (
         <div className="mt-3">
             <button className="btn btn-primary flex items-center gap-2"
@@ -131,7 +113,7 @@ export default function TransactionForm({account}: Props) {
                             <NotebookPen/>
                         </TextFieldInput>
                         <button
-                            onClick={handleCreateTransaction}
+                            onClick={handleCreate}
                             className="btn btn-primary btn-bordered rounded-xl"
                         >
                             Create

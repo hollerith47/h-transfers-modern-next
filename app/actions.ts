@@ -50,14 +50,14 @@ export async function AddAccount(formData: z.infer<typeof AddAccountSchema>) {
 
 }
 
-export async function getAccountsByUser(data: z.infer<typeof ByEmailSchema>):Promise<Account[]> {
+export async function getAccountsByUser(data: z.infer<typeof ByEmailSchema>): Promise<Account[]> {
     const validated = ByEmailSchema.safeParse(data);
     if (!validated.success) {
         throw new Error('Invalid email format');
     }
-    const { email } = validated.data;
+    const {email} = validated.data;
     const user = await prisma.user.findUnique({
-        where: { email },
+        where: {email},
         include: {
             accounts: {
                 include: {
@@ -82,7 +82,7 @@ export async function getAccountsByUser(data: z.infer<typeof ByEmailSchema>):Pro
             id: tx.id,
             description: tx.description,
             amount: tx.amount,
-            commission: tx.commission,
+            commission: tx.commission ?? 0,
             clientAmount: tx.clientAmount,
             paidAmount: tx.paidAmount ?? 0,
             paidCurrency: tx.paidCurrency ?? "",
@@ -92,24 +92,24 @@ export async function getAccountsByUser(data: z.infer<typeof ByEmailSchema>):Pro
             accountId: tx.accountId,
             accountName: acct.name,   // le nom du compte parent
             clientId: tx.clientId,
-            clientName: tx.client?.name ?? "",
+            // clientName: tx.client?.name ?? "",
         })),
     }));
 }
 
 
-export async function getTransactionsByAccountId(data: z.infer<typeof AccountIdSchema>):Promise<Account>{
+export async function getTransactionsByAccountId(data: z.infer<typeof AccountIdSchema>): Promise<Account> {
     const validated = AccountIdSchema.safeParse(data);
     if (!validated.success) {
         throw new Error('Invalid email format');
     }
-    const { accountId } = validated.data;
+    const {accountId} = validated.data;
     const account = await prisma.account.findUnique({
         where: {
             id: accountId
         },
-        include : {
-            transactions: true,
+        include: {
+            transactions: true
         }
     });
 
@@ -118,10 +118,32 @@ export async function getTransactionsByAccountId(data: z.infer<typeof AccountIdS
         throw new Error('Account not found');
     }
 
-    return account
+    return {
+        id: account.id,
+        name: account.name,
+        amount: account.amount,
+        currency: account.currency,
+        emoji: account.emoji,
+        createdAt: account.createdAt,
+        transactions: account.transactions.map((tx): Transaction => ({
+                id: tx.id,
+                description: tx.description,
+                amount: tx.amount,
+                commission: tx.commission ?? 0,
+                clientAmount: tx.clientAmount,
+                paidAmount: tx.paidAmount ?? 0,
+                paidCurrency: tx.paidCurrency ?? "",
+                type: tx.type,
+                emoji: tx.emoji,
+                createdAt: tx.createdAt,
+                accountId: tx.accountId,
+                clientId: tx.clientId,
+                accountName: account.name, // bonus : tu ajoutes le nom du compte parent
+            })),
+    };
 }
 
-export async function createTransaction(data: z.infer<typeof AddTransactionSchema>):Promise<Transaction>{
+export async function createTransaction(data: z.infer<typeof AddTransactionSchema>): Promise<Transaction> {
     const validated = AddTransactionSchema.safeParse(data);
     if (!validated.success) {
         console.log(validated.error)
@@ -145,7 +167,7 @@ export async function createTransaction(data: z.infer<typeof AddTransactionSchem
         where: {
             id: accountId
         },
-        include : {
+        include: {
             transactions: true,
         }
     });
@@ -154,31 +176,44 @@ export async function createTransaction(data: z.infer<typeof AddTransactionSchem
         throw new Error('Account not found');
     }
 
-    // if (type === "outcome") {
-    //     const totalIncomeTransactions = getTotalByType(account.transactions, "income");
-    //     const totalOutcomeTransactions = getTotalByType(account.transactions, "outcome");
-    //     const startingAmount = account.amount ?? 0;
-    //     const remainingAmount = startingAmount + totalIncomeTransactions - totalOutcomeTransactions;
-    //
-    //     console.log({remainingAmount, amount})
-    //     if (amount > remainingAmount) {
-    //         throw new Error("Not enough funds");
-    //     }
-    //
-    // }
+    if (type === "outcome") {
+        const totalIncomeTransactions = getTotalByType(account.transactions, "income");
+        const totalOutcomeTransactions = getTotalByType(account.transactions, "outcome");
+        const startingAmount = account.amount ?? 0;
+        const remainingAmount = startingAmount + totalIncomeTransactions - totalOutcomeTransactions;
 
-    await prisma.transaction.create({
-        data: {
-            description,
-            amount,
-            commission,
-            clientAmount,
-            paidAmount,
-            paidCurrency,
-            type,
-            accountId,
-            clientId,
-            emoji,
+        console.log({remainingAmount, amount})
+        if (amount > remainingAmount) {
+            throw new Error("Not enough funds");
         }
-    });
+        await prisma.transaction.create({
+            data: {
+                description,
+                amount,
+                commission,
+                clientAmount,
+                paidAmount,
+                paidCurrency,
+                type,
+                accountId,
+                clientId,
+                emoji,
+            }
+        });
+    } else {
+        await prisma.transaction.create({
+            data: {
+                description,
+                amount,
+                commission,
+                clientAmount,
+                paidAmount,
+                paidCurrency,
+                type,
+                accountId,
+                clientId,
+                emoji,
+            }
+        });
+    }
 }

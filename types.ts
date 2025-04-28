@@ -35,7 +35,7 @@ export interface Transaction {
     id: string;
     description: string;
     amount: number;         // montant brut
-    commission: number;     // frais
+    commission?: number | null | undefined;     // frais
     clientAmount: number;   // amount - commission
     paidAmount?: number;    // versé au client
     paidCurrency?: string;  // devise de paidAmount
