@@ -3,8 +3,9 @@
 import {z} from 'zod';
 import {prisma} from "@/lib/prisma";
 import {AccountIdSchema, AddAccountSchema, AddTransactionSchema, ByEmailSchema} from "@/schema";
-import {Account, Transaction} from "@/types";
+import {Account } from "@/types";
 import {getTotalByType} from "@/utils/getTotalByType";
+import {mapAccount} from "@/utils/prismaMappers";
 
 export async function AddUserToDB(data: z.infer<typeof ByEmailSchema>) {
     const validated = ByEmailSchema.safeParse(data);
@@ -71,30 +72,7 @@ export async function getAccountsByUser(data: z.infer<typeof ByEmailSchema>): Pr
         throw new Error('User not found');
     }
 
-    return user.accounts.map((acct) => ({
-        id: acct.id,
-        name: acct.name,
-        amount: acct.amount,
-        currency: acct.currency,
-        emoji: acct.emoji,
-        createdAt: acct.createdAt,
-        transactions: acct.transactions.map((tx): Transaction => ({
-            id: tx.id,
-            description: tx.description,
-            amount: tx.amount,
-            commission: tx.commission ?? 0,
-            clientAmount: tx.clientAmount,
-            paidAmount: tx.paidAmount ?? 0,
-            paidCurrency: tx.paidCurrency ?? "",
-            type: tx.type,            // "income" | "outcome"
-            emoji: tx.emoji,
-            createdAt: tx.createdAt,
-            accountId: tx.accountId,
-            accountName: acct.name,   // le nom du compte parent
-            clientId: tx.clientId,
-            // clientName: tx.client?.name ?? "",
-        })),
-    }));
+    return user.accounts.map((acct) => mapAccount(acct));
 }
 
 
@@ -118,32 +96,10 @@ export async function getTransactionsByAccountId(data: z.infer<typeof AccountIdS
         throw new Error('Account not found');
     }
 
-    return {
-        id: account.id,
-        name: account.name,
-        amount: account.amount,
-        currency: account.currency,
-        emoji: account.emoji,
-        createdAt: account.createdAt,
-        transactions: account.transactions.map((tx): Transaction => ({
-                id: tx.id,
-                description: tx.description,
-                amount: tx.amount,
-                commission: tx.commission ?? 0,
-                clientAmount: tx.clientAmount,
-                paidAmount: tx.paidAmount ?? 0,
-                paidCurrency: tx.paidCurrency ?? "",
-                type: tx.type,
-                emoji: tx.emoji,
-                createdAt: tx.createdAt,
-                accountId: tx.accountId,
-                clientId: tx.clientId,
-                accountName: account.name, // bonus : tu ajoutes le nom du compte parent
-            })),
-    };
+    return mapAccount(account);
 }
 
-export async function createTransaction(data: z.infer<typeof AddTransactionSchema>): Promise<Transaction> {
+export async function createTransaction(data: z.infer<typeof AddTransactionSchema>){
     const validated = AddTransactionSchema.safeParse(data);
     if (!validated.success) {
         console.log(validated.error)
@@ -177,43 +133,32 @@ export async function createTransaction(data: z.infer<typeof AddTransactionSchem
     }
 
     if (type === "outcome") {
-        const totalIncomeTransactions = getTotalByType(account.transactions, "income");
-        const totalOutcomeTransactions = getTotalByType(account.transactions, "outcome");
-        const startingAmount = account.amount ?? 0;
-        const remainingAmount = startingAmount + totalIncomeTransactions - totalOutcomeTransactions;
+        ensureSufficientFunds(mapAccount(account), amount);
+    }
+    const payload = {
+        description,
+        amount,
+        commission,
+        clientAmount,
+        paidAmount,
+        paidCurrency,
+        type,
+        accountId,
+        clientId,
+        emoji,
+    };
 
-        console.log({remainingAmount, amount})
-        if (amount > remainingAmount) {
-            throw new Error("Not enough funds");
-        }
-        await prisma.transaction.create({
-            data: {
-                description,
-                amount,
-                commission,
-                clientAmount,
-                paidAmount,
-                paidCurrency,
-                type,
-                accountId,
-                clientId,
-                emoji,
-            }
-        });
-    } else {
-        await prisma.transaction.create({
-            data: {
-                description,
-                amount,
-                commission,
-                clientAmount,
-                paidAmount,
-                paidCurrency,
-                type,
-                accountId,
-                clientId,
-                emoji,
-            }
-        });
+    await prisma.transaction.create({ data: payload });
+}
+
+function ensureSufficientFunds(
+    account: Account,
+    amountToSpend: number
+) {
+    const totalIn = getTotalByType(account.transactions, "income");
+    const totalOut = getTotalByType(account.transactions, "outcome");
+    const available = (account.amount ?? 0) + totalIn - totalOut;
+    if (amountToSpend > available) {
+        throw new Error("Not enough funds");
     }
 }
