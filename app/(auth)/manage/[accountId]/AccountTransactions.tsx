@@ -59,7 +59,7 @@ export default function AccountTransactions({accountId}: Props) {
                 <TransactionForm
                     accountCurrency={account.currency}
                     onSubmit={(formData) =>
-                        createTx.mutate({...formData, accountId})
+                        createTx.mutate({...formData, accountId, emoji: account.emoji})
                     }
                 />
             </div>

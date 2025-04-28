@@ -1,37 +1,11 @@
 "use client";
 import Link from "next/link";
 import Logo from "@/components/Logo";
-import {ArrowLeftRight, BarChart, Calculator, CogIcon, Wallet} from "lucide-react";
 import {usePathname} from "next/navigation";
 import UserDropDown from "@/components/UserDropDown";
+import {links} from "@/data";
 
-export const links = [
-    {
-        href: "/",
-        label: "Dashboard",
-        icon: BarChart
-    },
-    {
-        href: "/accounts",
-        label: "Accounts",
-        icon: Wallet
-    },
-    {
-        href: "/admin/calculator",
-        label: "Calculator",
-        icon: Calculator,
-    },
-    {
-        href: "/settings",
-        label: "Settings",
-        icon: CogIcon
-    },
-    {
-        href: "/transactions",
-        label: "Transactions",
-        icon: ArrowLeftRight
-    }
-]
+
 
 export default function Sidebar() {
     const pathname = usePathname();

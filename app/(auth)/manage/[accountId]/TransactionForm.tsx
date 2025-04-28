@@ -1,13 +1,14 @@
 "use client";
 import TextFieldInput from "@/components/TextFieldInput";
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import {ArrowLeftRight, Banknote, ListOrdered, NotebookPen, X} from "lucide-react";
-import CurrencySelectInput from "@/components/CurrencySelectInput";
 import SelectTransactType from "@/components/SelectTransactType";
 import {countCommission} from "@/utils/countCommission";
 import {toast} from "sonner";
 import { TransactionFormSchema} from "@/schema";
 import {z} from "zod";
+import {currencyOptions} from "@/data";
+import SelectInput from "@/components/SelectInput";
 
 type Props = {
     accountCurrency: string;
@@ -17,18 +18,25 @@ type Props = {
 export default function TransactionForm({ accountCurrency, onSubmit }: Props) {
     const [description, setDescription] = useState("");
     const [amount, setAmount] = useState("");
-    const [commission, setCommission] = useState<number>(0);
-    const [clientAmount, setClientAmount] = useState<number>(0);
     const [paidAmount, setPaidAmount] = useState("");
     const [paidCurrency, setPaidCurrency] = useState("");
-    const [transactType, setTransactType] = useState("");
+    const [transactType, setTransactType] = useState("income");
+
+    const labelReception = "Montant recu du client*"
+    const labelPayment = "Montant payez au client*"
+
+    const montantLabel = transactType === "outcome" ? labelPayment : labelReception;
+    const clientAmountLabel = transactType === "outcome" ? labelReception : labelPayment;
+    const commission = transactType === "income" && parseFloat(countCommission(parseFloat(amount)))
+    const clientAmount = amount - commission;
+    const showBreakdown = transactType === "income" && amount > 0;
 
     const handleCreate = () => {
         try {
             // on valide via Zod
             const data = TransactionFormSchema.parse({
                 description,
-                amount: parseFloat(amount),
+                amount: parseFloat(String(amount)),
                 commission,
                 clientAmount,
                 paidAmount: parseFloat(paidAmount) || 0,
@@ -42,8 +50,8 @@ export default function TransactionForm({ accountCurrency, onSubmit }: Props) {
                 modal.close();
                 setTransactType("")
                 setAmount("");
-                setCommission(0);
-                setClientAmount(0);
+                // setCommission(0);
+                // setClientAmount(0);
                 setPaidAmount("");
                 setTransactType("")
                 setPaidCurrency("");
@@ -54,19 +62,6 @@ export default function TransactionForm({ accountCurrency, onSubmit }: Props) {
             console.log(err)
         }
     };
-
-    useEffect(() => {
-        const m = parseFloat(amount) || 0;
-        if ((accountCurrency === "USD" || accountCurrency === "EUR") && m > 0) {
-            const comm = parseFloat(countCommission(m));
-            setCommission(comm);
-            setClientAmount(m - comm);
-            setPaidCurrency("RUB");
-        } else {
-            setCommission(0);
-            setClientAmount(m);
-        }
-    }, [amount, accountCurrency]);
 
     return (
         <div className="mt-3">
@@ -87,26 +82,29 @@ export default function TransactionForm({ accountCurrency, onSubmit }: Props) {
                             <ArrowLeftRight/>
                         </SelectTransactType>
                         <TextFieldInput
-                            value={amount} label="Montant recu*"
+                            value={amount} label={montantLabel}
                             setValue={setAmount}>
                             <ListOrdered/>
                         </TextFieldInput>
-                        {amount &&
+                        {showBreakdown &&
                             <div className="text-gray-500 flex justify-between mt-[-10px] mb-2">
-                                <span>commission : {commission}{" "}{accountCurrency}</span><span>client : {clientAmount}</span>
+                                <span>commission : {commission}{" "}{accountCurrency}</span>
+                                <span>client : {clientAmount}{" "}{accountCurrency}</span>
                             </div>
                         }
                         <TextFieldInput
-                            value={paidAmount} label="Montant payez au client*"
+                            value={paidAmount} label={clientAmountLabel}
                             setValue={setPaidAmount}>
                             <ListOrdered/>
                         </TextFieldInput>
-                        <CurrencySelectInput
+                        <SelectInput
                             value={paidCurrency}
-                            label="Select Paid currency"
-                            setValue={setPaidCurrency}>
+                            label="Selectionner la divise de reception"
+                            setValue={setPaidCurrency}
+                            options={currencyOptions}
+                        >
                             <Banknote/>
-                        </CurrencySelectInput>
+                        </SelectInput>
                         <TextFieldInput
                             value={description} label="Description*"
                             setValue={setDescription}>

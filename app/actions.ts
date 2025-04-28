@@ -2,8 +2,8 @@
 
 import {z} from 'zod';
 import {prisma} from "@/lib/prisma";
-import {AccountIdSchema, AddAccountSchema, AddTransactionSchema, ByEmailSchema} from "@/schema";
-import {Account } from "@/types";
+import {AccountIdSchema, AddAccountSchema, AddClientSchema, AddTransactionSchema, ByEmailSchema} from "@/schema";
+import {Account, Client} from "@/types";
 import {getTotalByType} from "@/utils/getTotalByType";
 import {mapAccount} from "@/utils/prismaMappers";
 
@@ -151,14 +151,32 @@ export async function createTransaction(data: z.infer<typeof AddTransactionSchem
     await prisma.transaction.create({ data: payload });
 }
 
-function ensureSufficientFunds(
-    account: Account,
-    amountToSpend: number
-) {
+function ensureSufficientFunds(account: Account, amountToSpend: number) {
     const totalIn = getTotalByType(account.transactions, "income");
     const totalOut = getTotalByType(account.transactions, "outcome");
     const available = (account.amount ?? 0) + totalIn - totalOut;
     if (amountToSpend > available) {
         throw new Error("Not enough funds");
     }
+}
+
+export async function AddClient(formData: z.infer<typeof AddClientSchema>) {
+    const validated = AddClientSchema.safeParse(formData);
+    if (!validated.success) {
+        console.log(validated.error)
+        throw new Error('Validation failed');
+    }
+    const {name, email, phone} = validated.data;
+
+    await prisma.client.create({
+        data: {
+            name,
+            email,
+            phone,
+        },
+    });
+}
+
+export async function getClients():Promise<Client[]> {
+    return prisma.client.findMany();
 }

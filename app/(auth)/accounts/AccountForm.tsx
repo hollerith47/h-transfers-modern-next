@@ -3,11 +3,14 @@ import { useState} from "react";
 import {useUser} from "@clerk/nextjs";
 import {Banknote, ListOrdered, Wallet, X} from "lucide-react";
 import TextFieldInput from "@/components/TextFieldInput";
-import CurrencySelectInput from "@/components/CurrencySelectInput";
 import EmojiPicker from "emoji-picker-react";
 import {AddAccount} from "@/app/actions";
 import {toast} from 'sonner';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import SelectInput from "@/components/SelectInput";
+import {currencyOptions} from "@/data";
+
+
 
 export default function AccountForm() {
     const {user} = useUser();
@@ -32,7 +35,7 @@ export default function AccountForm() {
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['accounts', user?.primaryEmailAddress?.emailAddress] });
-            toast.success('Account created successfully!');
+            // toast.success('Account created successfully!');
             const modal = document.getElementById("my_modal_3") as HTMLDialogElement;
             if (modal) {
                 modal.close();
@@ -92,12 +95,14 @@ export default function AccountForm() {
                         >
                             <ListOrdered/>
                         </TextFieldInput>
-                        <CurrencySelectInput
+                        <SelectInput
                             value={accountCurrency}
                             label="Select Currency"
-                            setValue={setAccountCurrency}>
+                            setValue={setAccountCurrency}
+                            options={currencyOptions}
+                        >
                             <Banknote/>
-                        </CurrencySelectInput>
+                        </SelectInput>
                         <button
                             className="btn mb-2 btn-bordered rounded-xl"
                             onClick={() => setShowEmojiPicker(!showEmojiPicker)}>

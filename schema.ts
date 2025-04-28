@@ -8,6 +8,12 @@ export const AddAccountSchema = z.object({
     currency: z.string().min(1),
 });
 
+export const AddClientSchema = z.object({
+    name: z.string().min(1),
+    email: z.string().email().optional().or(z.literal("")),
+    phone: z.string().optional().or(z.literal("")),
+})
+
 export const ByEmailSchema = z.object({
     email: z.string().email(),
 });
@@ -30,4 +36,4 @@ export const AddTransactionSchema = z.object({
     emoji: z.string().min(1).optional(),
 })
 
-export const TransactionFormSchema = AddTransactionSchema.omit({ accountId: true });
+export const TransactionFormSchema = AddTransactionSchema.omit({accountId: true});

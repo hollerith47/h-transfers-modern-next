@@ -1,7 +1,7 @@
 "use client"
 import Link from "next/link";
-import {links} from "@/components/Sidebar";
 import {usePathname} from "next/navigation";
+import {links} from "@/data";
 
 type Props = {
     setIsOpen: (open: boolean) => void;

@@ -9,10 +9,12 @@ type Props = {
 
 export default function AccountItem({account}: Props) {
     const transactionCount = account.transactions?.length || 0;
-    const totalIncomeTransactions = getTotalByType(account.transactions, "income");
-    const totalOutcomeTransactions = getTotalByType(account.transactions, "outcome");
+    const totalIncomeTransactions = parseFloat(getTotalByType(account.transactions, "income"));
+    const totalOutcomeTransactions = parseFloat(getTotalByType(account.transactions, "outcome"));
     const startingAmount = account.amount ?? 0;
-    const balance = startingAmount + totalIncomeTransactions - totalOutcomeTransactions;
+    const rawBalance = startingAmount + totalIncomeTransactions - totalOutcomeTransactions;
+    const balance = parseFloat(rawBalance.toFixed(2));
+
 
     const totalAvailable = startingAmount + totalIncomeTransactions;
     const progressValue = totalAvailable > 0
@@ -36,8 +38,8 @@ export default function AccountItem({account}: Props) {
                         </span>
                     </div>
                 </div>
-                <div className="text-lg font-bold text-primary">
-                    {balance} {account.currency}
+                <div className="text-normal font-bold text-primary">
+                  <span className="text-gray-500">solde:</span>  {balance} {account.currency}
                 </div>
             </div>
             <div className="flex justify-between items-center mt-5 text-gray-500">
