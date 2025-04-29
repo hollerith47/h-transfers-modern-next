@@ -1,21 +1,17 @@
 "use client";
-import {useQuery, useMutation, useQueryClient} from "@tanstack/react-query";
-import {getTransactionsByAccountId, createTransaction} from "@/app/actions";
 import {toast} from "sonner";
+import {useQuery} from "@tanstack/react-query";
+import {getTransactionsByAccountId} from "@/app/actions";
 import AccountItem from "@/components/AccountItem";
-import TransactionForm from "@/app/(auth)/manage/[accountId]/TransactionForm";
-import {z} from "zod";
-import {AddTransactionSchema} from "@/schema";
-import {Inbox} from "lucide-react";
+import { Inbox} from "lucide-react";
 import TransactionsTable from "@/app/(auth)/manage/[accountId]/TransactionsTable";
+import TransactionForm from "@/app/(auth)/manage/[accountId]/TransactionForm";
 
 type Props = {
     accountId: string;
 }
 
-
 export default function AccountTransactions({accountId}: Props) {
-    const queryClient = useQueryClient();
 
     const {
         data: account,
@@ -35,40 +31,25 @@ export default function AccountTransactions({accountId}: Props) {
         }
     });
 
-    const createTx = useMutation({
-        mutationFn: (data: z.infer<typeof AddTransactionSchema>) => createTransaction(data),
-        onSuccess: () => {
-            toast.success("Transaction created!");
-            // ⚡ Invalide la query pour re-fetcher le compte complet
-            queryClient.invalidateQueries({ queryKey:["account", accountId]});
-        },
-        onError: () => toast.error("Failed to create transaction."),
-    });
-
     if (isLoading) return <div>Loading account…</div>;
     if (isError || !account) return <div>Error loading account.</div>;
     const devise = account.currency === "USD" ? "$" : "₽";
 
-    console.log({account})
+    // console.log({account})
     return (
         <>
             <div className="md:flex w-full justify-between">
                 <div className="md:w-2/3">
                     <AccountItem account={account}/>
                 </div>
-                <TransactionForm
-                    accountCurrency={account.currency}
-                    onSubmit={(formData) =>
-                        createTx.mutate({...formData, accountId, emoji: account.emoji})
-                    }
-                />
+                <TransactionForm account={account} />
             </div>
-
             {account?.transactions && account?.transactions.length > 0 ?
                 (
                     <TransactionsTable
                         transactions={account.transactions}
                         devise={devise}
+                        account={account}
                     />
                 )
                 : (

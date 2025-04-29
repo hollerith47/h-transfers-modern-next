@@ -2,10 +2,17 @@
 
 import {z} from 'zod';
 import {prisma} from "@/lib/prisma";
-import {AccountIdSchema, AddAccountSchema, AddClientSchema, AddTransactionSchema, ByEmailSchema} from "@/schema";
-import {Account, Client} from "@/types";
-import {getTotalByType} from "@/utils/getTotalByType";
+import {
+    AccountIdSchema,
+    AddAccountSchema,
+    AddClientSchema,
+    AddTransactionSchema,
+    ByEmailSchema, DeleteClientSchema, DeleteTransactionSchema,
+    UpdateTransactionSchema
+} from "@/schema";
+import {Account, ClientResponse} from "@/types";
 import {mapAccount} from "@/utils/prismaMappers";
+import {assertExists} from "@/utils/ensureSufficientFunds";
 
 export async function AddUserToDB(data: z.infer<typeof ByEmailSchema>) {
     const validated = ByEmailSchema.safeParse(data);
@@ -119,7 +126,7 @@ export async function createTransaction(data: z.infer<typeof AddTransactionSchem
         emoji,
     } = validated.data;
 
-    const account = await prisma.account.findUnique({
+    const rawAccount = await prisma.account.findUnique({
         where: {
             id: accountId
         },
@@ -128,13 +135,8 @@ export async function createTransaction(data: z.infer<typeof AddTransactionSchem
         }
     });
 
-    if (!account) {
-        throw new Error('Account not found');
-    }
+    assertExists(rawAccount, "Account not found");
 
-    if (type === "outcome") {
-        ensureSufficientFunds(mapAccount(account), amount);
-    }
     const payload = {
         description,
         amount,
@@ -151,14 +153,55 @@ export async function createTransaction(data: z.infer<typeof AddTransactionSchem
     await prisma.transaction.create({ data: payload });
 }
 
-function ensureSufficientFunds(account: Account, amountToSpend: number) {
-    const totalIn = getTotalByType(account.transactions, "income");
-    const totalOut = getTotalByType(account.transactions, "outcome");
-    const available = (account.amount ?? 0) + totalIn - totalOut;
-    if (amountToSpend > available) {
-        throw new Error("Not enough funds");
+export async function updateTransaction(data: z.infer<typeof UpdateTransactionSchema>){
+    const validated = UpdateTransactionSchema.safeParse(data);
+    if (!validated.success) {
+        console.error(validated.error);
+        throw new Error("Error while validating transaction update data");
     }
+    const {
+        id,
+        amount: newAmount,
+        description,
+        commission,
+        clientAmount,
+        paidAmount,
+        paidCurrency,
+        type: newType,
+        clientId,
+        emoji,
+    } = validated.data;
+
+    console.log(validated.data)
+
+    // On récupère la transaction existante
+    const existingTx= await prisma.transaction.findUnique({
+        where: { id },
+    });
+    if (!existingTx) {
+        throw new Error("Transaction not found");
+    }
+    if (newAmount !== existingTx.amount || newType !== existingTx.type) {
+        throw new Error(
+            "You cannot modify the transaction amount. " +
+            "If you need to change it, please delete the transaction and create a new one."
+        );
+    }
+    await prisma.transaction.update({
+        where: { id },
+        data: {
+            description,
+            commission,
+            clientAmount,
+            paidAmount,
+            paidCurrency,
+            clientId,
+            emoji,
+        },
+    });
 }
+
+
 
 export async function AddClient(formData: z.infer<typeof AddClientSchema>) {
     const validated = AddClientSchema.safeParse(formData);
@@ -177,6 +220,31 @@ export async function AddClient(formData: z.infer<typeof AddClientSchema>) {
     });
 }
 
-export async function getClients():Promise<Client[]> {
+export async function DeleteClient(formData: z.infer<typeof DeleteClientSchema>) {
+    const validated = DeleteClientSchema.safeParse(formData);
+    if (!validated.success) {
+        console.error(validated.error);
+        throw new Error("Deleting client Validation failed");
+    }
+    const { clientId } = validated.data;
+    await prisma.client.delete({
+        where: { id: clientId },
+    });
+}
+export async function DeleteTransaction(formData: z.infer<typeof DeleteTransactionSchema>) {
+    const validated = DeleteTransactionSchema.safeParse(formData);
+    if (!validated.success) {
+        console.error(validated.error);
+        throw new Error("Deleting transaction Validation failed");
+    }
+    const { transactionId } = validated.data;
+
+    await prisma.transaction.delete({
+        where: { id: transactionId },
+    });
+}
+
+export async function getClients():Promise<ClientResponse[]> {
     return prisma.client.findMany();
 }
+

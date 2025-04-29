@@ -1,8 +1,9 @@
 import ContentLayout from "@/app/(auth)/content-layout";
-import ClientForm from "@/app/(auth)/clients/ClientForm";
 import ClientTables from "@/app/(auth)/clients/ClientTables";
+import ClientForm from "@/app/(auth)/clients/ClientForm";
 
 export default function Page() {
+
     return (
         <ContentLayout
             title="Clients"

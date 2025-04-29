@@ -4,6 +4,7 @@ import {useUser} from "@clerk/nextjs";
 import {getAccountsByUser} from "@/app/actions";
 import Link from "next/link";
 import AccountItem from "@/components/AccountItem";
+import Loader from "@/components/Loader";
 
 export default function AccountContainer() {
     const {user} = useUser();
@@ -30,8 +31,8 @@ export default function AccountContainer() {
     });
 
     if (isLoading) {
-        // TODO:: faire de composant pour loader pour le chargement
-        return <div>Loading accounts...</div>;
+        // return <Loading />;
+        return <Loader fullScreen size="xl" colorClass="text-primary" />;
     }
 
     if (isError) {

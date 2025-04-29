@@ -14,6 +14,10 @@ export const AddClientSchema = z.object({
     phone: z.string().optional().or(z.literal("")),
 })
 
+export const DeleteClientSchema = z.object({clientId: z.string().uuid()});
+export const UpdateClientSchema = AddClientSchema.extend({
+    id: z.string().uuid(),
+});
 export const ByEmailSchema = z.object({
     email: z.string().email(),
 });
@@ -37,3 +41,10 @@ export const AddTransactionSchema = z.object({
 })
 
 export const TransactionFormSchema = AddTransactionSchema.omit({accountId: true});
+export const UpdateTransactionSchema = AddTransactionSchema.extend({
+    id: z.string().uuid(),
+}).omit({accountId: true});
+
+export const DeleteTransactionSchema = z.object({transactionId: z.string().uuid()});
+
+export const TransactionInitialData = AddTransactionSchema.omit({accountId: true, emoji: true});

@@ -16,15 +16,20 @@ export type PaginationResult<T> = {
  * @param options.initialPage  Page de départ (défaut 0)
  * @param options.sortFn       Fonction de tri optionnelle
  */
-export function usePagination<T>(data: T[], itemsPerPage: number, options?: { initialPage?: number; sortFn?: (a: T, b: T) => number; }): PaginationResult<T> {
+export function usePagination<T extends { createdAt: string | Date }>(data: T[], itemsPerPage: number, options?: { initialPage?: number; sortFn?: (a: T, b: T) => number; }): PaginationResult<T> {
     const { initialPage = 0, sortFn } = options || {};
     const [page, setPage] = useState(initialPage);
 
     // 1️⃣ Tri optionnel
     const sortedData = useMemo(() => {
-        if (!sortFn) return [...data].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-        // on clone pour ne pas muter l’original
-        return [...data].sort(sortFn);
+        const copy = [...data];
+        if (sortFn) {
+            return copy.sort(sortFn);
+        }
+        return copy.sort(
+            (a, b) =>
+                new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
     }, [data, sortFn]);
 
     // 2️⃣ Calcul du nombre total de pages

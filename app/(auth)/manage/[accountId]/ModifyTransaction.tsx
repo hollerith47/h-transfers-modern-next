@@ -1,31 +1,59 @@
-import { X} from "lucide-react";
-import {Client} from "@/types";
+import {z} from "zod";
+import {Account, Transaction} from "@/types";
+import TransactionFormModal from "@/components/TransactionFormModal";
+import {useMutation, useQueryClient} from "@tanstack/react-query";
+import {UpdateTransactionSchema} from "@/schema";
+import { updateTransaction} from "@/app/actions";
+import {toast} from "sonner";
 
 type Props = {
-    client: Client
+    transaction: Transaction,
+    account: Account
 };
 
-export default function ModifyTransaction({client}: Props) {
+export default function ModifyTransaction({transaction, account}: Props) {
+    const queryClient = useQueryClient();
+
+    const updateTx = useMutation({
+        // updateTransaction
+        mutationFn: (data: z.infer<typeof UpdateTransactionSchema>) => updateTransaction(data),
+        onSuccess: () => {
+            queryClient.invalidateQueries({queryKey: ["account", account.id]});
+        },
+    });
+
+    const handleUpdateTransaction = (data: z.infer<typeof UpdateTransactionSchema>) => {
+        return toast.promise(
+            updateTx.mutateAsync(data),
+            {
+                loading: "Creating transaction...",
+                success: "Transaction created! successfully!",
+                error: (error)=> error instanceof Error ? error.message : "Failed to create transaction."
+            }
+        );
+    };
+
     return (
         <>
-            <div className="">
-                <button className="btn btn-xs md:btn-sm btn-success flex items-center gap-2"
-                        onClick={() => (document.getElementById('my_modal_6') as HTMLDialogElement).showModal()}>
-                    Modifier
-                </button>
-                <dialog id="my_modal_6" className="modal">
-                    <div className="modal-box">
-                        <form method="dialog">
-                            <button className="btn btn-sm btn-circle btn-soft btn-error absolute right-2 top-2">
-                                <X/>
-                            </button>
-                        </form>
-                        <h3 className="font-bold text-lg">Modifier le detail du client</h3>
-                        <div className="w-full flex flex-col ">
-                        </div>
-                    </div>
-                </dialog>
-            </div>
+            <TransactionFormModal
+                key={transaction.id}
+                accountCurrency={account.currency}
+                initialData={{
+                    description: transaction.description,
+                    amount: transaction.amount,
+                    clientAmount: transaction.clientAmount ?? 0,
+                    clientId: transaction.clientId ?? undefined,
+                    commission: transaction.commission ?? 0,
+                    paidAmount: transaction.paidAmount ?? 0,
+                    paidCurrency: transaction.paidCurrency ?? "",
+                    type: transaction.type
+                }}
+                buttonClassName="btn btn-xs md:btn-sm btn-success"
+                buttonLabel="Modifier"
+                modalTitle="Modifier transaction"
+                modalId={`modal-edit-tx-${transaction.id}`}
+                onSubmit={(data) => handleUpdateTransaction({...data, id: transaction.id})}
+            />
         </>
     );
 }

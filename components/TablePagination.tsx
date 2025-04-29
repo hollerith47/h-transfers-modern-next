@@ -1,6 +1,6 @@
 type Props = {
     page: number;
-    setPage: (page: (p) => number) => void;
+    setPage: (page: (p: number) => number) => void;
     totalPages: number;
 }
 export default function TablePagination({page, setPage, totalPages}: Props) {

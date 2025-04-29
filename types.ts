@@ -17,6 +17,14 @@ export interface Client {
     transactions?: Transaction[];
 }
 
+export interface ClientResponse {
+    email: string | null;
+    id: string;
+    name: string;
+    phone: string | null;
+    createdAt: Date
+}
+
 export type TransactionType = "income" | "outcome";
 export type Currency = "USD" | "EUR" | "RUB";
 

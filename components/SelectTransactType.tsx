@@ -1,8 +1,14 @@
+import type { ReactNode, Dispatch, SetStateAction } from "react";
+import type {z} from "zod";
+import {TransactionFormSchema} from "@/schema";
+
+type TForm = z.infer<typeof TransactionFormSchema>;
+
 type Props = {
-    children?: React.ReactNode
-    value: string
+    children?: ReactNode
+    value: TForm["type"]
     label: string
-    setValue: (value: string) => void
+    setValue: Dispatch<SetStateAction<TForm["type"]>>
 };
 
 export default function SelectTransactType({children, value, setValue, label}: Props) {
@@ -11,7 +17,7 @@ export default function SelectTransactType({children, value, setValue, label}: P
             <div className="opacity-50">{children}</div>
             <select
                 value={value}
-                onChange={(e) => setValue(e.target.value)}
+                onChange={(e) => setValue(e.target.value as TForm["type"])}
                 className="grow bg-transparent focus:outline-none"
                 required
             >

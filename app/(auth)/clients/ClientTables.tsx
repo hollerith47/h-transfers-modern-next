@@ -1,18 +1,20 @@
 "use client"
 import {useUser} from "@clerk/nextjs";
-import {useQuery} from "@tanstack/react-query";
+import { useQuery} from "@tanstack/react-query";
 import { getClients} from "@/app/actions";
-import {Client} from "@/types";
+import {ClientResponse} from "@/types";
 import TablePagination from "@/components/TablePagination";
 import {usePagination} from "@/hook/usePagination";
 import {formateTime} from "@/utils/formatDate";
-import ModifyTransaction from "@/app/(auth)/manage/[accountId]/ModifyTransaction";
+import ModifyClient from "@/app/(auth)/clients/ModifyClient";
+import DeleteClientBtn from "@/app/(auth)/clients/DeleteClientBtn";
+import Loader from "@/components/Loader";
 
 export default function ClientTables() {
     const {user} = useUser();
     const email = user?.primaryEmailAddress?.emailAddress;
 
-    const {data: clients=  [], isLoading, isError} = useQuery<Client[], Error>({
+    const {data: clients=  [], isLoading, isError} = useQuery<ClientResponse[], Error>({
         queryKey: ['clients', email],
         queryFn: async () => {
             if (!email) return [];
@@ -30,26 +32,26 @@ export default function ClientTables() {
 
     if (isLoading) {
         // TODO:: faire de composant pour loader pour le chargement
-        return <div>Loading clients...</div>;
+        return <Loader />
     }
 
     if (isError) {
         // TODO:: faire de composant pour l'erreur
         return <div>Failed to load clients.</div>;
     }
-    console.log(clients);
+
     return (
         <>
-        <div className="overflow-x-auto">
-            <table className="table">
-                {/* head */}
-                <thead>
+            <div className="overflow-x-auto">
+                <table className="table">
+                    {/* head */}
+                    <thead>
                 <tr>
                     <th></th>
                     <th>Name</th>
                     <th>Email</th>
                     <th>Phone</th>
-                    <th>Date d'enregistrement</th>
+                    <th>Date d&apos;enregistrement</th>
                     <th>Action</th>
                 </tr>
                 </thead>
@@ -63,10 +65,8 @@ export default function ClientTables() {
                         <td>{formateTime(client.createdAt)}</td>
                         <td>
                             <div className="flex gap-2 justify-center">
-                                <ModifyTransaction />
-                                <button className="btn btn-xs md:btn-sm btn-error">
-                                    Supprimer
-                                </button>
+                                <ModifyClient client={client}/>
+                                <DeleteClientBtn clientId={client.id} />
                             </div>
                         </td>
                     </tr>

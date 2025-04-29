@@ -1,108 +1,46 @@
 "use client";
-import { useState} from "react";
 import {useUser} from "@clerk/nextjs";
-import {  Mail, Phone, UserIcon, X} from "lucide-react";
-import TextFieldInput from "@/components/TextFieldInput";
+import { UserIcon } from "lucide-react";
 import {AddClient} from "@/app/actions";
 import {toast} from 'sonner';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import {z} from "zod";
+import {AddClientSchema} from "@/schema";
+import ClientFormModal from "@/components/ClientFormModal";
 
 export default function ClientForm() {
-    const {user} = useUser();
+    const { user } = useUser();
     const queryClient = useQueryClient();
 
-    const [clientName, setClientName] = useState('');
-    const [clientEmail, setClientEmail] = useState('');
-    const [clientPhone, setClientPhone] = useState('');
-    // const [clientBankCardNumber, setClientBankCardNumber] = useState('');
-
-    const mutation = useMutation({
-        mutationFn: async () => {
-            return AddClient({
-                email: clientEmail,
-                name: clientName,
-                phone: clientPhone
-            });
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['clients', user?.primaryEmailAddress?.emailAddress] });
-            const modal = document.getElementById("my_modal_5") as HTMLDialogElement;
-            if (modal) {
-                modal.close();
-                setClientName("");
-                setClientEmail("")
-                setClientPhone("");
-                // setClientBankCardNumber("");
-            }
-        },
-        onError: () => {
-            toast.error('Failed to create account.');
+    const createMutation = useMutation(
+        {
+            mutationFn: async(data: z.infer<typeof AddClientSchema>) => AddClient(data),
+            onSuccess: () => {
+                queryClient.invalidateQueries({ queryKey: ['clients', user?.primaryEmailAddress?.emailAddress] });
+            },
         }
-    });
-
-    const handleCreateClient = async () => {
-        console.log({clientName, clientEmail, clientPhone});
-        toast.promise(mutation.mutateAsync(), {
-            loading: 'Creating client...',
-            success: 'Client created successfully!',
-            error: 'Failed to create account.',
-        });
+    );
+    const handleCreateClient = (data: z.infer<typeof AddClientSchema>) => {
+        return toast.promise(
+            createMutation.mutateAsync(data),
+            {
+                loading: "Creating client...",
+                success: "Client created successfully!",
+                error: (error)=> error instanceof Error ? error.message : "Failed to create client."
+            }
+        );
     };
 
     return (
         <>
-            <button className="btn btn-primary flex items-center gap-2"
-                    onClick={() => (document.getElementById('my_modal_5') as HTMLDialogElement).showModal()}>
-                Ajouter Nouveau Client <UserIcon  />
-            </button>
-            <dialog id="my_modal_5" className="modal">
-                <div className="modal-box">
-                    <form method="dialog">
-                        <button className="btn btn-sm btn-circle btn-soft btn-error absolute right-2 top-2">
-                            <X/>
-                        </button>
-                    </form>
-                    <h3 className="font-bold text-lg">Ajouter le nouveau client</h3>
-                    <p className="py-4">Ajouter le detail du client</p>
-                    <div className="w-full flex flex-col">
-                        <TextFieldInput
-                            value={clientName}
-                            label="Client name"
-                            setValue={setClientName}
-                        >
-                            <UserIcon />
-                        </TextFieldInput>
-                        <TextFieldInput
-                            value={clientEmail}
-                            label="Client Email (optional)"
-                            setValue={setClientEmail}
-                        >
-                            <Mail />
-                        </TextFieldInput>
-                        <TextFieldInput
-                            value={clientPhone}
-                            label="Client phone number (optional)"
-                            setValue={setClientPhone}
-                        >
-                            <Phone />
-                        </TextFieldInput>
-                        {/*<TextFieldInput*/}
-                        {/*    value={clientBankCardNumber}*/}
-                        {/*    label="Numero de compte (optional)"*/}
-                        {/*    setValue={setClientBankCardNumber}*/}
-                        {/*>*/}
-                        {/*    <CreditCard />*/}
-                        {/*</TextFieldInput>*/}
-
-                        <button
-                            onClick={handleCreateClient}
-                            className="btn btn-primary btn-bordered rounded-xl"
-                        >
-                            Ajouter le client
-                        </button>
-                    </div>
-                </div>
-            </dialog>
+            <ClientFormModal
+                modalId="modal-create-client"
+                buttonLabel="Ajouter Nouveau Client"
+                modalTitle="Ajouter le nouveau client"
+                onSubmit={(data: z.infer<typeof AddClientSchema>) => handleCreateClient(data)}
+            >
+                <UserIcon />
+            </ClientFormModal>
         </>
     );
 }
