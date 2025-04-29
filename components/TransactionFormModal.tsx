@@ -12,6 +12,7 @@ import {useQuery} from "@tanstack/react-query";
 import { ClientResponse} from "@/types";
 import {getClients} from "@/app/actions";
 import {useUser} from "@clerk/nextjs";
+import {convertCurrency} from "@/utils/convertCurrency";
 
 type TForm = z.infer<typeof TransactionFormSchema>;
 
@@ -31,8 +32,8 @@ export default function TransactionFormModal({accountCurrency,initialData,onSubm
     const [description, setDescription] = useState(initialData?.description ?? "");
     const [amount, setAmount] = useState(initialData ? String(initialData.amount) : "");
     const [paidAmount, setPaidAmount] = useState(initialData ? String(initialData.paidAmount ?? "") : "");
-    const [paidCurrency, setPaidCurrency] = useState(initialData?.paidCurrency ?? "");
     const [transactType, setTransactType] = useState<TForm["type"]>(initialData?.type ?? "income");
+    const [paidCurrency, setPaidCurrency] = useState(initialData?.paidCurrency ?? convertCurrency(accountCurrency,transactType));
     const email = user?.primaryEmailAddress?.emailAddress;
 
     const [showDropdown, setShowDropdown] = useState(false);
@@ -73,23 +74,21 @@ export default function TransactionFormModal({accountCurrency,initialData,onSubm
     );
 
     // Labels dynamiques
-    const labelRec = "Montant recu du client*";
-    const labelPay = "Montant payez au client*";
-    const montantLabel =
-        transactType === "outcome" ? labelPay : labelRec;
-    const clientAmountLabel =
-        transactType === "outcome" ? labelRec : labelPay;
+    const labelRec = transactType === "income" ? `Montant recu du client* en ${accountCurrency}` : `Montant recu du client* en ${convertCurrency(accountCurrency,transactType)}`;
+    const labelPay = transactType === "outcome" ? `Montant envoyer au client en ${accountCurrency}*` : `Montant payer au client en ${convertCurrency(accountCurrency,transactType)}` ;
+    const montantLabel = transactType === "outcome" ? labelPay : labelRec;
+    const clientAmountLabel = transactType === "outcome" ? labelRec : labelPay;
 
     // Calculs “à la volée”
     const m = parseFloat(amount) || 0;
     const commission =
-        transactType === "income"
+        transactType === "income" && accountCurrency !== "RUB"
             ? parseFloat(countCommission(m))
             : 0;
     const clientAmount =
         transactType === "income" ? m - commission : m;
 
-    const breakDown = transactType === "income" && m > 0;
+    const breakDown = transactType === "income" && m > 0 && accountCurrency !== "RUB";
 
     const openModal = () => {
         const dlg = document.getElementById(modalId);
@@ -174,15 +173,17 @@ export default function TransactionFormModal({accountCurrency,initialData,onSubm
                             label={clientAmountLabel}
                             setValue={setPaidAmount}
                         />
+                        <div className="hidden">
+                            <SelectInput
+                                value={paidCurrency as string}
+                                label="Sélectionner devise payée"
+                                setValue={setPaidCurrency}
+                                options={currencyOptions}
+                            >
+                                <Banknote />
+                            </SelectInput>
+                        </div>
 
-                        <SelectInput
-                            value={paidCurrency as string}
-                            label="Sélectionner devise payée"
-                            setValue={setPaidCurrency}
-                            options={currencyOptions}
-                        >
-                            <Banknote />
-                        </SelectInput>
 
                         <TextFieldInput
                             value={description as string}

@@ -11,16 +11,17 @@ import {useUser} from "@clerk/nextjs";
 import {useMemo} from "react";
 import {buildClientNameMap, getClientName} from "@/utils/ClientUtils";
 import {z} from "zod";
-import { DeleteTransactionSchema} from "@/schema";
+import {DeleteTransactionSchema} from "@/schema";
 import {toast} from "sonner";
+import {formatAmount} from "@/utils/formatAmount";
+import UseAccountCurrency from "@/hook/useAccountCurrency";
 
 type Props = {
     transactions: Transaction[]
-    devise: string,
     account: Account
 }
 
-const TransactionsTable = ({transactions, devise, account}: Props) => {
+const TransactionsTable = ({transactions, account}: Props) => {
     const {user} = useUser();
     const email = user?.primaryEmailAddress?.emailAddress;
     const queryClient = useQueryClient();
@@ -47,7 +48,7 @@ const TransactionsTable = ({transactions, devise, account}: Props) => {
 
     const deleteTransactionMutation = useMutation(
         {
-            mutationFn: async(data: z.infer<typeof DeleteTransactionSchema>) => DeleteTransaction(data),
+            mutationFn: async (data: z.infer<typeof DeleteTransactionSchema>) => DeleteTransaction(data),
             onSuccess: () => {
                 queryClient.invalidateQueries({queryKey: ["account", account.id]});
             },
@@ -62,11 +63,12 @@ const TransactionsTable = ({transactions, devise, account}: Props) => {
                 {
                     loading: "Transaction deleting...",
                     success: "Transaction deleted successfully!",
-                    error: (error)=> error instanceof Error ? error.message : "Failed to delete transaction."
+                    error: (error) => error instanceof Error ? error.message : "Failed to delete transaction."
                 }
             );
         }
     }
+    const {accountCurrency, oppositeCurrency, isNotRubleAccount} = UseAccountCurrency(account)
 
     return (
         <>
@@ -78,10 +80,17 @@ const TransactionsTable = ({transactions, devise, account}: Props) => {
                         <tr>
                             <th className="w-10 md:w-12"></th>
                             <th className="w-24 md:w-auto">Date</th>
-                            <th className="w-16 md:w-auto text-center">Montant</th>
-                            <th className="hidden md:table-cell w-24 text-center">Profit</th>
-                            <th className="hidden md:table-cell w-24 md:w-auto text-center">Pour le client</th>
-                            <th className="w-22 md:w-auto text-center">M. Paid Client</th>
+                            <th className="w-16 md:min-w-[100px] md:w-auto text-center">Montant</th>
+                            {isNotRubleAccount &&
+                                <>
+                                    <th className="hidden md:table-cell w-24 text-center">Profit</th>
+                                    <th className="hidden md:table-cell w-24 md:w-auto text-center">M. du client</th>
+                                </>
+
+                            }
+                            <th className="w-22 md:w-auto text-center">
+                                {isNotRubleAccount ? "M. Payer" : "M. Envoyer"}
+                            </th>
                             <th className="hidden md:table-cell w-auto text-center">Client</th>
                             <th className="hidden md:table-cell w-auto text-center">Description</th>
                             <th className="w-auto md:w-50 text-center">Action</th>
@@ -91,7 +100,6 @@ const TransactionsTable = ({transactions, devise, account}: Props) => {
                         {paginatedData.map((transaction, idx) => {
                             // on récupère le nom, ou chaîne vide si clientId undefined/null
                             const name = getClientName(clientNameMap, transaction.clientId);
-                            // console.log(name)
 
                             return (
                                 <tr key={transaction.id} className="hover:bg-base-300">
@@ -106,24 +114,27 @@ const TransactionsTable = ({transactions, devise, account}: Props) => {
                                             <TransactionArrow type={transaction.type}/>
                                             <span
                                                 className={`badge text-white ${returnClass(transaction.type)} badge-sm`}
-                                            >
-                                      {transaction.amount}{devise}
-                                    </span>
+                                            >{formatAmount(transaction.amount, accountCurrency)}
+                                            </span>
                                         </div>
                                     </td>
-                                    <td className="hidden md:table-cell md:w-auto text-center">
-                                        {transaction.commission}{devise}
-                                    </td>
-                                    <td className="hidden md:table-cell w-auto text-center">
-                                        {transaction.clientAmount}{devise}
-                                    </td>
+                                    {isNotRubleAccount &&
+                                        <>
+                                            <td className="hidden md:table-cell md:w-auto text-center">
+                                                {formatAmount(transaction.commission!, accountCurrency)}
+                                            </td>
+                                            <td className="hidden md:table-cell w-auto text-center">
+                                                {formatAmount(transaction.clientAmount, accountCurrency)}
+                                            </td>
+                                        </>
+                                    }
                                     <td className="w-auto text-center">
-                                        {transaction.paidAmount}₽
+                                        {formatAmount(transaction.paidAmount!, oppositeCurrency)}
                                     </td>
-                                    <td className="hidden md:table-cell w-auto text-center">
+                                    <td className="hidden truncate md:table-cell w-auto text-center">
                                         {name}
                                     </td>
-                                    <td className="hidden md:table-cell w-auto text-center">
+                                    <td className="hidden md:table-cell truncate w-auto text-center">
                                         {transaction.description}
                                     </td>
                                     <td>

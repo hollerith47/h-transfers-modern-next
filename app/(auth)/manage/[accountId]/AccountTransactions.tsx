@@ -6,6 +6,7 @@ import AccountItem from "@/components/AccountItem";
 import { Inbox} from "lucide-react";
 import TransactionsTable from "@/app/(auth)/manage/[accountId]/TransactionsTable";
 import TransactionForm from "@/app/(auth)/manage/[accountId]/TransactionForm";
+import Loader from "@/components/Loader";
 
 type Props = {
     accountId: string;
@@ -31,9 +32,8 @@ export default function AccountTransactions({accountId}: Props) {
         }
     });
 
-    if (isLoading) return <div>Loading account…</div>;
+    if (isLoading) return <Loader fullScreen size="xl" />;
     if (isError || !account) return <div>Error loading account.</div>;
-    const devise = account.currency === "USD" ? "$" : "₽";
 
     // console.log({account})
     return (
@@ -48,7 +48,6 @@ export default function AccountTransactions({accountId}: Props) {
                 (
                     <TransactionsTable
                         transactions={account.transactions}
-                        devise={devise}
                         account={account}
                     />
                 )

@@ -1,8 +1,8 @@
-import { Currency, TransactionType } from "@/types";
+import { Currency } from "@/types";
 
 export function convertCurrency(
     currency: string,
-    type: TransactionType
+    type: string
 ): Currency {
     if (type === "income") {
         // dépôt : on convertit la devise du versement en devise de compte
