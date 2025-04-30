@@ -1,4 +1,6 @@
 import {ArrowLeftRight, BarChart, Calculator, CogIcon, HandshakeIcon, Wallet} from "lucide-react";
+import {TransactionStatus} from "@/types";
+import {Option} from "@/components/SelectInput";
 
 export const links = [
     {
@@ -39,7 +41,7 @@ export const currencyOptions = [
     { value: "RUB", label: "RUB - Rouble" },
 ]
 
-export const transactStatusOptions = [
-    { value: "pending", label: "Encours" },
-    { value: "completed", label: "Exécuter" },
+export const transactStatusOptions : Option<TransactionStatus>[] = [
+    { value: "pending", label: "En attente" },
+    { value: "completed", label: "Terminée" },
 ]

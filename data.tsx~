@@ -40,7 +40,6 @@ export const currencyOptions = [
 ]
 
 export const transactStatusOptions = [
-    { value: "pending", label: "USD - Dollar" },
-    { value: "EUR", label: "EUR - Euro" },
-    { value: "RUB", label: "RUB - Rouble" },
+    { value: "pending", label: "En attente" },
+    { value: "completed", label: "Exécuter" },
 ]

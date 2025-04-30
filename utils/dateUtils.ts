@@ -1,0 +1,6 @@
+export function getThisMonthDates() {
+    const now = new Date();
+    const startOfMonth    = new Date(now.getFullYear(), now.getMonth(),     1);
+    const startOfNextMonth= new Date(now.getFullYear(), now.getMonth() + 1, 1);
+    return { now, startOfMonth, startOfNextMonth };
+}

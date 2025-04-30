@@ -6,6 +6,8 @@ export interface User {
     accounts: Account[]
     role: UserRole
 }
+
+export interface GetUserRole extends Omit<User, "accounts">{}
 export interface GetUserResponse extends Omit<User, "accounts" | "role">{}
 export interface Account {
     id: string;

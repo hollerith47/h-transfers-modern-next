@@ -83,7 +83,7 @@ const TransactionsTable = ({transactions, account}: Props) => {
                         <tr>
                             <th className="w-10 md:w-12"></th>
                             <th className="w-24 md:w-auto">Date</th>
-                            <th className="w-16 md:min-w-[100px] md:w-auto text-center">Montant</th>
+                            <th className="w-16 md:min-w-[100px] md:w-auto">Montant</th>
                             {isNotRubleAccount &&
                                 <>
                                     <th className="hidden md:table-cell w-24 text-center">Profit</th>
@@ -91,11 +91,16 @@ const TransactionsTable = ({transactions, account}: Props) => {
                                 </>
 
                             }
-                            <th className="w-22 md:w-auto text-center">
-                                {isNotRubleAccount ? "M. Payer" : "M. Envoyer"}
-                            </th>
-                            {isAdmin && <th className="hidden md:table-cell w-auto text-center">Client</th>}
+                            {isAdmin && (
+                                <>
+                                    <th className="w-22 md:w-auto text-center">
+                                        {isNotRubleAccount ? "M. Payer" : "M. Envoyer"}
+                                    </th>
+                                    <th className="hidden md:table-cell w-auto text-center">Client</th>
+                                </>
+                            )}
 
+                            <th className="w-22 text-center">status</th>
                             <th className="hidden md:table-cell w-auto text-center">Description</th>
                             <th className="w-auto md:w-50 text-center">Action</th>
                         </tr>
@@ -122,7 +127,8 @@ const TransactionsTable = ({transactions, account}: Props) => {
                                             </span>
                                         </div>
                                     </td>
-                                    {isNotRubleAccount &&
+
+                                    {isNotRubleAccount && isAdmin &&
                                         <>
                                             <td className="hidden md:table-cell md:w-auto text-center">
                                                 {formatAmount(transaction.commission!, accountCurrency)}
@@ -132,15 +138,21 @@ const TransactionsTable = ({transactions, account}: Props) => {
                                             </td>
                                         </>
                                     }
-                                    <td className="w-auto text-center">
-                                        {formatAmount(transaction.paidAmount!, oppositeCurrency)}
-                                    </td>
-                                    {isAdmin && <td className="hidden truncate md:table-cell w-auto text-center">
-                                        {name}
-                                    </td>}
+
+                                    {isAdmin &&
+                                        (<>
+                                            <td className="w-auto text-center">
+                                                {formatAmount(transaction.paidAmount!, oppositeCurrency)}
+                                            </td>
+                                            <td className="hidden truncate md:table-cell w-auto text-center">
+                                                {name}
+                                            </td>
+                                        </>)
+                                    }
+                                    <td>{transaction.status}</td>
 
                                     <td className="hidden md:table-cell truncate w-auto text-center">
-                                    {transaction.description}
+                                        {transaction.description}
                                     </td>
                                     <td>
                                         <div className="flex gap-2 justify-center">

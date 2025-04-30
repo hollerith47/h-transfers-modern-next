@@ -53,8 +53,8 @@ export const DeleteTransactionSchema = z.object({transactionId: z.string().uuid(
 export const TransactionInitialData = AddTransactionSchema.omit({accountId: true, emoji: true});
 
 export const UserSchema = {
-    id: z.string(),
-    email: z.string().email(),
-    createdAt: z.date(),
+    // id: z.string(),
+    // email: z.string().email(),
+    // createdAt: z.date(),
     role: z.string()
 }

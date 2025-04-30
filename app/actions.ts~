@@ -15,6 +15,7 @@ import {
 import {Account, ClientResponse, GetUserResponse} from "@/types";
 import {mapAccount} from "@/utils/prismaMappers";
 import {assertExists} from "@/utils/ensureSufficientFunds";
+import {getThisMonthDates} from "@/utils/dateUtils";
 
 export async function AddUserToDB(data: z.infer<typeof ByEmailSchema>) {
     const validated = ByEmailSchema.safeParse(data);
@@ -69,9 +70,26 @@ export async function getAccountsByUser(data: z.infer<typeof ByEmailSchema>): Pr
         throw new Error('Invalid email format');
     }
     const {email} = validated.data;
-    const user= await prisma.user.findUnique({ where: { email } });
+    const user = await prisma.user.findUnique({ where: { email } });
     if (!user) throw new Error("User not found");
 
+    const {startOfMonth,startOfNextMonth} = getThisMonthDates();
+
+    const accountWhere = user.role === "admin" ? {} : {userId: user.id};
+    const accounts = await prisma.account.findMany({
+        where: accountWhere,
+        include: {
+            transactions: {
+                where:  {
+                    createdAt: {
+                        gte: startOfMonth,
+                        lt: startOfNextMonth
+                    },
+                }
+            }
+        }
+    })
+    /*
     let accounts;
     if (user.role === "admin"){
         accounts = await prisma.account.findMany({
@@ -82,7 +100,7 @@ export async function getAccountsByUser(data: z.infer<typeof ByEmailSchema>): Pr
             where: { userId: user.id },
             include: { transactions: true },
         });
-    }
+    }*/
     return accounts.map((acct) => mapAccount(acct));
 }
 
@@ -93,12 +111,22 @@ export async function getTransactionsByAccountId(data: z.infer<typeof AccountIdS
         throw new Error('Invalid email format');
     }
     const {accountId} = validated.data;
+
+    const {startOfMonth,startOfNextMonth} = getThisMonthDates()
+
     const account = await prisma.account.findUnique({
         where: {
             id: accountId
         },
         include: {
-            transactions: true
+            transactions: {
+                where:  {
+                    createdAt: {
+                        gte: startOfMonth,
+                        lt: startOfNextMonth
+                    },
+                }
+            }
         }
     });
 
@@ -129,13 +157,21 @@ export async function createTransaction(data: z.infer<typeof AddTransactionSchem
         clientId,
         emoji,
     } = validated.data;
+    const {startOfMonth,startOfNextMonth} = getThisMonthDates()
 
     const rawAccount = await prisma.account.findUnique({
         where: {
             id: accountId
         },
         include: {
-            transactions: true,
+            transactions: {
+                where:  {
+                    createdAt: {
+                        gte: startOfMonth,
+                        lt: startOfNextMonth
+                    },
+                }
+            }
         }
     });
 
@@ -178,7 +214,6 @@ export async function updateTransaction(data: z.infer<typeof UpdateTransactionSc
         emoji,
     } = validated.data;
 
-    console.log(validated.data)
 
     // On récupère la transaction existante
     const existingTx= await prisma.transaction.findUnique({
@@ -203,7 +238,7 @@ export async function updateTransaction(data: z.infer<typeof UpdateTransactionSc
             paidCurrency,
             clientId,
             emoji,
-            status
+            status: status as Prisma.TransactionStatus,
         },
     });
 }
