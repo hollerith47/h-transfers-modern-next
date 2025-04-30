@@ -27,6 +27,7 @@ export const AccountIdSchema = z.object({
 });
 
 export const TransactionTypeSchema = z.enum(["income", "outcome"]);
+export const TransactionStatusSchema = z.enum(["pending", "completed"]);
 export const AddTransactionSchema = z.object({
     accountId: z.string(),
     description: z.string().min(1, "Description requise"),
@@ -36,15 +37,17 @@ export const AddTransactionSchema = z.object({
     paidAmount: z.number().nonnegative("Le montant payé doit être ≥ 0").optional(),
     paidCurrency: z.string().min(1).optional(),
     type: TransactionTypeSchema,
+    status: TransactionStatusSchema.default("pending"),
     clientId: z.string().uuid().optional(),
     emoji: z.string().min(1).optional(),
 })
 
 export const TransactionFormSchema = AddTransactionSchema.omit({accountId: true});
-export const UpdateTransactionSchema = AddTransactionSchema.extend({
-    id: z.string().uuid(),
-}).omit({accountId: true});
+export const UpdateTransactionSchema = AddTransactionSchema
+    .extend({id: z.string().uuid()})
+    .omit({accountId: true});
 
 export const DeleteTransactionSchema = z.object({transactionId: z.string().uuid()});
 
 export const TransactionInitialData = AddTransactionSchema.omit({accountId: true, emoji: true});
+

@@ -15,6 +15,7 @@ import {DeleteTransactionSchema} from "@/schema";
 import {toast} from "sonner";
 import {formatAmount} from "@/utils/formatAmount";
 import UseAccountCurrency from "@/hook/useAccountCurrency";
+import UseUserRole from "@/hook/useUserRole";
 
 type Props = {
     transactions: Transaction[]
@@ -22,6 +23,8 @@ type Props = {
 }
 
 const TransactionsTable = ({transactions, account}: Props) => {
+    const {isAdmin} = UseUserRole();
+
     const {user} = useUser();
     const email = user?.primaryEmailAddress?.emailAddress;
     const queryClient = useQueryClient();
@@ -68,7 +71,7 @@ const TransactionsTable = ({transactions, account}: Props) => {
             );
         }
     }
-    const {accountCurrency, oppositeCurrency, isNotRubleAccount} = UseAccountCurrency(account)
+    const {accountCurrency, oppositeCurrency, isNotRubleAccount} = UseAccountCurrency(account);
 
     return (
         <>
@@ -91,7 +94,8 @@ const TransactionsTable = ({transactions, account}: Props) => {
                             <th className="w-22 md:w-auto text-center">
                                 {isNotRubleAccount ? "M. Payer" : "M. Envoyer"}
                             </th>
-                            <th className="hidden md:table-cell w-auto text-center">Client</th>
+                            {isAdmin && <th className="hidden md:table-cell w-auto text-center">Client</th>}
+
                             <th className="hidden md:table-cell w-auto text-center">Description</th>
                             <th className="w-auto md:w-50 text-center">Action</th>
                         </tr>
@@ -131,20 +135,23 @@ const TransactionsTable = ({transactions, account}: Props) => {
                                     <td className="w-auto text-center">
                                         {formatAmount(transaction.paidAmount!, oppositeCurrency)}
                                     </td>
-                                    <td className="hidden truncate md:table-cell w-auto text-center">
+                                    {isAdmin && <td className="hidden truncate md:table-cell w-auto text-center">
                                         {name}
-                                    </td>
+                                    </td>}
+
                                     <td className="hidden md:table-cell truncate w-auto text-center">
-                                        {transaction.description}
+                                    {transaction.description}
                                     </td>
                                     <td>
                                         <div className="flex gap-2 justify-center">
                                             <ModifyTransaction transaction={transaction} account={account}/>
-                                            <button
-                                                onClick={() => handleDeleteTransaction(transaction.id)}
-                                                className="btn btn-xs md:btn-sm btn-error">
-                                                Supprimer
-                                            </button>
+                                            {isAdmin &&
+                                                <button
+                                                    onClick={() => handleDeleteTransaction(transaction.id)}
+                                                    className="btn btn-xs md:btn-sm btn-error">
+                                                    Supprimer
+                                                </button>
+                                            }
                                         </div>
                                     </td>
                                 </tr>

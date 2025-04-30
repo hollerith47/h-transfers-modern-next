@@ -59,7 +59,7 @@ export default function ClientTables() {
                 {paginatedData.map((client, idx)=> (
                     <tr key={client.id} className="hover:bg-base-300">
                         <th>{(page * itemsPerPage) + idx + 1}</th>
-                        <td className="truncate">{client.name}</td>
+                        <td>{client.name}</td>
                         <td>{client.email}</td>
                         <td>{client.phone}</td>
                         <td>{formateTime(client.createdAt)}</td>

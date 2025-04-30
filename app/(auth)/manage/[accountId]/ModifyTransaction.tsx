@@ -46,7 +46,8 @@ export default function ModifyTransaction({transaction, account}: Props) {
                     commission: transaction.commission ?? 0,
                     paidAmount: transaction.paidAmount ?? 0,
                     paidCurrency: transaction.paidCurrency ?? "",
-                    type: transaction.type
+                    type: transaction.type,
+                    status: transaction.status ?? "pending"
                 }}
                 buttonClassName="btn btn-xs md:btn-sm btn-success"
                 buttonLabel="Modifier"

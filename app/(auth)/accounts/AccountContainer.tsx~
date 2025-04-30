@@ -48,14 +48,16 @@ export default function AccountContainer() {
             {accounts && accounts.length > 0 ? (
                 <ul className="grid md:grid-cols-2 xl:grid-cols-3 gap-4 mt-5">
                     {accounts.map((account) => (
-                        <Link href={`/manage/${account.id}`} key={account.id}>
-                            <AccountItem account={account}/>
-                        </Link>
+                        <li key={account.id}>
+                            <Link href={`/manage/${account.id}`}>
+                                <AccountItem account={account} />
+                            </Link>
+                        </li>
                     ))}
                 </ul>
             ) : (
                 <div className="flex flex-col w-full items-center justify-center p-8 text-gray-500">
-                    <Inbox strokeWidth={1.5} className="w-12 h-12 mb-4"/>
+                    <Inbox strokeWidth={1.5} className="w-12 h-12 mb-4" />
                     <p className="text-lg">Aucun compte disponible</p>
                 </div>
             )}

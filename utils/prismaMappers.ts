@@ -1,9 +1,5 @@
-// src/utils/prismaMappers.ts
-import type {
-    Account as PrismaAccount,
-    Transaction as PrismaTransaction,
-} from "@prisma/client";
-import type { Account as ApiAccount, Transaction as ApiTransaction, TransactionType } from "@/types";
+import type {Account as PrismaAccount, Transaction as PrismaTransaction} from "@prisma/client";
+import type { Account as ApiAccount, Transaction as ApiTransaction, TransactionStatus, TransactionType} from "@/types";
 
 export function mapTransaction(
     tx: PrismaTransaction,
@@ -22,6 +18,7 @@ export function mapTransaction(
         createdAt: tx.createdAt,
         accountId: tx.accountId,
         clientId: tx.clientId,
+        status:tx.status as TransactionStatus,
         accountName,
     };
 }

@@ -52,10 +52,10 @@ export default function AccountItem({account}: Props) {
                 </div>
             </div>
             <div className="flex justify-between items-center mt-5 text-gray-500">
-                <span>Sortie: {formatAmount(totalIncomeTransactions, accountCurrency)}</span>
+                <span>reçu: {formatAmount(totalIncomeTransactions, accountCurrency)}</span>
                 {/*TODO:: reste a savoir s'il faut utiliser totalIncomeTransactions ou totalAvailable*/}
                 {/*<span>{totalAvailable} {account.currency} available</span>*/}
-                <span>reçu: {formatAmount(totalOutcomeTransactions, accountCurrency)}</span>
+                <span>Sortie: {formatAmount(totalOutcomeTransactions, accountCurrency)}</span>
             </div>
             <div>
                 <progress className="progress progress-primary w-full" value={progressValue} max="100"></progress>

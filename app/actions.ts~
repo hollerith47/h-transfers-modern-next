@@ -69,7 +69,7 @@ export async function getAccountsByUser(data: z.infer<typeof ByEmailSchema>): Pr
         throw new Error('Invalid email format');
     }
     const {email} = validated.data;
-    const user = await prisma.user.findUnique({ where: { email } });
+    const user= await prisma.user.findUnique({ where: { email } });
     if (!user) throw new Error("User not found");
 
     let accounts;

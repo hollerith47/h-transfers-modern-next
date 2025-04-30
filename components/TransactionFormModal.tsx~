@@ -197,7 +197,7 @@ export default function TransactionFormModal({accountCurrency,initialData,onSubm
                             helperText="Courte description de la transaction"
                             placeholder="Ex: Remboursement frais repas"
                         />
-                        {initialData && isAdmin && (
+                        {initialData && (
                             <div className="relative">
                                 <TextFieldInput
                                     value={clientQuery}
@@ -208,7 +208,7 @@ export default function TransactionFormModal({accountCurrency,initialData,onSubm
                                         setShowDropdown(true);
                                     }}
                                 />
-                                {showDropdown && clientQuery && filteredClients.length > 0 &&  (
+                                {showDropdown && clientQuery && filteredClients.length > 0 && isAdmin && (
                                     <ul className="absolute z-10 w-full max-h-40 overflow-auto bg-white border">
                                         {filteredClients.map((c) => (
                                             <li
