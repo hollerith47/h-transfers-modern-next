@@ -1,3 +1,6 @@
+import {z} from "zod";
+import {AccountIdSchema, DeleteTransactionSchema} from "@/schema";
+
 export type UserRole = "admin" | "manager";
 export interface User {
     id: string
@@ -18,7 +21,10 @@ export interface Account {
     createdAt: Date;
     transactions?: Transaction[];
 }
-
+export type DeleteAccountResponse = { success: true };
+export type DeleteAccountPayload = z.infer<typeof AccountIdSchema>;
+export type AccountIdType = z.infer<typeof AccountIdSchema>;
+export type TransactionIdType = z.infer<typeof DeleteTransactionSchema>;
 export interface Client {
     id: string;
     name: string;

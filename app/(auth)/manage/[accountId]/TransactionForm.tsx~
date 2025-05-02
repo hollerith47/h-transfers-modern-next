@@ -23,7 +23,6 @@ export default function TransactionForm({account}: Props) {
             // toast.success("Transaction created!");
             // ⚡ Invalide la query pour re-fetcher le compte complet
             queryClient.invalidateQueries({queryKey: ["account", account.id]});
-            router.refresh();
         },
     });
 

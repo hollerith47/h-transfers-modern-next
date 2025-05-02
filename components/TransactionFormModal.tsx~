@@ -1,5 +1,5 @@
 "use client";
-import {useState, useEffect, ReactNode, SetStateAction} from "react";
+import {useState, useEffect, ReactNode} from "react";
 import { SquarePen, X} from "lucide-react";
 import TextFieldInput from "@/components/TextFieldInput";
 import SelectTransactType from "@/components/SelectTransactType";

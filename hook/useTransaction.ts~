@@ -1,0 +1,12 @@
+import {useMutation, useQueryClient} from "@tanstack/react-query";
+import {DeleteTransaction} from "@/app/actions";
+
+export function useDeleteTransaction() {
+    const qc = useQueryClient();
+    return useMutation({
+        mutationFn: DeleteTransaction,
+        onSuccess: () => {
+            qc.invalidateQueries({ queryKey: ["account"] });
+        }
+    })
+}

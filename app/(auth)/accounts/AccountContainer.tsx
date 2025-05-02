@@ -6,10 +6,19 @@ import Link from "next/link";
 import AccountItem from "@/components/AccountItem";
 import Loader from "@/components/Loader";
 import {Inbox} from "lucide-react";
+import {useMemo, useState} from "react";
+
+const CURRENCIES = [
+    {value: "all", label: "Tous"},
+    {value: "USD", label: "Dollar (USD)"},
+    {value: "RUB", label: "Rouble (RUB)"},
+];
 
 export default function AccountContainer() {
     const {user} = useUser();
     const email = user?.primaryEmailAddress?.emailAddress;
+    const [searchTerm, setSearchTerm] = useState("");
+
     const {
         data: accounts = [],
         isLoading,
@@ -31,6 +40,21 @@ export default function AccountContainer() {
         enabled: !!email, // Important pour éviter un appel sans email
     });
 
+    // Filtre par devise
+    const [filterCurrency, setFilterCurrency] = useState<"all" | "USD" | "RUB">(
+        "all"
+    );
+
+    const filteredAccounts = useMemo(() => {
+        return accounts
+            .filter((acct) =>
+                filterCurrency === "all" ? true : acct.currency === filterCurrency
+            )
+            .filter((acct) =>
+                acct.name.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+    }, [accounts, filterCurrency, searchTerm]);
+
     if (isLoading) {
         // return <Loading />;
         return <Loader fullScreen size="xl" colorClass="text-primary"/>;
@@ -45,9 +69,36 @@ export default function AccountContainer() {
 
     return (
         <>
-            {accounts && accounts.length > 0 ? (
+            {/* Contrôle de filtre */}
+            <div className="flex flex-col md:flex-row items-start md:items-center gap-4 mb-4">
+                {/* Filtrer par type */}
+                <select
+                    className="input input-bordered w-full md:w-48"
+                    value={filterCurrency}
+                    onChange={(e) =>
+                        setFilterCurrency(e.target.value as "all" | "USD" | "RUB")
+                    }
+                >
+                    {CURRENCIES.map((opt) => (
+                        <option key={opt.value} value={opt.value}>
+                            {opt.label}
+                        </option>
+                    ))}
+                </select>
+
+                {/* Recherche par description */}
+                <input
+                    type="text"
+                    className="input input-bordered w-full md:w-64"
+                    placeholder="Rechercher par nom du compte"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                />
+            </div>
+
+            {filteredAccounts.length > 0 ? (
                 <ul className="grid md:grid-cols-2 xl:grid-cols-3 gap-4 mt-5">
-                    {accounts.map((account) => (
+                    {filteredAccounts.map((account) => (
                         <Link href={`/manage/${account.id}`} key={account.id}>
                             <AccountItem account={account}/>
                         </Link>

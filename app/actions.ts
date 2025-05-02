@@ -74,21 +74,27 @@ export async function getAccountsByUser(data: z.infer<typeof ByEmailSchema>): Pr
     if (!user) throw new Error("User not found");
 
     const {startOfMonth,startOfNextMonth} = getThisMonthDates();
+    const sorted = {
+        gte: startOfMonth,
+        lt: startOfNextMonth
+    }
 
     const accountWhere = user.role === "admin" ? {} : {userId: user.id};
+
     const accounts = await prisma.account.findMany({
         where: accountWhere,
         include: {
-            transactions: {
-                where:  {
-                    createdAt: {
-                        gte: startOfMonth,
-                        lt: startOfNextMonth
-                    },
-                }
-            }
+            transactions: true // sortTransact
         }
     })
+   const sortTransact = {
+        where:  {
+            createdAt: {
+                gte: startOfMonth,
+                    lt: startOfNextMonth
+            },
+        }
+    }
     /*
     let accounts;
     if (user.role === "admin"){

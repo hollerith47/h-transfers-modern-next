@@ -1,13 +1,11 @@
 import {Account } from "@/types";
 import {getTotalByType} from "@/utils/getTotalByType";
-import UseAccountCurrency from "@/hook/useAccountCurrency";
 import {formatAmount} from "@/utils/formatAmount";
+import {UseAccountCurrency} from "@/hook/useAccount";
 
 type Props = {
     account: Account
 };
-
-
 
 export default function AccountItem({account}: Props) {
     const transactionCount = account.transactions?.length || 0;
@@ -23,15 +21,6 @@ export default function AccountItem({account}: Props) {
         : 0;
 
     const {accountCurrency} = UseAccountCurrency(account);
-    // console.log({totalAvailable,balance, totalOutcomeTransactions, totalIncomeTransactions ,startingAmount})
-    // const totalIn = formatAmount(totalIncomeTransactions, accountCurrency)
-    // const totalOut = formatAmount(totalOutcomeTransactions, accountCurrency)
-    // const totalAvl = formatAmount(totalAvailable, accountCurrency)
-    // const balanceF = formatAmount(balance, accountCurrency)
-    // const startingF = formatAmount(startingAmount, accountCurrency)
-    //
-    // console.log({totalIn, totalOut, totalAvl,balanceF, startingF})
-
 
     return (
         <li key={account.id} className="p-4 border-2 border-base-300 rounded-xl list-none hover:shadow-xl hover:border-primary">

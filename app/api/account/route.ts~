@@ -1,0 +1,14 @@
+import {NextRequest, NextResponse } from "next/server";
+import {AccountIdSchema} from "@/schema";
+
+export async function DELETE(req: NextRequest){
+    const body = await req.json();
+    const parsed = AccountIdSchema.safeParse(body);
+    if (!parsed.success){
+        const res = NextResponse.json(parsed.error.format());
+        res.status = 422;
+        return res;
+    }
+    const { accountId } = parsed.data;
+    
+}

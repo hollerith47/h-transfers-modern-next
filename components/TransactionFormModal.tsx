@@ -129,6 +129,7 @@ export default function TransactionFormModal({accountCurrency,initialData,onSubm
         setPaidAmount("")
         setPaidCurrency("");
         setTransactType("income");
+        setTransactStatus("pending");
     };
 
     return (

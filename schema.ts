@@ -1,5 +1,4 @@
 import {z} from "zod";
-import {Account, UserRole} from "@/types";
 
 export const AddAccountSchema = z.object({
     email: z.string().email(),
@@ -33,10 +32,10 @@ export const AddTransactionSchema = z.object({
     accountId: z.string(),
     description: z.string().min(1, "Description requise"),
     amount: z.number().nonnegative("Le montant doit être ≥ 0"),
-    commission: z.number().nonnegative("La commission doit быть ≥ 0").default(0),
-    clientAmount: z.number().nonnegative("La commission doit быть ≥ 0").default(0),
+    commission: z.number().nonnegative("La commission doit être ≥ 0").default(0),
+    clientAmount: z.number().nonnegative("La commission doit être ≥ 0").default(0),
     paidAmount: z.number().nonnegative("Le montant payé doit être ≥ 0").optional(),
-    paidCurrency: z.string().min(1).optional(),
+    paidCurrency: z.string().min(1).optional().or(z.literal("")),
     type: TransactionTypeSchema,
     status: TransactionStatusSchema.default("pending"),
     clientId: z.string().uuid().optional(),

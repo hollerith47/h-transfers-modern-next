@@ -5,7 +5,8 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  // provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -59,7 +60,7 @@ model Transaction {
   type         TransactionType   @default(income)
   status       TransactionStatus @default(pending)
   accountId    String?
-  account      Account?          @relation(fields: [accountId], references: [id])
+  account      Account?          @relation(fields: [accountId], references: [id], onDelete: Cascade)
   clientId     String?
   client       Client?           @relation(fields: [clientId], references: [id])
   emoji        String?

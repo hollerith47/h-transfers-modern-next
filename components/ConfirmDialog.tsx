@@ -1,0 +1,54 @@
+"use client";
+import React from "react";
+
+type ConfirmDialogProps = {
+    /** Contrôle l’ouverture */
+    isOpen: boolean;
+    /** Titre du dialog */
+    title?: string;
+    /** Texte descriptif */
+    description?: string;
+    /** Label du bouton de confirmation */
+    confirmLabel?: string;
+    /** Label du bouton d’annulation */
+    cancelLabel?: string;
+    /** Callback déclenché sur “Oui” */
+    onConfirm: () => void;
+    /** Callback déclenché sur “Annuler” ou fermeture */
+    onCancel: () => void;
+};
+
+export default function ConfirmDialog({isOpen,title = "Confirmation", description,confirmLabel = "Oui", cancelLabel = "Annuler",
+                                          onConfirm,
+                                          onCancel,
+                                      }: ConfirmDialogProps) {
+    return (
+        <dialog
+            open={isOpen}
+            className="modal"
+            onClose={onCancel}
+        >
+            <div className="modal-box">
+                <h3 className="font-bold text-lg">{title}</h3>
+                {description && <p className="py-2">{description}</p>}
+                <div className="modal-action">
+                    <button
+                        className="btn"
+                        onClick={onCancel}
+                    >
+                        {cancelLabel}
+                    </button>
+                    <button
+                        className="btn btn-error"
+                        onClick={() => {
+                            onConfirm();
+                            onCancel();
+                        }}
+                    >
+                        {confirmLabel}
+                    </button>
+                </div>
+            </div>
+        </dialog>
+    );
+}

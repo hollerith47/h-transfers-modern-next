@@ -1,8 +1,8 @@
 import {ByEmailSchema } from "@/schema";
 import prisma from "@/lib/prisma";
-import {NextRequest, NextResponse} from "next/server";
+import {NextResponse} from "next/server";
 
-export async function POST(req: NextRequest){
+export async function POST(req: Request){
     const formData = await req.json();
     const parsed = ByEmailSchema.safeParse(formData);
     if (!parsed.success) NextResponse.error();

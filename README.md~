@@ -3,8 +3,8 @@
 ```app/
 └─ api/
    ├─ user/
-   │  |─ role/
-   │  |   └─ route.ts
+   │  └─ role/
+   │     └─ route.ts
    ├─ accounts/
    │  ├─ current-month/
    │  │  └─ route.ts

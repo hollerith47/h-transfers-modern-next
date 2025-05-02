@@ -5,17 +5,16 @@ import {returnClass, TransactionArrow} from "@/utils/transactionArrow";
 import TablePagination from "@/components/TablePagination";
 import {usePagination} from "@/hook/usePagination";
 import ModifyTransaction from "@/app/(auth)/manage/[accountId]/ModifyTransaction";
-import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
-import {DeleteTransaction, getClients} from "@/app/actions";
+import {useQuery} from "@tanstack/react-query";
+import {getClients} from "@/app/actions";
 import {useUser} from "@clerk/nextjs";
 import {useMemo} from "react";
 import {buildClientNameMap, getClientName} from "@/utils/ClientUtils";
-import {z} from "zod";
-import {DeleteTransactionSchema} from "@/schema";
-import {toast} from "sonner";
 import {formatAmount} from "@/utils/formatAmount";
-import UseAccountCurrency from "@/hook/useAccountCurrency";
 import UseUserRole from "@/hook/useUserRole";
+import RenderStatus from "@/components/RenderStatus";
+import {UseAccountCurrency} from "@/hook/useAccount";
+import DeleteTransactionButton from "@/app/(auth)/manage/[accountId]/DeleteTransactionButton";
 
 type Props = {
     transactions: Transaction[]
@@ -24,11 +23,9 @@ type Props = {
 
 const TransactionsTable = ({transactions, account}: Props) => {
     const {isAdmin} = UseUserRole();
-
     const {user} = useUser();
     const email = user?.primaryEmailAddress?.emailAddress;
-    const queryClient = useQueryClient();
-    const {page, setPage, totalPages, paginatedData, itemsPerPage} = usePagination(transactions, 5);
+    const {page, setPage, totalPages, paginatedData, itemsPerPage} = usePagination(transactions, 8);
 
     const {data: clients = []} = useQuery<ClientResponse[], Error>({
         queryKey: ['clients', email],
@@ -48,29 +45,6 @@ const TransactionsTable = ({transactions, account}: Props) => {
         [clients]
     );
 
-
-    const deleteTransactionMutation = useMutation(
-        {
-            mutationFn: async (data: z.infer<typeof DeleteTransactionSchema>) => DeleteTransaction(data),
-            onSuccess: () => {
-                queryClient.invalidateQueries({queryKey: ["account", account.id]});
-            },
-        }
-    );
-
-    const handleDeleteTransaction = async (transactionId: string) => {
-        const confirmDelete = confirm('Are you sure you want to delete this transaction?');
-        if (confirmDelete) {
-            return toast.promise(
-                deleteTransactionMutation.mutateAsync({transactionId}),
-                {
-                    loading: "Transaction deleting...",
-                    success: "Transaction deleted successfully!",
-                    error: (error) => error instanceof Error ? error.message : "Failed to delete transaction."
-                }
-            );
-        }
-    }
     const {accountCurrency, oppositeCurrency, isNotRubleAccount} = UseAccountCurrency(account);
 
     return (
@@ -149,7 +123,7 @@ const TransactionsTable = ({transactions, account}: Props) => {
                                             </td>
                                         </>)
                                     }
-                                    <td>{transaction.status}</td>
+                                    <td><RenderStatus status={transaction.status}/></td>
 
                                     <td className="hidden md:table-cell truncate w-auto text-center">
                                         {transaction.description}
@@ -158,11 +132,7 @@ const TransactionsTable = ({transactions, account}: Props) => {
                                         <div className="flex gap-2 justify-center">
                                             <ModifyTransaction transaction={transaction} account={account}/>
                                             {isAdmin &&
-                                                <button
-                                                    onClick={() => handleDeleteTransaction(transaction.id)}
-                                                    className="btn btn-xs md:btn-sm btn-error">
-                                                    Supprimer
-                                                </button>
+                                                <DeleteTransactionButton transactionId={transaction.id} accountId={account.id} />
                                             }
                                         </div>
                                     </td>

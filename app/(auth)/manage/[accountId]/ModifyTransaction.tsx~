@@ -34,7 +34,7 @@ export default function ModifyTransaction({transaction, account}: Props) {
     };
 
     return (
-        <div key={transaction.id}>
+        <>
             <TransactionFormModal
                 key={transaction.id}
                 accountCurrency={account.currency}
@@ -55,6 +55,6 @@ export default function ModifyTransaction({transaction, account}: Props) {
                 modalId={`modal-edit-tx-${transaction.id}`}
                 onSubmit={(data) => handleUpdateTransaction({...data, id: transaction.id})}
             />
-        </div>
+        </>
     );
 }
