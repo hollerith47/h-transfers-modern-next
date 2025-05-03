@@ -74,7 +74,7 @@ const TransactionsTable = ({transactions, account}: Props) => {
                                 </>
                             )}
 
-                            <th className="w-22 text-center">status</th>
+                            <th className="w-32 md:w-auto">status</th>
                             <th className="hidden md:table-cell w-auto text-center">Description</th>
                             <th className="w-auto md:w-50 text-center">Action</th>
                         </tr>
@@ -123,7 +123,7 @@ const TransactionsTable = ({transactions, account}: Props) => {
                                             </td>
                                         </>)
                                     }
-                                    <td><RenderStatus status={transaction.status}/></td>
+                                    <td className="w-32 md:w-auto"><RenderStatus status={transaction.status}/></td>
 
                                     <td className="hidden md:table-cell truncate w-auto text-center">
                                         {transaction.description}
