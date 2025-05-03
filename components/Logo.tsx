@@ -10,5 +10,3 @@ export default function Logo() {
 
 );
 }
-
-import Image from "next/image";
