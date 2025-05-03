@@ -1,0 +1,66 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "./generated/prisma/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String    @id @default(uuid())
+  email     String    @unique
+  createdAt DateTime  @default(now())
+  role      String    @default("manager")
+  accounts  Account[]
+}
+
+model Account {
+  id           String        @id @default(uuid())
+  name         String
+  amount       Float
+  currency     String
+  emoji        String?
+  userId       String
+  createdAt    DateTime      @default(now())
+  user         User          @relation(fields: [userId], references: [id])
+  transactions Transaction[]
+}
+
+model Client {
+  id           String        @id @default(uuid())
+  name         String
+  email        String?
+  phone        String?
+  createdAt    DateTime      @default(now())
+  transactions Transaction[]
+}
+
+model Transaction {
+  id           String            @id @default(uuid())
+  description  String
+  amount       Float
+  commission   Float?            @default(0)
+  clientAmount Float             @default(0)
+  paidAmount   Float?
+  paidCurrency String?
+  type         TransactionType   @default(income)
+  status       TransactionStatus @default(pending)
+  accountId    String?
+  clientId     String?
+  emoji        String?
+  createdAt    DateTime          @default(now())
+  account      Account?          @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  client       Client?           @relation(fields: [clientId], references: [id])
+}
+
+enum TransactionType {
+  income
+  outcome
+}
+
+enum TransactionStatus {
+  pending
+  completed
+}

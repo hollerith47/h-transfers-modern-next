@@ -73,11 +73,11 @@ export async function getAccountsByUser(data: z.infer<typeof ByEmailSchema>): Pr
     const user = await prisma.user.findUnique({ where: { email } });
     if (!user) throw new Error("User not found");
 
-    const {startOfMonth,startOfNextMonth} = getThisMonthDates();
-    const sorted = {
-        gte: startOfMonth,
-        lt: startOfNextMonth
-    }
+    // const {startOfMonth,startOfNextMonth} = getThisMonthDates();
+    // const sorted = {
+    //     gte: startOfMonth,
+    //     lt: startOfNextMonth
+    // }
 
     const accountWhere = user.role === "admin" ? {} : {userId: user.id};
 
@@ -87,14 +87,14 @@ export async function getAccountsByUser(data: z.infer<typeof ByEmailSchema>): Pr
             transactions: true // sortTransact
         }
     })
-   const sortTransact = {
-        where:  {
-            createdAt: {
-                gte: startOfMonth,
-                    lt: startOfNextMonth
-            },
-        }
-    }
+   // const sortTransact = {
+   //      where:  {
+   //          createdAt: {
+   //              gte: startOfMonth,
+   //                  lt: startOfNextMonth
+   //          },
+   //      }
+   //  }
     /*
     let accounts;
     if (user.role === "admin"){

@@ -65,7 +65,7 @@ export default function AccountContainer() {
         return <div>Failed to load accounts.</div>;
     }
 
-    console.log(accounts)
+    // console.log(accounts)
 
     return (
         <>

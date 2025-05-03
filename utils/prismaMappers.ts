@@ -1,4 +1,4 @@
-import type {Account as PrismaAccount, Transaction as PrismaTransaction} from "@prisma/client";
+import type {Account as PrismaAccount, Transaction as PrismaTransaction} from "@/prisma/generated/prisma/client";
 import type { Account as ApiAccount, Transaction as ApiTransaction, TransactionStatus, TransactionType} from "@/types";
 
 export function mapTransaction(

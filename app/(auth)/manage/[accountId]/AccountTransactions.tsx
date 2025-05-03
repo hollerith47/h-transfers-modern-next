@@ -1,26 +1,27 @@
 "use client";
-import { useState, useMemo } from "react";
-import { toast } from "sonner";
-import { useQuery } from "@tanstack/react-query";
-import { getTransactionsByAccountId } from "@/app/actions";
+import {useState, useMemo} from "react";
+import {toast} from "sonner";
+import {useQuery} from "@tanstack/react-query";
+import {getTransactionsByAccountId} from "@/app/actions";
 import AccountItem from "@/components/AccountItem";
-import { Inbox } from "lucide-react";
+import {Inbox} from "lucide-react";
 import TransactionsTable from "@/app/(auth)/manage/[accountId]/TransactionsTable";
 import TransactionForm from "@/app/(auth)/manage/[accountId]/TransactionForm";
 import Loader from "@/components/Loader";
 import DeleteAccountButton from "@/app/(auth)/manage/[accountId]/DeleteAccountButton";
+import {Transaction} from "@/types";
 
 type Props = {
     accountId: string;
 };
 
-export default function AccountTransactions({ accountId }: Props) {
-    const { data: account, isLoading, isError } = useQuery({
+export default function AccountTransactions({accountId}: Props) {
+    const {data: account, isLoading, isError} = useQuery({
         queryKey: ["account", accountId],
         queryFn: async () => {
             if (!accountId) return;
             try {
-                return await getTransactionsByAccountId({ accountId });
+                return await getTransactionsByAccountId({accountId});
             } catch (error) {
                 console.error("error while fetching account", error);
                 toast.error("Failed to fetch account data.");
@@ -36,11 +37,11 @@ export default function AccountTransactions({ accountId }: Props) {
     // Recherche par code (id)
     const [searchTerm, setSearchTerm] = useState("");
 
-    const filteredTransactions = useMemo(() => {
+    const filteredTransactions = useMemo((): Transaction[] => {
         if (!account) return [];
-        return account.transactions?.filter((tx) => {
-            const matchesType =
-                filterType === "all" || tx.type === filterType;
+        // on force transactions à être un tableau
+        return (account.transactions ?? []).filter((tx) => {
+            const matchesType = filterType === "all" || tx.type === filterType;
             const matchesSearch = tx.description
                 .toLowerCase()
                 .includes(searchTerm.toLowerCase());
@@ -48,7 +49,8 @@ export default function AccountTransactions({ accountId }: Props) {
         });
     }, [account, filterType, searchTerm]);
 
-    if (isLoading) return <Loader fullScreen size="xl" />;
+
+    if (isLoading) return <Loader fullScreen size="xl"/>;
     if (isError || !account)
         return <div>Error loading account.</div>;
 
@@ -56,11 +58,11 @@ export default function AccountTransactions({ accountId }: Props) {
         <>
             <div className="md:flex w-full justify-between mb-4">
                 <div className="md:w-2/3">
-                    <AccountItem account={account} />
+                    <AccountItem account={account}/>
                 </div>
                 <div className="flex md:flex-col gap-2">
-                    <TransactionForm account={account} />
-                    <DeleteAccountButton accountId={account.id} />
+                    <TransactionForm account={account}/>
+                    <DeleteAccountButton accountId={account.id}/>
                 </div>
             </div>
 
@@ -88,18 +90,19 @@ export default function AccountTransactions({ accountId }: Props) {
                     onChange={(e) => setSearchTerm(e.target.value)}
                 />
             </div>
-
-            {filteredTransactions.length > 0 ? (
-                <TransactionsTable
-                    transactions={filteredTransactions}
-                    account={account}
-                />
-            ) : (
-                <div className="flex flex-col items-center justify-center p-8 text-gray-500">
-                    <Inbox strokeWidth={1.5} className="w-12 h-12 mb-4" />
-                    <p className="text-lg">Aucune transaction disponible</p>
-                </div>
-            )}
+            {
+                filteredTransactions.length > 0 ? (
+                    <TransactionsTable
+                        transactions={filteredTransactions}
+                        account={account}
+                    />
+                ) : (
+                    <div className="flex flex-col items-center justify-center p-8 text-gray-500">
+                        <Inbox strokeWidth={1.5} className="w-12 h-12 mb-4"/>
+                        <p className="text-lg">Aucune transaction disponible</p>
+                    </div>
+                )
+            }
         </>
     );
 }

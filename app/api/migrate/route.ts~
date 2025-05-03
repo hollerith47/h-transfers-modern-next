@@ -1,0 +1,12 @@
+// pages/api/migrate.ts
+import type { NextApiRequest, NextApiResponse } from 'next';
+import {migrateData} from "@/lib/mihgrateData";
+import {NextResponse} from "next/server";
+export async function GET() {
+    try {
+        await migrateData();
+        return NextResponse.json({ success: true });
+    } catch (err: any) {
+        return NextResponse.json({ error: err.message });
+    }
+}
