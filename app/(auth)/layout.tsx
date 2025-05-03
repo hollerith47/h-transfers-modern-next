@@ -38,7 +38,7 @@ export default function AuthLayout({children}: Props) {
 
             {/* Mobile menu links */}
             {isOpen && (
-                <div className="fixed top-16 left-0 w-full z-30 lg:hidden bg-base-100">
+                <div className="fixed top-16 left-0 w-full shadow-lg z-30 lg:hidden bg-base-100 bg-opacity-10">
                     <MobileMenuLinks setIsOpen={setIsOpen} />
                 </div>
             )}

@@ -6,7 +6,7 @@ type Props = {
 }
 export default function MobileMenuNavBar({setIsOpen, isOpen}: Props) {
     return (
-        <div className="navbar bg-base-100 shadow-sm">
+        <div className="navbar bg-base-100/96 shadow-sm">
             <div className="navbar-start">
                 <UserDropDown position="bottom" />
             </div>

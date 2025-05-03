@@ -14,6 +14,7 @@ import {getClients} from "@/app/actions";
 import {useUser} from "@clerk/nextjs";
 import {convertCurrency} from "@/utils/convertCurrency";
 import UseUserRole from "@/hook/useUserRole";
+import ReferenceGenerator from "@/components/ReferenceGenerator";
 
 type TForm = z.infer<typeof TransactionFormSchema>;
 
@@ -44,6 +45,7 @@ export default function TransactionFormModal({accountCurrency,initialData,onSubm
     const [clientId, setClientId] = useState<string | undefined>(
         initialData?.clientId
     );
+
 
 
     const {data: clients = []} = useQuery<ClientResponse[], Error>({
@@ -183,16 +185,17 @@ export default function TransactionFormModal({accountCurrency,initialData,onSubm
                             setValue={setTransactStatus}
                             options={transactStatusOptions}
                         >
-                            <SquarePen />
+                            <SquarePen/>
                         </SelectInput>
 
                         <TextFieldInput
                             value={description as string}
                             label="Description*"
                             setValue={setDescription}
-                            helperText="Courte description de la transaction"
+                            helperText="Courte description de la transaction ou generer un code de référence"
                             placeholder="Ex: Remboursement frais repas"
                         />
+                        {transactType === "income" && <ReferenceGenerator /> }
                         {initialData && isAdmin && (
                             <div className="relative">
                                 <TextFieldInput

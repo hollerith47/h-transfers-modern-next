@@ -60,7 +60,7 @@ export default function AccountTransactions({accountId}: Props) {
                 <div className="md:w-2/3">
                     <AccountItem account={account}/>
                 </div>
-                <div className="flex justify-between lg:justify-start md:flex-col gap-2 mt-4 md:mt-0">
+                <div className="flex justify-between md:justify-start md:flex-col gap-2 mt-4 md:mt-0">
                     <TransactionForm account={account}/>
                     <DeleteAccountButton accountId={account.id}/>
                 </div>
