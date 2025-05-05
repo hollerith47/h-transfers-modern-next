@@ -66,4 +66,5 @@ export interface Transaction {
     // Relations
     accountName?: string;   // si tu veux exposer le nom du compte
     clientName?: string;    // pour afficher le nom du client
+    accountCurrency?: string;    // pour afficher le nom du client
 }

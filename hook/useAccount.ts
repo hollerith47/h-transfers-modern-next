@@ -1,10 +1,10 @@
-import {Account} from "@/types";
+// import {Account} from "@/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteAccountAPI } from "@/lib/api";
 
-export function UseAccountCurrency(account:  Account) {
-    const accountCurrency = account.currency;
-    const oppositeCurrency = account.currency === "USD" ? "RUB" : "USD";
+export function UseAccountCurrency(accountCurrency:  string) {
+    // const accountCurrency = account.currency;
+    const oppositeCurrency = accountCurrency === "USD" ? "RUB" : "USD";
     const isNotRubleAccount = accountCurrency !== "RUB";
 
     return {accountCurrency, oppositeCurrency, isNotRubleAccount}

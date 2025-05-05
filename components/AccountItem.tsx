@@ -20,7 +20,7 @@ export default function AccountItem({account}: Props) {
         ? Math.min((totalOutcomeTransactions / totalAvailable) * 100, 100)
         : 0;
 
-    const {accountCurrency} = UseAccountCurrency(account);
+    const {accountCurrency} = UseAccountCurrency(account.currency);
 
     return (
         <li key={account.id} className="p-4 border-2 border-base-300 rounded-xl list-none hover:shadow-xl hover:border-primary">

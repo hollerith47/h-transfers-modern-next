@@ -21,7 +21,7 @@ type Props = {
     account: Account
 }
 
-const TransactionsTable = ({transactions, account}: Props) => {
+const AccountTransactionsTable = ({transactions, account}: Props) => {
     const {isAdmin} = UseUserRole();
     const {user} = useUser();
     const email = user?.primaryEmailAddress?.emailAddress;
@@ -45,7 +45,7 @@ const TransactionsTable = ({transactions, account}: Props) => {
         [clients]
     );
 
-    const {accountCurrency, oppositeCurrency, isNotRubleAccount} = UseAccountCurrency(account);
+    const {accountCurrency, oppositeCurrency, isNotRubleAccount} = UseAccountCurrency(account.currency);
 
     return (
         <>
@@ -155,4 +155,4 @@ const TransactionsTable = ({transactions, account}: Props) => {
     );
 };
 
-export default TransactionsTable;
+export default AccountTransactionsTable;
