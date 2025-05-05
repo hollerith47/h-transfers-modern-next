@@ -44,7 +44,7 @@ export const AddTransactionSchema = z.object({
 
 export const TransactionFormSchema = AddTransactionSchema.omit({accountId: true});
 export const UpdateTransactionSchema = AddTransactionSchema
-    .extend({id: z.string().uuid()})
+    .extend({id: z.string().uuid(), isAdmin: z.boolean()})
     .omit({accountId: true});
 
 export const DeleteTransactionSchema = z.object({transactionId: z.string().uuid()});

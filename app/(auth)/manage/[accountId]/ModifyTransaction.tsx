@@ -1,3 +1,4 @@
+"use client"
 import {z} from "zod";
 import {Account, Transaction} from "@/types";
 import TransactionFormModal from "@/components/TransactionFormModal";
@@ -5,6 +6,7 @@ import {useMutation, useQueryClient} from "@tanstack/react-query";
 import {UpdateTransactionSchema} from "@/schema";
 import { updateTransaction} from "@/app/actions";
 import {toast} from "sonner";
+import UseUserRole from "@/hook/useUserRole";
 
 type Props = {
     transaction: Transaction,
@@ -13,6 +15,9 @@ type Props = {
 
 export default function ModifyTransaction({transaction, account}: Props) {
     const queryClient = useQueryClient();
+    const {isAdmin} = UseUserRole();
+
+    console.log(isAdmin)
 
     const updateTx = useMutation({
         // updateTransaction
@@ -53,7 +58,7 @@ export default function ModifyTransaction({transaction, account}: Props) {
                 buttonLabel="Modifier"
                 modalTitle="Modifier transaction"
                 modalId={`modal-edit-tx-${transaction.id}`}
-                onSubmit={(data) => handleUpdateTransaction({...data, id: transaction.id})}
+                onSubmit={(data) => handleUpdateTransaction({...data, id: transaction.id, isAdmin})}
             />
         </div>
     );

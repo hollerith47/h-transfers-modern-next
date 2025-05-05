@@ -8,7 +8,6 @@ import { formatAmount } from "@/utils/formatAmount";
 import RenderStatus from "@/components/RenderStatus";
 import TablePagination from "@/components/TablePagination";
 import { UseAccountCurrency } from "@/hook/useAccount";
-// import UseUserRole from "@/hook/useUserRole";
 
 type Props = {
     transactions: Transaction[];
@@ -22,7 +21,7 @@ export default function TransactionsTable({ transactions }: Props) {
         totalPages,
         paginatedData,
         itemsPerPage,
-    } = usePagination(transactions, 8);
+    } = usePagination(transactions, 12);
 
     return (
         <>

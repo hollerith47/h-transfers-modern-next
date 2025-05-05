@@ -30,7 +30,7 @@ export default function AccountItem({account}: Props) {
                         {account.emoji}
                     </div>
                     <div className="flex flex-col ml-3">
-                        <span className="font-bold text-md">{account.name}</span>
+                        <span className="font-bold text-sm md:text-md xl:text-lg">{account.name}</span>
                         <span className="text-gray-500 text-sm">
                             {transactionCount > 1 ? `${transactionCount} transactions` : `${transactionCount} transaction`}
                         </span>

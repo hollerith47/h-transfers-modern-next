@@ -208,6 +208,7 @@ export async function updateTransaction(data: z.infer<typeof UpdateTransactionSc
     }
     const {
         id,
+        isAdmin,
         amount: newAmount,
         description,
         commission,
@@ -228,12 +229,13 @@ export async function updateTransaction(data: z.infer<typeof UpdateTransactionSc
     if (!existingTx) {
         throw new Error("Transaction not found");
     }
-    if (newAmount !== existingTx.amount || newType !== existingTx.type) {
+    if (!isAdmin && (newAmount !== existingTx.amount || newType !== existingTx.type)){
         throw new Error(
-            "You cannot modify the transaction amount. " +
-            "If you need to change it, please delete the transaction and create a new one."
+            "Vous n'avez pas le droit requis pour modifier le prix " +
+            "et le type de transaction."
         );
     }
+
     await prisma.transaction.update({
         where: { id },
         data: {
@@ -245,6 +247,13 @@ export async function updateTransaction(data: z.infer<typeof UpdateTransactionSc
             clientId,
             emoji,
             status: status as TransactionStatus,
+            ...(isAdmin ?
+                    {
+                        amount:newAmount,
+                        type:newType
+                    }
+                    : {}
+            )
         },
     });
 }

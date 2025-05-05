@@ -20,9 +20,8 @@ export default function TransactionForm({account}: Props) {
     const createTx = useMutation({
         mutationFn: (data: z.infer<typeof AddTransactionSchema>) => createTransaction(data),
         onSuccess: () => {
-            // toast.success("Transaction created!");
-            // ⚡ Invalide la query pour re-fetcher le compte complet
             queryClient.invalidateQueries({queryKey: ["account", account.id]});
+            queryClient.invalidateQueries({queryKey: ["all-transactions"]});
             router.refresh();
         },
     });
