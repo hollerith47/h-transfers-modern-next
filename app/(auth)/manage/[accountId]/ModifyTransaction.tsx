@@ -17,7 +17,7 @@ export default function ModifyTransaction({transaction, account}: Props) {
     const queryClient = useQueryClient();
     const {isAdmin} = UseUserRole();
 
-    console.log(isAdmin)
+    // console.log(isAdmin)
 
     const updateTx = useMutation({
         // updateTransaction

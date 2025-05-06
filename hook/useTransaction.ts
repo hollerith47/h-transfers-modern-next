@@ -1,6 +1,6 @@
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import {DeleteTransaction} from "@/app/actions";
-import {useAuth, useUser} from "@clerk/nextjs";
+import { useUser} from "@clerk/nextjs";
 import {Transaction} from "@/types";
 
 type DeleteTxVariables = {
