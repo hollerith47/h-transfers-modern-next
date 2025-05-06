@@ -25,7 +25,7 @@ export default function TransactionsTable({transactions}: Props) {
         itemsPerPage,
     } = usePagination(transactions, 12);
 
-    // console.log(transactions)
+    console.log(transactions)
 
     return (
         <>

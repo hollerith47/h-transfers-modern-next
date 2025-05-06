@@ -9,7 +9,7 @@ export default function TransactionsContainer() {
     const {data: txs=[], isLoading, isError} = useTransactions();
 
     const [filterType, setFilterType] = useState<"all"|"income"|"outcome">("all");
-    const [filterStatus, setFilterStatus] = useState<"all"|"pending"|"complete">("all");
+    const [filterStatus, setFilterStatus] = useState<"all"|"pending"|"completed">("all");
     const [searchTerm, setSearchTerm] = useState("");
 
     const filtered = useMemo(() => {
@@ -23,7 +23,7 @@ export default function TransactionsContainer() {
         });
     }, [txs, filterType, filterStatus, searchTerm]);
 
-    if (isLoading) return <Loader fullScreen />;
+    if (isLoading) return <Loader fullScreen size="xl"/>;
     if (isError)   return <div className="p-4">Erreur de chargement.</div>;
 
     // console.log(txs)
@@ -46,7 +46,7 @@ export default function TransactionsContainer() {
                     className="input input-bordered w-full md:w-48"
                     value={filterStatus}
                     onChange={(e) =>
-                        setFilterStatus(e.target.value as "all" | "pending" | "complete")
+                        setFilterStatus(e.target.value as "all" | "pending" | "completed")
                     }
                 >
                     <option value="all">Tous les statuts</option>

@@ -34,6 +34,7 @@ export async function POST(req: NextRequest) {
         status:       tx.status,
         emoji:        tx.emoji,
         createdAt:    tx.createdAt,
+        accountId:  tx.account?.id ?? "",
         accountName:  tx.account?.name ?? "",
         clientName:   tx.client?.name ?? "",
         accountCurrency: tx.account?.currency  ?? "",

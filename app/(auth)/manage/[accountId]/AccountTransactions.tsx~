@@ -83,8 +83,7 @@ export default function AccountTransactions({accountId}: Props) {
                     <option value="income">Entrées</option>
                     <option value="outcome">Sorties</option>
                 </select>
-
-                {/* Filtrer par statut */}
+                
                 <select
                     className="input input-bordered w-full md:w-48"
                     value={filterStatus}
