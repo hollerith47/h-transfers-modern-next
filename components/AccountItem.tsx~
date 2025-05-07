@@ -52,7 +52,7 @@ export default function AccountItem({account}: Props) {
                     onClick={copyBalance}
                     role="button"
                     title="Cliquer pour copier le solde"
-                    className="text-sm md:text-normal font-bold text-primary cursor-pointer">
+                    className="text-sm md:text-normal font-bold text-primary">
                   <span className="text-gray-500">solde:</span> {formatAmount(balance, accountCurrency)}
                 </div>
             </div>

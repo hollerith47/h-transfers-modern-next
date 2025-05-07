@@ -1,12 +1,10 @@
 'use client';
-import {useQuery} from '@tanstack/react-query';
-import {useUser} from "@clerk/nextjs";
-import {getAccountsByUser} from "@/app/actions";
 import Link from "next/link";
 import AccountItem from "@/components/AccountItem";
 import Loader from "@/components/Loader";
 import {Inbox} from "lucide-react";
 import {useMemo, useState} from "react";
+import {useFetchAccounts} from "@/hook/useAccount";
 
 const CURRENCIES = [
     {value: "all", label: "Tous"},
@@ -15,30 +13,8 @@ const CURRENCIES = [
 ];
 
 export default function AccountContainer() {
-    const {user} = useUser();
-    const email = user?.primaryEmailAddress?.emailAddress;
     const [searchTerm, setSearchTerm] = useState("");
-
-    const {
-        data: accounts = [],
-        isLoading,
-        isError,
-    } = useQuery({
-        queryKey: ['accounts', email],
-        queryFn: async () => {
-            if (!email) return [];
-            // const toastId = toast.loading('Fetching accounts...');
-            try {
-                // toast.success('Accounts fetched successfully!', { id: toastId });
-                return await getAccountsByUser({email});
-            } catch (error) {
-                console.error("error while fetching accounts", error);
-                // toast.error('Failed to fetch accounts.', { id: toastId });
-                throw error;
-            }
-        },
-        enabled: !!email, // Important pour éviter un appel sans email
-    });
+    const {data: accounts = [], isLoading, isError} = useFetchAccounts()
 
     // Filtre par devise
     const [filterCurrency, setFilterCurrency] = useState<"all" | "USD" | "RUB">(
