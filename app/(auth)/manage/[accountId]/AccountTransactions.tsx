@@ -55,7 +55,7 @@ export default function AccountTransactions({accountId}: Props) {
     if (isLoading) return <Loader fullScreen size="xl"/>;
     if (isError || !account) return <div>Error loading account.</div>;
 
-    console.log(filteredTransactions)
+    // console.log(filteredTransactions)
 
     return (
         <>
