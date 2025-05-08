@@ -1,3 +1,4 @@
+// "use client";
 import UseDashboardData from "@/hook/useDashboardData";
 import StatCard from "@/app/(auth)/StatCard";
 

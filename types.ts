@@ -125,3 +125,8 @@ export type ChartPoint = {
     yesterday: number;
     today: number;
 };
+
+export type ChartConfig = {
+    title: string;
+    data: ChartPoint[];
+};

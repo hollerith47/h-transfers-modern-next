@@ -2,7 +2,7 @@
 import UseUserRole from "@/hook/useUserRole";
 import {useAccountsWithStats, useTotalGroupBalance} from "@/hook/useAccount";
 import {computeGroupChange} from "@/utils/computeGroupChange";
-import {CardInfo, ChartPoint} from "@/types";
+import {CardInfo, ChartConfig, ChartPoint} from "@/types";
 import {useMemo} from "react";
 
 export default function UseDashboardData() {
@@ -79,5 +79,53 @@ export default function UseDashboardData() {
         { currency: "EUR",  yesterday: eurChange.balanceYesterday,  today: eurChange.balanceToday },
     ], [ eurChange.balanceYesterday, eurChange.balanceToday]);
 
-    return { cardData, chartUsdUsdtData, chartRubData, chartEuroData, chartUsdData };
+    const allCharts: ChartConfig[] = useMemo<ChartConfig[]>(() => [
+        {
+            title: "Évolution USD",
+            data: [
+                { currency: "USD", yesterday: usdChange.balanceYesterday, today: usdChange.balanceToday },
+            ],
+        },
+        {
+            title: "Évolution USDT",
+            data: [
+                { currency: "USDT", yesterday: usdtChange.balanceYesterday, today: usdtChange.balanceToday },
+            ],
+        },
+        {
+            title: "Évolution RUB",
+            data: [
+                { currency: "RUB", yesterday: rubChange.balanceYesterday, today: rubChange.balanceToday },
+            ],
+        },
+        {
+            title: "Évolution EUR",
+            data: [
+                { currency: "EUR", yesterday: eurChange.balanceYesterday, today: eurChange.balanceToday },
+            ],
+        },
+    ], [
+        usdChange.balanceYesterday, usdChange.balanceToday,
+        usdtChange.balanceYesterday, usdtChange.balanceToday,
+        rubChange.balanceYesterday, rubChange.balanceToday,
+        eurChange.balanceYesterday, eurChange.balanceToday,
+    ]);
+
+    const visibleCharts: ChartConfig[] = useMemo(() => {
+        if (isAdmin) return allCharts;
+
+        // détermine les devises qu’il possède
+        const userCurrencies = new Set<string>();
+        if (usdAccounts.length)  userCurrencies.add("USD");
+        if (usdtAccounts.length) userCurrencies.add("USDT");
+        if (rubAccounts.length)  userCurrencies.add("RUB");
+        if (eurAccounts.length)  userCurrencies.add("EUR");
+
+        // ne garde que les charts dont toutes les devises sont dans userCurrencies
+        return allCharts.filter(({ data }) =>
+            data.every(point => userCurrencies.has(point.currency))
+        );
+    }, [isAdmin, allCharts, usdAccounts.length, usdtAccounts.length, rubAccounts.length, eurAccounts.length]);
+
+    return { cardData, chartUsdUsdtData, chartRubData, chartEuroData, chartUsdData, chartConfigs: visibleCharts };
 }
