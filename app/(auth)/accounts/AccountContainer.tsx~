@@ -14,7 +14,7 @@ const CURRENCIES = [
 
 export default function AccountContainer() {
     const [searchTerm, setSearchTerm] = useState("");
-    const {data: accounts = [], isLoading, isError} = useFetchAccounts();
+    const {data: accounts = [], isLoading, isError} = useFetchAccounts()
 
     // Filtre par devise
     const [filterCurrency, setFilterCurrency] = useState<"all" | "USD" | "RUB">(

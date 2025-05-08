@@ -68,3 +68,60 @@ export interface Transaction {
     clientName?: string;    // pour afficher le nom du client
     accountCurrency?: string;    // pour afficher le nom du client
 }
+
+export type PeriodStats = {
+    yesterday: number;
+    today: number;
+    change: number;
+    pctChange: number | null;
+    income: number;
+    outcome: number;
+};
+
+export type CurrencyStats = {
+    currency: string;
+    day: PeriodStats;
+    week: PeriodStats;
+    month: PeriodStats;
+};
+
+export type AccountStats = {
+    id: string;
+    name: string;
+    currency: string;
+    day: PeriodStats;
+    week: PeriodStats;
+    month: PeriodStats;
+};
+
+
+export type DashboardEntry = {
+    account: Account;
+    stats: AccountStat;
+};
+
+export type AccountStat = {
+    transactionCount: number;
+    totalIncomeTransactions: number;
+    totalOutcomeTransactions: number;
+    startingAmount: number;
+    rawBalance: number;
+    balance: number;
+    accountCurrency: string;
+};
+
+// DashboardData
+export type CardInfo = {
+    label: string;
+    value: number;
+    locale?: string;
+    pctChange: number;
+    symbol: string;
+    color: string;
+};
+
+export type ChartPoint = {
+    currency: string;
+    yesterday: number;
+    today: number;
+};

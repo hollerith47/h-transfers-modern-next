@@ -19,3 +19,5 @@ export async function DELETE(req: NextRequest){
         );
     }
 }
+
+// export async function GET(req: NextRequest){}

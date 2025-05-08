@@ -1,0 +1,40 @@
+import {PeriodStats, Transaction} from "@/types";
+import { parseISO } from "date-fns";
+import {getTotalByType} from "@/utils/getTotalByType";
+
+export function computePeriodStats(
+    startingAmount: number,
+    transactions: Transaction[],
+    today: Date,
+    prev: Date
+): PeriodStats {
+    const filter = (to: Date) => transactions.filter(tx => parseISO(String(tx.createdAt)) < to);
+
+    const computeBalance = (filtered: Transaction[]) => {
+        // const income = filtered.filter(tx => tx.type === "income").reduce((sum, tx) => sum + tx.amount, 0);
+        const income = parseFloat(getTotalByType(filtered, "income"));
+        const outcome = parseFloat(getTotalByType(filtered, "outcome"));
+        // const outcome = filtered.filter(tx => tx.type === "outcome").reduce((sum, tx) => sum + tx.amount, 0);
+        const balance = startingAmount + income - outcome;
+        console.log( { income, outcome, balance })
+        return { income, outcome, balance };
+    };
+
+    const prevTxs = filter(prev);
+    const todayTxs = filter(today);
+
+    const prevBal = computeBalance(prevTxs);
+    const todayBal = computeBalance(todayTxs);
+
+    const change = todayBal.balance - prevBal.balance;
+    const pctChange = prevBal.balance === 0 ? null : (change / prevBal.balance) * 100;
+
+    return {
+        yesterday: prevBal.balance,
+        today: todayBal.balance,
+        change,
+        pctChange,
+        income: todayBal.income,
+        outcome: todayBal.outcome
+    };
+}

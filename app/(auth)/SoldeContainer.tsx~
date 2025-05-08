@@ -1,0 +1,5 @@
+export default function SoldeContainer() {
+    return (
+        <h2>SoldeContainer</h2>
+    );
+}

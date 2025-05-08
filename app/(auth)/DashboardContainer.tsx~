@@ -1,0 +1,12 @@
+"use client";
+import SoldContainer from "@/app/(auth)/SoldContainer";
+
+export default function DashboardContainer() {
+
+    return (
+        <div className="p-6 space-y-8">
+            <SoldContainer />
+
+        </div>
+    );
+}
