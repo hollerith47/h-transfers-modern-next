@@ -137,7 +137,6 @@ const AccountTransactionsTable = ({transactions, account}: Props) => {
                                         onClick={()=>copyReference(transaction.description)}
                                         role="button"
                                         className="hidden md:table-cell truncate w-auto text-center cursor-pointer z-50"
-                                        title="copier la description ou la reference"
                                     >
                                         <button className="btn btn-xs hover:btn-primary">
                                             {transaction.description}

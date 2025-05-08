@@ -1,15 +1,14 @@
 "use client";
-
 import { Copy } from "lucide-react";
 import { generateRef } from "@/utils/generateRef";
+import {toast} from "sonner";
 
 export default function ReferenceGenerator() {
     const handleGenerateRef = () => {
         const ref = generateRef();
         // copie dans le presse-papier
         navigator.clipboard.writeText(ref);
-        // affiche un alert() natif
-        alert(`Référence générée : ${ref}\n\n(Copiée dans le presse-papier)`);
+        toast.success(`Référence générée : ${ref}\n\n(Copiée dans le presse-papier)`);
     };
 
     return (

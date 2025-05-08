@@ -53,7 +53,7 @@ export default function AccountItem({account}: Props) {
                     role="button"
                     title="Cliquer pour copier le solde"
                     className="text-sm md:text-normal font-bold text-primary cursor-pointer">
-                  <span className="text-gray-500">solde:</span> {formatAmount(balance, accountCurrency)}
+                  <span className="text-gray-500">solde:</span> <span className="badge badge-primary badge-dash">{formatAmount(balance, accountCurrency)}</span>
                 </div>
             </div>
             <div className="flex justify-between items-center mt-5 text-gray-500">
