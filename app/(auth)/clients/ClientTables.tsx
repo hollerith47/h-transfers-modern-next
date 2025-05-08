@@ -12,7 +12,6 @@ export default function ClientTables() {
     const {data: clients=[], isLoading, isError} = useFetchClients();
     const [searchTerm, setSearchTerm] = useState("");
 
-
     const filteredClients = useMemo(() => {
         return clients.filter((client) => {
             const nameMatch = client.name.toLowerCase().includes(searchTerm.toLowerCase());

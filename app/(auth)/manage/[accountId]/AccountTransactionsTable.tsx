@@ -1,13 +1,10 @@
 "use client";
-import {Account, ClientResponse, Transaction} from "@/types";
+import {Account, Transaction} from "@/types";
 import {formateTime} from "@/utils/formatDate";
 import {returnClass, TransactionArrow} from "@/utils/transactionArrow";
 import TablePagination from "@/components/TablePagination";
 import {usePagination} from "@/hook/usePagination";
 import ModifyTransaction from "@/app/(auth)/manage/[accountId]/ModifyTransaction";
-import {useQuery} from "@tanstack/react-query";
-import {getClients} from "@/app/actions";
-import {useUser} from "@clerk/nextjs";
 import {useMemo} from "react";
 import {buildClientNameMap, getClientName} from "@/utils/ClientUtils";
 import {formatAmount} from "@/utils/formatAmount";
@@ -16,6 +13,7 @@ import RenderStatus from "@/components/RenderStatus";
 import {UseAccountCurrency} from "@/hook/useAccount";
 import DeleteTransactionButton from "@/app/(auth)/manage/[accountId]/DeleteTransactionButton";
 import {toast} from "sonner";
+import {useFetchClients} from "@/hook/useClient";
 
 type Props = {
     transactions: Transaction[]
@@ -24,23 +22,10 @@ type Props = {
 
 const AccountTransactionsTable = ({transactions, account}: Props) => {
     const {isAdmin} = UseUserRole();
-    const {user} = useUser();
-    const email = user?.primaryEmailAddress?.emailAddress;
     const {page, setPage, totalPages, paginatedData, itemsPerPage} = usePagination(transactions, 8);
 
-    const {data: clients = []} = useQuery<ClientResponse[], Error>({
-        queryKey: ['clients', email],
-        queryFn: async () => {
-            if (!email) return [];
-            try {
-                return await getClients();
-            } catch (error) {
-                console.error("error while fetching accounts", error);
-                throw error;
-            }
-        },
-        enabled: !!email, // Important pour éviter un appel sans initialData
-    });
+    const {data: clients = []} = useFetchClients();
+
     const clientNameMap = useMemo(
         () => buildClientNameMap(clients),
         [clients]
@@ -136,10 +121,10 @@ const AccountTransactionsTable = ({transactions, account}: Props) => {
                                     <td
                                         onClick={()=>copyReference(transaction.description)}
                                         role="button"
-                                        className="hidden md:table-cell truncate w-auto text-center cursor-pointer z-50"
+                                        className="hidden md:table-cell w-auto truncate text-center cursor-pointer z-50"
                                         title="copier la description ou la reference"
                                     >
-                                        <button className="btn btn-xs hover:btn-primary">
+                                        <button className="btn btn-xs hover:btn-primary truncate w-auto">
                                             {transaction.description}
                                         </button>
                                     </td>
