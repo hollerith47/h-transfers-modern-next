@@ -75,14 +75,18 @@ export default function TransactionFormModal({accountCurrency,initialData,onSubm
 
     // Calculs “à la volée”
     const m = parseFloat(amount) || 0;
+    const [newCom, setNewCom] = useState(transactType === "income" && accountCurrency !== "RUB"
+        ? (countCommission(m))
+        : String(0));
     const commission =
         transactType === "income" && accountCurrency !== "RUB"
             ? parseFloat(countCommission(m))
             : 0;
-    const clientAmount =
-        transactType === "income" ? m - commission : m;
+    const [newClientAmount, setNewClientAmount] = useState(transactType === "income" ? String(m - commission) : String(m));
+    const clientAmount = transactType === "income" ? m - commission : m;
 
-    const breakDown = transactType === "income" && m > 0 && accountCurrency !== "RUB";
+    const breakDown = transactType === "income" && m > 0 && accountCurrency !== "RUB" && !initialData;
+    const adminBreakDown = initialData && isAdmin;
 
     const openModal = () => {
         const dlg = document.getElementById(modalId);
@@ -102,8 +106,8 @@ export default function TransactionFormModal({accountCurrency,initialData,onSubm
         const data = TransactionFormSchema.parse({
             description,
             amount: parseFloat(amount),
-            commission,
-            clientAmount,
+            commission: parseFloat(newCom) || 0,
+            clientAmount: parseFloat(newClientAmount),
             paidAmount: parseFloat(paidAmount) || 0,
             paidCurrency,
             type: transactType,
@@ -151,8 +155,24 @@ export default function TransactionFormModal({accountCurrency,initialData,onSubm
                             label={montantLabel}
                             setValue={setAmount}
                         />
+                        {adminBreakDown &&
+                            <>
+                                <TextFieldInput
+                                    value={newCom}
+                                    label="commission"
+                                    setValue={setNewCom}
+                                />
+
+                                <TextFieldInput
+                                    value={newClientAmount}
+                                    label={"Montant client"}
+                                    setValue={setNewClientAmount}
+                                />
+                            </>
+                        }
 
                         {breakDown && (
+                            <>
                             <div className="text-gray-500 flex justify-between -mt-2 mb-2">
                                 <span>
                                   commission : {commission} {accountCurrency}
@@ -161,6 +181,7 @@ export default function TransactionFormModal({accountCurrency,initialData,onSubm
                                   client : {clientAmount} {accountCurrency}
                                 </span>
                             </div>
+                            </>
                         )}
 
                         <TextFieldInput
@@ -185,7 +206,7 @@ export default function TransactionFormModal({accountCurrency,initialData,onSubm
                             placeholder="Ex: Remboursement frais repas"
                         />
                         {transactType === "income" && <ReferenceGenerator /> }
-                        {initialData && isAdmin && (
+                        {adminBreakDown && (
                             <div className="relative">
                                 <TextFieldInput
                                     value={clientQuery}

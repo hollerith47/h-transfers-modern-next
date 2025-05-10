@@ -17,8 +17,6 @@ export default function ModifyTransaction({transaction, account}: Props) {
     const queryClient = useQueryClient();
     const {isAdmin} = UseUserRole();
 
-    // console.log(isAdmin)
-
     const updateTx = useMutation({
         // updateTransaction
         mutationFn: (data: z.infer<typeof UpdateTransactionSchema>) => updateTransaction(data),
@@ -31,9 +29,9 @@ export default function ModifyTransaction({transaction, account}: Props) {
         return toast.promise(
             updateTx.mutateAsync(data),
             {
-                loading: "Creating transaction...",
-                success: "Transaction created! successfully!",
-                error: (error)=> error instanceof Error ? error.message : "Failed to create transaction."
+                loading: "Updating transaction...",
+                success: "Transaction updated successfully!",
+                error: (error)=> error instanceof Error ? error.message : "Failed to update transaction."
             }
         );
     };

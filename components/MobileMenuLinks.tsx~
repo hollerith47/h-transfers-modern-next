@@ -28,8 +28,8 @@ export default function MobileMenuLinks({setIsOpen}: Props) {
                 {isAdmin &&
                     <Link
                         onClick={() => setIsOpen(false)}
-                        href="/brouillon"
-                        className={pathname === "/brouillon" ? "btn btn-primary justify-start" : "btn btn-ghost justify-start"}
+                        href={"brouillon"}
+                        className={pathname === "brouillon" ? "btn btn-primary justify-start" : "btn btn-ghost justify-start"}
                     >
                         <NotepadTextDashed className="mr-2 size-4"/>
                         <span>Brouillon</span>
