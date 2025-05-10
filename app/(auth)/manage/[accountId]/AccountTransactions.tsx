@@ -10,6 +10,7 @@ import Loader from "@/components/Loader";
 import DeleteAccountButton from "@/app/(auth)/manage/[accountId]/DeleteAccountButton";
 import {Transaction} from "@/types";
 import EmptyTransaction from "@/components/EmptyTransaction";
+import UpdateAccountInfo from "@/app/(auth)/manage/[accountId]/UpdateAccountInfo";
 
 type Props = {
     accountId: string;
@@ -65,6 +66,7 @@ export default function AccountTransactions({accountId}: Props) {
                 </div>
                 <div className="flex justify-between md:justify-start md:flex-col gap-2 mt-4 md:mt-0">
                     <TransactionForm account={account}/>
+                    <UpdateAccountInfo account={account} />
                     <DeleteAccountButton accountId={account.id}/>
                 </div>
             </div>

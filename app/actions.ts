@@ -9,7 +9,7 @@ import {
     AddTransactionSchema,
     ByEmailSchema,
     DeleteClientSchema,
-    DeleteTransactionSchema,
+    DeleteTransactionSchema, UpdateAccountSchema,
     UpdateTransactionSchema
 } from "@/schema";
 import {Account, ClientResponse, GetUserResponse, TransactionStatus} from "@/types";
@@ -60,6 +60,25 @@ export async function AddAccount(formData: z.infer<typeof AddAccountSchema>) {
             amount,
             emoji,
             currency,
+        },
+    });
+}
+
+export async function updateAccountData(formData: z.infer<typeof UpdateAccountSchema>){
+    const {success, data} = UpdateAccountSchema.safeParse(formData);
+    if (!success) throw new Error("Update Account Data Validation failed");
+
+    const {email, name, accountId, emoji} = data;
+    const user = await prisma.user.findUnique({where: {email}});
+    if (!user) {
+        throw new Error('User not found');
+    }
+
+    await prisma.account.update({
+        where: {id: accountId},
+        data: {
+            name,
+            emoji
         },
     });
 }

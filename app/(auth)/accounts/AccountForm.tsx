@@ -1,32 +1,55 @@
 "use client";
-import { useState} from "react";
+import {useEffect, useState} from "react";
 import {useUser} from "@clerk/nextjs";
 import {Banknote, ListOrdered, Wallet, X} from "lucide-react";
 import TextFieldInput from "@/components/TextFieldInput";
 import EmojiPicker from "emoji-picker-react";
-import {AddAccount} from "@/app/actions";
+import {AddAccount, updateAccountData} from "@/app/actions";
 import {toast} from 'sonner';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import SelectInput from "@/components/SelectInput";
 import {currencyOptions} from "@/data";
+import {z} from "zod";
+import {InitialAccountData} from "@/schema";
+
+type Props = {
+    initialData?: z.infer<typeof InitialAccountData>;
+}
 
 
 
-export default function AccountForm() {
+export default function AccountForm({initialData}: Props) {
     const {user} = useUser();
     const queryClient = useQueryClient();
 
-    const [accountName, setAccountName] = useState('');
+    const [accountName, setAccountName] = useState( initialData?.name ?? '');
     const [accountInitialBalance, setAccountInitialBalance] = useState('');
     const [accountCurrency, setAccountCurrency] = useState('');
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-    const [accountSelectedEmoji, setAccountSelectedEmoji] = useState('');
+    const [accountSelectedEmoji, setAccountSelectedEmoji] = useState(initialData?.emoji ?? '');
+    const [accountId, setAccountId] = useState(initialData?.accountId ?? '');
+
+    // const {mutateAsync: updateAccountInfo} = useUpdateAccount();
+    const email = user?.primaryEmailAddress?.emailAddress as string;
+
+    const isEditMode = Boolean(initialData);
+
+    // reset form when initialData changes
+    useEffect(() => {
+        if (initialData) {
+            setAccountName(initialData.name);
+            setAccountSelectedEmoji(initialData.emoji);
+            setAccountId(initialData.accountId);
+        }
+    }, [initialData]);
 
     const mutation = useMutation({
-
         mutationFn: async () => {
+            if(isEditMode){
+                return updateAccountData({accountId, name: accountName, emoji: accountSelectedEmoji, email});
+            }
             return AddAccount({
-                email: user?.primaryEmailAddress?.emailAddress as string,
+                email,
                 name: accountName,
                 amount: parseFloat(accountInitialBalance),
                 emoji: accountSelectedEmoji,
@@ -34,7 +57,11 @@ export default function AccountForm() {
             });
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['accounts', user?.primaryEmailAddress?.emailAddress] });
+            if (isEditMode) {
+                queryClient.invalidateQueries({ queryKey: ['account', accountId] });
+            }else{
+                queryClient.invalidateQueries({ queryKey: ['accounts', email] });
+            }
             // toast.success('Account created successfully!');
             const modal = document.getElementById("my_modal_3") as HTMLDialogElement;
             if (modal) {
@@ -55,11 +82,11 @@ export default function AccountForm() {
         setShowEmojiPicker(false);
     }
 
-    const handleCreateAccount = async () => {
+    const handleSubmit = async () => {
         toast.promise(mutation.mutateAsync(), {
-            loading: 'Creating account...',
-            success: 'Account created successfully!',
-            error: 'Failed to create account.',
+            loading: isEditMode ? 'Updating account...' : 'Creating account...',
+            success: isEditMode ? 'Updated!' : 'Created!',
+            error: isEditMode ? 'Update failed.' : 'Creation failed.',
         });
     };
 
@@ -68,7 +95,7 @@ export default function AccountForm() {
         <>
             <button className="btn btn-primary flex items-center gap-2"
                     onClick={() => (document.getElementById('my_modal_3') as HTMLDialogElement).showModal()}>
-                Create New Account <Wallet  />
+                {isEditMode ? 'Edit Account infos' : 'Create New Account'}  <Wallet  />
             </button>
             <dialog id="my_modal_3" className="modal">
                 <div className="modal-box">
@@ -77,8 +104,13 @@ export default function AccountForm() {
                             <X/>
                         </button>
                     </form>
-                    <h3 className="font-bold text-lg">Create New Account</h3>
-                    <p className="py-4">create new account and set initial balance</p>
+                    <h3 className="font-bold text-lg">{isEditMode ? 'Update Account' : 'Create New Account'}</h3>
+                    <p className="py-4">
+                        {isEditMode
+                            ? 'Modify your account details and save.'
+                            : 'Create new account and set initial balance.'
+                        }
+                    </p>
                     <div className="w-full flex flex-col">
                         <TextFieldInput
                             value={accountName}
@@ -87,22 +119,26 @@ export default function AccountForm() {
                         >
                             <Wallet/>
                         </TextFieldInput>
-                        <TextFieldInput
-                            value={accountInitialBalance}
-                            label="Initial Balance"
-                            type="number"
-                            setValue={setAccountInitialBalance}
-                        >
-                            <ListOrdered/>
-                        </TextFieldInput>
-                        <SelectInput
-                            value={accountCurrency}
-                            label="Select Currency"
-                            setValue={setAccountCurrency}
-                            options={currencyOptions}
-                        >
-                            <Banknote/>
-                        </SelectInput>
+                        {!isEditMode && (
+                            <>
+                                <TextFieldInput
+                                    value={accountInitialBalance}
+                                    label="Initial Balance"
+                                    type="number"
+                                    setValue={setAccountInitialBalance}
+                                >
+                                    <ListOrdered/>
+                                </TextFieldInput>
+                                <SelectInput
+                                    value={accountCurrency}
+                                    label="Select Currency"
+                                    setValue={setAccountCurrency}
+                                    options={currencyOptions}
+                                >
+                                    <Banknote/>
+                                </SelectInput>
+                            </>
+                        )}
                         <button
                             className="btn mb-2 btn-bordered rounded-xl"
                             onClick={() => setShowEmojiPicker(!showEmojiPicker)}>
@@ -115,10 +151,10 @@ export default function AccountForm() {
                         )}
 
                         <button
-                            onClick={handleCreateAccount}
+                            onClick={handleSubmit}
                             className="btn btn-primary btn-bordered rounded-xl"
                         >
-                            Create
+                            {isEditMode ? 'Save Changes' : 'Create'}
                         </button>
                     </div>
                 </div>

@@ -14,7 +14,7 @@ const DeleteAccountButton = ({accountId}: DeleteAccountPayload) => {
     const router = useRouter();
     const [isOpen, setIsOpen] = useState(false);
     const handleDeleteAccount = async () => {
-        await toast.promise(mutateAsync({accountId}), {
+        toast.promise(mutateAsync({accountId}), {
             loading: 'Deleting account...',
             success: 'Account deleted successfully!',
             error: 'Failed to delete account.',

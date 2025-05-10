@@ -1,6 +1,6 @@
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import { deleteAccountAPI } from "@/lib/api";
-import {getAccountsByUser} from "@/app/actions";
+import {getAccountsByUser  } from "@/app/actions";
 import {useUser} from "@clerk/nextjs";
 import { getTotalByType } from "@/utils/getTotalByType";
 import {Account, DashboardEntry} from "@/types";
