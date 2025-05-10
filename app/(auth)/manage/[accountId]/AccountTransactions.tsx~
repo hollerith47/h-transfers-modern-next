@@ -68,7 +68,7 @@ export default function AccountTransactions({accountId}: Props) {
                 <div className="flex justify-between md:justify-start md:flex-col gap-2 mt-4 md:mt-0">
                     <TransactionForm account={account}/>
                     <UpdateAccountInfo account={account} />
-                    <div className="hidden md:block">
+                    <div className="hidden w-full md:block">
                         <DeleteAccountButton accountId={account.id}/>
                     </div>
                 </div>

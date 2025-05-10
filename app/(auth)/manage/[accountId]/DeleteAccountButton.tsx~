@@ -27,7 +27,7 @@ const DeleteAccountButton = ({accountId}: DeleteAccountPayload) => {
     return (
         <>
             <button
-                className="btn btn-error w-full"
+                className="btn btn-error"
                 disabled={isPending}
                 onClick={() => setIsOpen(true)}
             >

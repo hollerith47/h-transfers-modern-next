@@ -128,7 +128,7 @@ export default function TransactionFormModal({accountCurrency,initialData,onSubm
 
     return (
         <>
-            <button className={buttonClassName ? buttonClassName : "btn btn-primary flex items-center gap-2"}
+            <button className={buttonClassName ? buttonClassName : "btn btn-primary w-full flex items-center gap-2"}
                     onClick={openModal}>
                 {buttonLabel} {children}
             </button>
