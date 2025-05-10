@@ -6,12 +6,13 @@ type Props = {
 };
 
 export default function UpdateAccountInfo({account}: Props) {
-
     return (
-        <AccountForm initialData={{
-            accountId: account.id,
-            name: account.name,
-            emoji: account.emoji ?? '',
-        }} />
+        <AccountForm
+            isEditable
+            initialData={{
+                accountId: account.id,
+                name: account.name,
+                emoji: account.emoji ?? '',
+            }}/>
     );
 }

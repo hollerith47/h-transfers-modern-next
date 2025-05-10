@@ -1,7 +1,7 @@
 "use client";
 import {useEffect, useState} from "react";
 import {useUser} from "@clerk/nextjs";
-import {Banknote, ListOrdered, Wallet, X} from "lucide-react";
+import {Banknote, ListOrdered, PencilLine, Wallet, X} from "lucide-react";
 import TextFieldInput from "@/components/TextFieldInput";
 import EmojiPicker from "emoji-picker-react";
 import {AddAccount, updateAccountData} from "@/app/actions";
@@ -14,11 +14,12 @@ import {InitialAccountData} from "@/schema";
 
 type Props = {
     initialData?: z.infer<typeof InitialAccountData>;
+    isEditable?: boolean;
 }
 
 
 
-export default function AccountForm({initialData}: Props) {
+export default function AccountForm({initialData, isEditable}: Props) {
     const {user} = useUser();
     const queryClient = useQueryClient();
 
@@ -93,9 +94,9 @@ export default function AccountForm({initialData}: Props) {
 
     return (
         <>
-            <button className="btn btn-primary flex items-center gap-2"
+            <button className={`btn btn-${isEditable ? "success" : "primary"} flex items-center gap-2`}
                     onClick={() => (document.getElementById('my_modal_3') as HTMLDialogElement).showModal()}>
-                {isEditMode ? 'Edit Account infos' : 'Create New Account'}  <Wallet  />
+                {isEditMode ? (<>Edit Account infos <PencilLine /></>) : (<>Create New Account <Wallet  /></>)}
             </button>
             <dialog id="my_modal_3" className="modal">
                 <div className="modal-box">
