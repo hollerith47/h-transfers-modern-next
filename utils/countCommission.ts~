@@ -1,0 +1,28 @@
+export const countCommission = (num: number): string => {
+    // Nombre de blocs complets de 105
+    const blocks = Math.floor(num / 105);
+    // Reste après extraction des blocs
+    const remainder = num % 105;
+
+    // Commission fixe (5 $) par bloc de 105 $
+    const commissionFromBlocks = blocks * 5;
+
+    // Commission sur le reste, selon paliers
+    let commissionRemainder = 0;
+    if (remainder >= 100) {
+        commissionRemainder = remainder * 0.05;
+    } else if (remainder >= 50) {
+        commissionRemainder = remainder * 0.07;
+    } else if (remainder >= 20) {
+        commissionRemainder = remainder * 0.10;
+    }
+
+    const totalCommission = commissionFromBlocks + commissionRemainder;
+    return totalCommission.toFixed(2);
+};
+
+
+export const fixeAmount = (num: number) => {
+    const  fixed = num.toFixed(3);
+    return parseFloat(fixed);
+};

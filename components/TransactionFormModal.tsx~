@@ -154,7 +154,7 @@ export default function TransactionFormModal({accountCurrency,initialData,onSubm
                             label={montantLabel}
                             setValue={setAmount}
                         />
-                        {commissionAndClientAmountBreakDown &&
+                        {adminBreakDown &&
                             <>
                                 <TextFieldInput
                                     value={newCom}
