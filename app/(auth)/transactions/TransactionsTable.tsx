@@ -31,9 +31,9 @@ export default function TransactionsTable({transactions}: Props) {
         <>
             <div className="overflow-x-auto mt-5">
                 <div className="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
-                    <table className="table table-pin-rows table-fixed">
+                    <table className="table table-pin-rows table-fixed text-xs md:text-md">
                         <thead>
-                        <tr>
+                        <tr className="text-xs md:text-md">
                             <th className="w-10 md:w-12"></th>
                             <th className="w-24 md:w-auto">Date</th>
                             <th className="w-16 md:min-w-[100px] md:w-auto">Montant</th>
@@ -78,9 +78,9 @@ export default function TransactionsTable({transactions}: Props) {
                                         <div className="flex items-center gap-2">
                                             <TransactionArrow type={tx.type}/>
                                             <span
-                                                className={`badge text-white ${returnClass(
+                                                className={`badge rounded-lg text-white badge-xs ${returnClass(
                                                     tx.type
-                                                )} badge-sm`}
+                                                )} md:badge-sm`}
                                             >
                                               {formatAmount(tx.amount, tx.accountCurrency!)}
                                             </span>

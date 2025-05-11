@@ -31,7 +31,7 @@ export default function TransactionsContainer() {
         <div>
             <div className="flex flex-col md:flex-row items-start md:items-center gap-3 mb-4">
                 <select
-                    className="input input-bordered w-full md:w-48"
+                    className="input input-sm md:input-md input-bordered w-full md:w-48"
                     value={filterType}
                     onChange={(e) =>
                         setFilterType(e.target.value as "all" | "income" | "outcome")
@@ -43,7 +43,7 @@ export default function TransactionsContainer() {
                 </select>
 
                 <select
-                    className="input input-bordered w-full md:w-48"
+                    className="input input-sm md:input-md input-bordered w-full md:w-48"
                     value={filterStatus}
                     onChange={(e) =>
                         setFilterStatus(e.target.value as "all" | "pending" | "completed")
@@ -55,7 +55,7 @@ export default function TransactionsContainer() {
                 </select>
                 <input
                     type="text"
-                    className="input input-bordered w-full md:w-64"
+                    className="input input-sm md:input-md input-bordered w-full md:w-64"
                     placeholder="Rechercher par description"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}

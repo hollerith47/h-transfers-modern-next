@@ -1,0 +1,43 @@
+import React from "react";
+
+type LoaderSize = "sm" | "md" | "lg" | "xl" | "xxl";
+
+type LoaderProps = {
+    /** plein écran (overlay) */
+    fullScreen?: boolean;
+    /** sm | md | lg | xl | xxl */
+    size?: LoaderSize;
+    /** couleur via classe DaisyUI/Tailwind */
+    colorClass?: string;
+};
+
+export default function Loader({fullScreen = false,size = "md", colorClass = "text-primary"}: LoaderProps) {
+    // 1) Map strictement sur LoaderSize
+    const sizeStyles: Record<LoaderSize, string> = {
+        sm: "w-6 h-6",
+        md: "w-12 h-12",
+        lg: "w-16 h-16",
+        xl: "w-24 h-24",
+        xxl: "w-32 h-32",
+    };
+
+    // 2) On sait que `size` n'est plus undefined ici
+    const appliedSize = size;
+
+    const containerClass = fullScreen
+        ? "fixed inset-0 flex items-center justify-center bg-base-100/90 z-50"
+        : "flex items-center justify-center";
+
+    return (
+        <div className={containerClass}>
+      <span
+          className={[
+              "loading",
+              "loading-spinner",
+              sizeStyles[appliedSize], // OK : appliedSize ∈ LoaderSize
+              colorClass,
+          ].join(" ")}
+      ></span>
+        </div>
+    );
+}

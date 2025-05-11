@@ -49,7 +49,7 @@ export default function AccountContainer() {
             <div className="flex flex-col md:flex-row items-start md:items-center gap-4 mb-4">
                 {/* Filtrer par type */}
                 <select
-                    className="input input-bordered w-full md:w-48"
+                    className="input input-sm md:input-md input-bordered w-full md:w-48"
                     value={filterCurrency}
                     onChange={(e) =>
                         setFilterCurrency(e.target.value as "all" | "USD" | "RUB")
@@ -65,7 +65,7 @@ export default function AccountContainer() {
                 {/* Recherche par description */}
                 <input
                     type="text"
-                    className="input input-bordered w-full md:w-64"
+                    className="input input-sm md:input-md input-bordered w-full md:w-64"
                     placeholder="Rechercher par nom du compte"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
