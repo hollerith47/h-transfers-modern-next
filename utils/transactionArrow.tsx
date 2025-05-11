@@ -8,9 +8,9 @@ interface Props {
 
 export function TransactionArrow({ type }: Props) {
     return type === "income" ? (
-        <ArrowUpCircle className="hidden md:block md:w-6 md:h-6 text-green-500" />
+        <ArrowUpCircle className="hidden md:block text-xs md:text-md md:w-6 md:h-6 text-green-500" />
     ) : (
-        <ArrowDownCircle className="hidden md:block md:w-6 md:h-6 text-red-500" />
+        <ArrowDownCircle className="hidden md:block text-xs md:text-md md:w-6 md:h-6 text-red-500" />
     );
 }
 

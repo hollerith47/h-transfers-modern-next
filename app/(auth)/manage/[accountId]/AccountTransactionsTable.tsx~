@@ -89,7 +89,7 @@ const AccountTransactionsTable = ({transactions, account}: Props) => {
                                         <div className="flex items-center gap-2">
                                             <TransactionArrow type={transaction.type}/>
                                             <span
-                                                className={`badge text-white ${returnClass(transaction.type)} badge-xs md:badge-sm`}
+                                                className={`badge text-xs text-white ${returnClass(transaction.type)} badge-xs md:badge-sm`}
                                             >{formatAmount(transaction.amount, accountCurrency)}
                                             </span>
                                         </div>
