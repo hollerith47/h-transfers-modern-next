@@ -2,10 +2,6 @@ import ContentLayout from "@/app/(auth)/content-layout";
 import ClientTables from "@/app/(auth)/clients/ClientTables";
 import ClientForm from "@/app/(auth)/clients/ClientForm";
 
-export const metadata = {
-    title: "clients",
-}
-
 export default function Page() {
 
     return (

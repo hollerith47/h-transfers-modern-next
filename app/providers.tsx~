@@ -14,7 +14,7 @@ const queryClient = new QueryClient({
 
 export default function Providers({children}: { children: React.ReactNode }) {
     UseScrollToTop();
-
+    
     return (
         <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
     )

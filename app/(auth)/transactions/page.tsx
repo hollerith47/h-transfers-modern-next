@@ -2,7 +2,7 @@ import TransactionsContainer from "@/app/(auth)/transactions/TransactionsContain
 import ContentLayout from "@/app/(auth)/content-layout";
 
 export const metadata = {
-    title: "Transactions",
+    title: "Liste des Transactions",
 }
 
 export default function Page() {
