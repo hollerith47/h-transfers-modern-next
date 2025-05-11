@@ -14,8 +14,8 @@ export default function ContentLayout({children, title, description, action}: Pr
                 className='mb-8 flex items-center justify-between bg-white mt-[-25px] '
             >
                 <div>
-                    <h2 className="text-2xl font-bold tracking-tight mb-2">{title || "Title"}</h2>
-                    <p className='text-muted-foreground'>{description || "Description"}</p>
+                    <h2 className="text-lg md:text-2xl font-bold tracking-tight mb-2">{title || "Title"}</h2>
+                    <p className='text-sm md:text-lg text-muted-foreground'>{description || "Description"}</p>
                 </div>
                 {action}
             </header>

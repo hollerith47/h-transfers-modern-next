@@ -15,7 +15,7 @@ export default function ReferenceGenerator() {
         <button
             type="button"
             onClick={handleGenerateRef}
-            className="btn btn-outline btn-sm md:btn-md rounded-xl flex items-center gap-2"
+            className="btn btn-outline btn-sm md:btn-md rounded-2xl flex items-center gap-2"
         >
             <Copy className="w-5 h-5" />
             Générer la référence

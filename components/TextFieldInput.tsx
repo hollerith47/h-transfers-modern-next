@@ -17,7 +17,7 @@ export default function TextFieldInput({children,value,label,placeholder,helperT
         <div className="flex flex-col w-full mb-2">
             {/* Label above input */}
             <label className="mb-1 text-sm font-medium text-gray-700">{label}</label>
-            <div className="input input-bordered w-full rounded-xl flex items-center gap-2 focus-within:ring-2 focus-within:ring-primary">
+            <div className="input input-sm md:input-md input-bordered w-full rounded-xl flex items-center gap-2 focus-within:ring-2 focus-within:ring-primary">
                 {/* Optional icon */}
                 {children && <div className="opacity-50">{children}</div>}
                 <input

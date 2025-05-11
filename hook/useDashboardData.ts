@@ -7,7 +7,7 @@ import {useMemo} from "react";
 
 export default function UseDashboardData() {
     const { isAdmin } = UseUserRole();
-    const {usdAccounts, rubAccounts, usdtAccounts, eurAccounts} = useAccountsWithStats();
+    const {usdAccounts, rubAccounts, usdtAccounts, eurAccounts,isLoadingAll,isErrorAll} = useAccountsWithStats();
 
     // 1) Compute change objects
     const usdChange  = computeGroupChange(usdAccounts);
@@ -15,11 +15,14 @@ export default function UseDashboardData() {
     const eurChange  = computeGroupChange(eurAccounts);
     const usdtChange = computeGroupChange(usdtAccounts);
 
+
     // 2) Compute totals
     const usdTotal  = useTotalGroupBalance(usdAccounts);
     const rubTotal  = useTotalGroupBalance(rubAccounts);
     const eurTotal  = useTotalGroupBalance(eurAccounts);
     const usdtTotal = useTotalGroupBalance(usdtAccounts);
+
+
 
     // 3) cardData : tout est calculé à l’intérieur du même useMemo
     const cardData: CardInfo[] = useMemo(() => {
@@ -31,6 +34,7 @@ export default function UseDashboardData() {
                 pctChange: usdChange.pctChange,
                 symbol: "$",
                 color: "blue",
+                accountName: usdChange.accountName
             },
             {
                 label: "RUB",
@@ -38,7 +42,8 @@ export default function UseDashboardData() {
                 locale: "ru-RU",
                 pctChange: rubChange.pctChange,
                 symbol: "₽",
-                color: "red"
+                color: "red",
+                accountName: rubChange.accountName
             },
             {
                 label: "EUR",
@@ -46,7 +51,8 @@ export default function UseDashboardData() {
                 locale: "fr-FR",
                 pctChange: eurChange.pctChange,
                 symbol: "€",
-                color: "green"
+                color: "green",
+                accountName: eurChange.accountName
             },
             {
                 label: "USDT",
@@ -54,7 +60,8 @@ export default function UseDashboardData() {
                 locale: "en-US",
                 pctChange: usdtChange.pctChange,
                 symbol: "₮",
-                color: "yellow"
+                color: "yellow",
+                accountName: usdtChange.accountName
             },
         ];
         return isAdmin ? rawCards : rawCards.filter((c) => c.value > 0);
@@ -127,5 +134,35 @@ export default function UseDashboardData() {
         );
     }, [isAdmin, allCharts, usdAccounts.length, usdtAccounts.length, rubAccounts.length, eurAccounts.length]);
 
+    // 1) Tant que la data n’est pas prête, on retourne des structures vides + un flag loading
+    if (isLoadingAll) {
+        console.log("is loading all")
+        return {
+            cardData: [],
+            chartUsdUsdtData: [],
+            chartRubData: [],
+            chartEuroData: [],
+            chartUsdData: [],
+            chartConfigs: [],
+            isLoading: true
+        };
+    }
+    if (isErrorAll) {
+        // tu peux gérer une UI d’erreur ici
+        return {
+            cardData: [],
+            chartUsdUsdtData: [],
+            chartRubData: [],
+            chartEuroData: [],
+            chartUsdData: [],
+            chartConfigs: [],
+            isLoading: false,
+            isError: true
+        };
+    }
+
+    console.log({usdAccounts})
+
+    // console.log({ cardData, chartUsdUsdtData, chartRubData, chartEuroData, chartUsdData, chartConfigs: visibleCharts })
     return { cardData, chartUsdUsdtData, chartRubData, chartEuroData, chartUsdData, chartConfigs: visibleCharts };
 }

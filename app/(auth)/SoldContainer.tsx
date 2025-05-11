@@ -4,9 +4,10 @@ import StatCard from "@/app/(auth)/StatCard";
 export default function SoldContainer() {
     const { cardData } = UseDashboardData();
 
+    console.log({cardData})
     return (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-            {cardData.map(({label, pctChange, symbol,value,locale, color}) => (
+            {cardData.length > 0 && cardData.map(({label, pctChange, symbol,value,locale, color}) => (
                 <StatCard
                     key={label}
                     label={label}

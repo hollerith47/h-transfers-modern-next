@@ -108,15 +108,7 @@ export function useAccountsWithStats(){
         [accounts, ready]
     );
 
-    return {
-        usdAccounts,
-        usdtAccounts,
-        rubAccounts,
-        eurAccounts,
-        // On renvoie aussi les indicateurs de chargement
-        isLoadingAll: isLoading || isFetching,
-        isErrorAll: isError
-    };
+    return {usdAccounts, usdtAccounts, rubAccounts, eurAccounts};
 }
 
 export function useTotalGroupBalance(entries: DashboardEntry[]) {

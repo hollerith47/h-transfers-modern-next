@@ -128,7 +128,7 @@ export default function TransactionFormModal({accountCurrency,initialData,onSubm
 
     return (
         <>
-            <button className={buttonClassName ? buttonClassName : "btn btn-primary w-full flex items-center gap-2"}
+            <button className={buttonClassName ? buttonClassName : "btn btn-sm md:btn-md btn-primary w-full flex items-center gap-2"}
                     onClick={openModal}>
                 {buttonLabel} {children}
             </button>
@@ -237,7 +237,7 @@ export default function TransactionFormModal({accountCurrency,initialData,onSubm
                         )}
                         <button
                             onClick={handleSubmit}
-                            className="btn btn-primary btn-bordered rounded-xl mt-2"
+                            className="btn btn-sm md:btn-md btn-primary btn-bordered rounded-xl mt-2"
                         >
                             {initialData ? "Enregistrer les modifications" : "Créer une transaction"}
                         </button>

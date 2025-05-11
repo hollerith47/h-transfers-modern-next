@@ -36,7 +36,7 @@ export default function UserDropDown({position}: Props) {
 
             <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
                 <Link href="/profile"
-                      className={pathname === "/profile" ? "btn btn-sm md:btn-md btn-primary justify-start" : "btn btn-sm md:btn-md btn-ghost justify-start"}>
+                      className={pathname === "/profile" ? "btn btn-sm md:btn-md btn-primary justify-start" : "btn btn-ghost justify-start"}>
                     <CircleUserRound className="mr-2 size-4"/>
                     <span>Profile</span>
                 </Link>

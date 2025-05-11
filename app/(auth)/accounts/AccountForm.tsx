@@ -94,7 +94,7 @@ export default function AccountForm({initialData, isEditable}: Props) {
 
     return (
         <>
-            <button className={`btn btn-${isEditable ? "success" : "primary"} flex items-center gap-2`}
+            <button className={`btn btn-sm md:btn-md btn-${isEditable ? "success" : "primary"} flex items-center gap-2`}
                     onClick={() => (document.getElementById('my_modal_3') as HTMLDialogElement).showModal()}>
                 {isEditMode ? (<>Edit Account infos <PencilLine /></>) : (<>Create New Account <Wallet  /></>)}
             </button>

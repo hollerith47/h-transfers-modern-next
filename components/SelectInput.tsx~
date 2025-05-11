@@ -25,7 +25,7 @@ type SelectInputProps<T extends string> = {
 
 export default function SelectInput<T extends string>({children, value,setValue,label,options}: SelectInputProps<T>) {
     return (
-        <label className="input input-sm md:input-md input-bordered mb-3 w-full rounded-xl flex items-center gap-2 focus:outline-none">
+        <label className="input input-bordered mb-3 w-full rounded-xl flex items-center gap-2 focus:outline-none">
             {children && <div className="opacity-50">{children}</div>}
             <select
                 value={value}

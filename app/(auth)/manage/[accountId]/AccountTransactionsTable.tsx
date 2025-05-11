@@ -82,14 +82,14 @@ const AccountTransactionsTable = ({transactions, account}: Props) => {
                                     <td className="w-6">
                                         {page * itemsPerPage + idx + 1}
                                     </td>
-                                    <td className="w-auto">
+                                    <td className="w-auto text-xs md:text-md">
                                         {formateTime(transaction.createdAt)}
                                     </td>
                                     <td className="w-24 md:w-auto">
                                         <div className="flex items-center gap-2">
                                             <TransactionArrow type={transaction.type}/>
                                             <span
-                                                className={`badge text-white ${returnClass(transaction.type)} badge-sm`}
+                                                className={`badge text-white ${returnClass(transaction.type)} badge-xs md:badge-sm`}
                                             >{formatAmount(transaction.amount, accountCurrency)}
                                             </span>
                                         </div>
@@ -97,10 +97,10 @@ const AccountTransactionsTable = ({transactions, account}: Props) => {
 
                                     {isNotRubleAccount && isAdmin &&
                                         <>
-                                            <td className="hidden md:table-cell md:w-auto text-center">
+                                            <td className="hidden text-md md:table-cell md:w-auto text-center">
                                                 {formatAmount(transaction.commission!, accountCurrency)}
                                             </td>
-                                            <td className="hidden md:table-cell w-auto text-center">
+                                            <td className="hidden text-md md:table-cell w-auto text-center">
                                                 {formatAmount(transaction.clientAmount, accountCurrency)}
                                             </td>
                                         </>
@@ -108,7 +108,7 @@ const AccountTransactionsTable = ({transactions, account}: Props) => {
 
                                     {isAdmin &&
                                         (<>
-                                            <td className="w-auto text-center">
+                                            <td className="w-auto text-xs md:text-md text-center">
                                                 {formatAmount(transaction.paidAmount!, oppositeCurrency)}
                                             </td>
                                             <td className="hidden truncate md:table-cell w-auto text-center">
@@ -116,7 +116,7 @@ const AccountTransactionsTable = ({transactions, account}: Props) => {
                                             </td>
                                         </>)
                                     }
-                                    <td className="w-32 md:w-auto"><RenderStatus status={transaction.status}/></td>
+                                    <td className="w-32 md:w-auto text-xs md:text-md"><RenderStatus status={transaction.status}/></td>
 
                                     <td
                                         onClick={()=>copyReference(transaction.description)}

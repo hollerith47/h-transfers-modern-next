@@ -32,9 +32,7 @@ export default function AccountTransactions({accountId}: Props) {
     });
 
     // Filtre par type de transaction
-    const [filterType, setFilterType] = useState<"all" | "income" | "outcome">(
-        "all"
-    );
+    const [filterType, setFilterType] = useState<"all" | "income" | "outcome">("all");
     const [filterStatus, setFilterStatus] = useState<"all"|"pending"|"completed">("all");
     // Recherche par description
     const [searchTerm, setSearchTerm] = useState("");
@@ -78,7 +76,7 @@ export default function AccountTransactions({accountId}: Props) {
             <div className="flex flex-col md:flex-row items-start md:items-center gap-4 mb-4">
                 {/* Filtrer par type */}
                 <select
-                    className="input input-bordered w-full md:w-48"
+                    className="input input-sm md:input-md input-bordered w-full md:w-48"
                     value={filterType}
                     onChange={(e) =>
                         setFilterType(e.target.value as "all" | "income" | "outcome")
@@ -91,7 +89,7 @@ export default function AccountTransactions({accountId}: Props) {
 
                 {/* Filtrer par statut */}
                 <select
-                    className="input input-bordered w-full md:w-48"
+                    className="input input-sm md:input-md input-bordered w-full md:w-48"
                     value={filterStatus}
                     onChange={(e) =>
                         setFilterStatus(e.target.value as "all" | "pending" | "completed")
@@ -105,7 +103,7 @@ export default function AccountTransactions({accountId}: Props) {
                 {/* Recherche par description */}
                 <input
                     type="text"
-                    className="input input-bordered w-full md:w-64"
+                    className="input input-sm md:input-md input-bordered w-full md:w-64"
                     placeholder="Rechercher par description"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}

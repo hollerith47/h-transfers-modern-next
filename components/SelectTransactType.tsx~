@@ -13,7 +13,7 @@ type Props = {
 
 export default function SelectTransactType({children, value, setValue, label}: Props) {
     return (
-        <label className="input input-sm md:input-md input-bordered mb-3 w-full rounded-xl flex items-center gap-2 focus:outline-none">
+        <label className="input input-bordered mb-3 w-full rounded-xl flex items-center gap-2 focus:outline-none">
             <div className="opacity-50">{children}</div>
             <select
                 value={value}

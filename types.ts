@@ -118,6 +118,7 @@ export type CardInfo = {
     pctChange: number;
     symbol: string;
     color: string;
+    accountName?: string;
 };
 
 export type ChartPoint = {
