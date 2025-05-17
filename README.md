@@ -26,3 +26,12 @@
       └─ create/
          └─ route.ts
 ```
+
+## Frontend
+
+## Evolution
+11.05.2025 UI correction
+restant:
+1. Dashboard ajouter le montant total en Dollars
+2. Dashboard ajouter le montant total en Euros (optionel)
+3. Page Brouillon ajouter une calculatrice  ou une table de conversion avec possibilite d'envoyer la facture en pdf 

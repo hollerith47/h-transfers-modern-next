@@ -88,6 +88,9 @@ export default function TransactionFormModal({accountCurrency,initialData,onSubm
     const adminBreakDown = initialData && isAdmin;
     const commissionAndClientAmountBreakDown =  adminBreakDown && accountCurrency !== "RUB" && transactType === "income";
 
+    const descriptionL = initialData?.description?.length ?? 0;
+    const showRefGenerator = transactType === "income" && descriptionL < 9;
+
     const openModal = () => {
         const dlg = document.getElementById(modalId);
         if (dlg instanceof HTMLDialogElement) {
@@ -132,7 +135,7 @@ export default function TransactionFormModal({accountCurrency,initialData,onSubm
                     onClick={openModal}>
                 {buttonLabel} {children}
             </button>
-            <dialog id={modalId} className="modal">
+            <dialog id={modalId} className="modal sm:modal-middle">
                 <div className="modal-box">
                     <form method="dialog">
                         <button className="btn btn-sm btn-circle btn-soft btn-error absolute right-2 top-2">
@@ -188,14 +191,17 @@ export default function TransactionFormModal({accountCurrency,initialData,onSubm
                             label={clientAmountLabel}
                             setValue={setPaidAmount}
                         />
-                        <SelectInput<TransactionStatus>
-                            value={transactStatus}
-                            label="Statut de la transaction"
-                            setValue={setTransactStatus}
-                            options={transactStatusOptions}
-                        >
-                            <SquarePen/>
-                        </SelectInput>
+                        {initialData && (
+                            <SelectInput<TransactionStatus>
+                                value={transactStatus}
+                                label="Statut de la transaction"
+                                setValue={setTransactStatus}
+                                options={transactStatusOptions}
+                            >
+                                <SquarePen/>
+                            </SelectInput>
+                        )}
+
 
                         <TextFieldInput
                             value={description as string}
@@ -204,7 +210,7 @@ export default function TransactionFormModal({accountCurrency,initialData,onSubm
                             helperText="Courte description de la transaction ou generer un code de référence"
                             placeholder="Ex: Remboursement frais repas"
                         />
-                        {transactType === "income" && <ReferenceGenerator /> }
+                        {showRefGenerator && <ReferenceGenerator /> }
                         {adminBreakDown && (
                             <div className="relative">
                                 <TextFieldInput

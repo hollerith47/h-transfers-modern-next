@@ -22,6 +22,7 @@ export default function ModifyTransaction({transaction, account}: Props) {
         mutationFn: (data: z.infer<typeof UpdateTransactionSchema>) => updateTransaction(data),
         onSuccess: () => {
             queryClient.invalidateQueries({queryKey: ["account", account.id]});
+            queryClient.invalidateQueries({queryKey: ["all-transactions"]});
         },
     });
 

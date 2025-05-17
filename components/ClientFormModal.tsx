@@ -52,7 +52,7 @@ export default function ClientFormModal({initialClient,onSubmit,buttonLabel,moda
 
     return (
         <>
-            <button className={buttonClassName ? buttonClassName : "btn btn-primary flex items-center gap-2"} onClick={openModal}>
+            <button className={buttonClassName ? buttonClassName : "btn btn-sm md:btn-md btn-primary flex items-center gap-2"} onClick={openModal}>
                 {buttonLabel} {children}
             </button>
 

@@ -37,17 +37,17 @@ export default function ClientTables() {
             <div className="flex flex-col md:flex-row items-start md:items-center gap-3 mb-4">
                 <input
                     type="text"
-                    className="input input-bordered w-full md:w-84"
+                    className="input input-sm md:input-md input-bordered w-full md:w-84"
                     placeholder="Rechercher par Name, email ou phone"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                 />
             </div>
             <div className="overflow-x-auto">
-                <table className="table">
+                <table className="table text-xs md:text-md">
                     {/* head */}
                     <thead>
-                <tr>
+                <tr className="text-xs md:text-md">
                     <th></th>
                     <th>Name</th>
                     <th>Email</th>
