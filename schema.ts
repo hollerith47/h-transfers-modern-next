@@ -28,10 +28,17 @@ export const ByEmailSchema = z.object({
     email: z.string().email(),
 });
 
+export const AddUserToDBSchema = ByEmailSchema.extend({
+    name: z.string().optional().or(z.literal(""))
+})
+
 export const AccountIdSchema = z.object({
     accountId: z.string(),
 });
 
+export const UserIDSchema = z.object({
+    userId: z.string().uuid(),
+})
 export const TransactionTypeSchema = z.enum(["income", "outcome"]);
 export const TransactionStatusSchema = z.enum(["pending", "completed"]);
 export const AddTransactionSchema = z.object({

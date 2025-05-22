@@ -1,20 +1,19 @@
 "use client"
 import Link from "next/link";
 import {usePathname} from "next/navigation";
-import {links} from "@/data";
-import UseUserRole from "@/hook/useUserRole";
-import {NotepadTextDashed} from "lucide-react";
+import {useProtectedRoute} from "@/hook/useProtectedRoute";
 
 type Props = {
     setIsOpen: (open: boolean) => void;
 };
 export default function MobileMenuLinks({setIsOpen}: Props) {
     const pathname = usePathname();
-    const {isAdmin} =  UseUserRole()
+    const { menuLinks } = useProtectedRoute();
+
     return (
         <div className="h-svh">
             <nav className="grid gap-1 px-2">
-                {links.map(link => (
+                {menuLinks.map(link => (
                     <Link
                         onClick={() => setIsOpen(false)}
                         href={link.href}
@@ -25,16 +24,6 @@ export default function MobileMenuLinks({setIsOpen}: Props) {
                         <span>{link.label}</span>
                     </Link>
                 ))}
-                {isAdmin &&
-                    <Link
-                        onClick={() => setIsOpen(false)}
-                        href="/brouillon"
-                        className={pathname === "/brouillon" ? "btn btn-primary justify-start" : "btn btn-ghost justify-start"}
-                    >
-                        <NotepadTextDashed className="mr-2 size-4"/>
-                        <span>Brouillon</span>
-                    </Link>
-                }
             </nav>
         </div>
     );

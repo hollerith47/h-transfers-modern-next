@@ -6,44 +6,40 @@ import {
     AccountIdSchema,
     AddAccountSchema,
     AddClientSchema,
-    AddTransactionSchema,
+    AddTransactionSchema, AddUserToDBSchema,
     ByEmailSchema,
     DeleteClientSchema,
     DeleteTransactionSchema, UpdateAccountSchema,
     UpdateTransactionSchema
 } from "@/schema";
-import {Account, ClientResponse, GetUserResponse, TransactionStatus} from "@/types";
+import {Account, ClientResponse, TransactionStatus} from "@/types";
 import {mapAccount} from "@/utils/prismaMappers";
 import {assertExists} from "@/utils/ensureSufficientFunds";
 import {getThisMonthDates} from "@/utils/dateUtils";
 
-export async function AddUserToDB(data: z.infer<typeof ByEmailSchema>) {
-    const validated = ByEmailSchema.safeParse(data);
+export async function AddUserToDB(data: z.infer<typeof AddUserToDBSchema>) {
+    const validated = AddUserToDBSchema.safeParse(data);
     if (!validated.success) {
         throw new Error('Invalid email format');
     }
-    const {email} = validated.data;
+    const {email, name} = validated.data;
     const adminEmail = process.env.ADMIN_EMAIL;
     const role = email === adminEmail ? "admin" : "manager";
 
-    const existingUser = await prisma.user.findUnique({
-        where: {email},
-    });
-    if (existingUser) return;
-
-    await prisma.user.create({
-        data: {
-            email, role
-        }
+    // upsert crée ou met à jour en une seule opération
+    await prisma.user.upsert({
+        where: { email },
+        create: { email, name, role },
+        update: { name },
     });
 }
 
-export async function getUserRole(formData: z.infer<typeof ByEmailSchema>): Promise<GetUserResponse | null>{
-    const { success, data } = ByEmailSchema.safeParse(formData);
-    if (!success) throw new Error("Get user Role Data Validation failed");
-    const {email} = data;
-    return prisma.user.findUnique({where: {email}});
-}
+// export async function getUserRole(formData: z.infer<typeof ByEmailSchema>): Promise<GetUserResponse | null>{
+//     const { success, data } = ByEmailSchema.safeParse(formData);
+//     if (!success) throw new Error("Get user Role Data Validation failed");
+//     const {email} = data;
+//     return prisma.user.findUnique({where: {email}});
+// }
 export async function AddAccount(formData: z.infer<typeof AddAccountSchema>) {
     const { success, data } = AddAccountSchema.safeParse(formData);
     if (!success) throw new Error("Add Account Data Validation failed");

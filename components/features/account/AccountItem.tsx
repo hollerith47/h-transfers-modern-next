@@ -3,6 +3,7 @@ import {getTotalByType} from "@/utils/getTotalByType";
 import {formatAmount} from "@/utils/formatAmount";
 import {UseAccountCurrency} from "@/hook/useAccount";
 import {toast} from "sonner";
+import {motion} from "framer-motion";
 
 type Props = {
     account: Account
@@ -35,7 +36,13 @@ export default function AccountItem({account}: Props) {
 
 
     return (
-        <li key={account.id} className="p-4 border-2 border-base-300 rounded-xl list-none hover:shadow-xl hover:border-primary">
+        <motion.li
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            whileHover={{ scale: 1.1 }}
+            transition={{ duration: 1, ease: "easeInOut" }}
+            key={account.id}
+            className="p-4 border-2 border-base-300 rounded-xl list-none hover:shadow-xl hover:border-primary">
             <div className="flex justify-between items-center">
                 <div className="flex items-center">
                     <div className="bg-accent/20 text-xl h-10 w-10 rounded-full flex justify-center items-center">
@@ -65,6 +72,6 @@ export default function AccountItem({account}: Props) {
             <div>
                 <progress className="progress progress-primary w-full" value={progressValue} max="100"></progress>
             </div>
-        </li>
+        </motion.li>
     );
 }

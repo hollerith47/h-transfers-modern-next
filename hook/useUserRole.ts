@@ -7,7 +7,7 @@ import {fetchUserRole} from "@/lib/api";
 
 export default function UseUserRole() {
     const {user} = useUser();
-    let useRole: UserRole = "manager";
+    const useRole: UserRole = "manager";
     const email = user?.primaryEmailAddress?.emailAddress;
     const {
         data: userData, isLoading, isError
@@ -21,23 +21,10 @@ export default function UseUserRole() {
                 throw error;
             }
         },
+        staleTime: Infinity,
+        gcTime: 1000 * 60 * 60, // 1 heure
         enabled: !!email
     });
-    /*
-    const {
-        data: userData, isLoading, isError
-    } = useQuery({
-        queryKey: ['user-role', email],
-        queryFn: async () => {
-            if (!email) return [];
-            try {
-                return await getUserRole({email});
-            } catch (error) {
-                throw error;
-            }
-        },
-        enabled: !!email
-    });*/
     // Memoize la valeur du rôle
     const role = useMemo(() => {
         if (!isLoading && !isError && userData && "role" in userData) {
@@ -46,7 +33,13 @@ export default function UseUserRole() {
         return "manager";
     }, [isLoading, isError, userData]);
 
+    const currentUserId = useMemo(() => {
+        if (!isLoading && !isError && userData && "id" in userData) {
+            return userData.id;
+        }
+        return "";
+    }, [isLoading, isError, userData]);
     // Memoize le flag isAdmin
     const isAdmin = useMemo(() => role === "admin", [role]);
-    return {useRole, isAdmin}
+    return {useRole, isAdmin, currentUserId};
 }

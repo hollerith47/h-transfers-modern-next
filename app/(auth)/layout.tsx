@@ -18,7 +18,7 @@ export default function AuthLayout({children}: Props) {
 
     useEffect(() => {
         if (isLoaded && isSignedIn && user?.primaryEmailAddress?.emailAddress) {
-            AddUserToDB({email: user.primaryEmailAddress.emailAddress});
+            AddUserToDB({email: user.primaryEmailAddress.emailAddress, name: user?.fullName as string});
         }
     }, [isLoaded, isSignedIn, user]);
 

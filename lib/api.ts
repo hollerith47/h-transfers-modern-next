@@ -1,4 +1,4 @@
-import {DeleteAccountPayload, DeleteAccountResponse} from "@/types";
+import {DeleteAccountPayload, DeleteAccountResponse, UserIdType} from "@/types";
 
 export async function fetchUserRole(email: string) {
     const res = await fetch("/api/user/role", {
@@ -7,7 +7,7 @@ export async function fetchUserRole(email: string) {
         body: JSON.stringify({ email }),
     });
     if (!res.ok) throw new Error("Failed to fetch user role");
-    return await res.json() as Promise<{ role: string }>;
+    return await res.json() as { role: string; id: string };
 }
 
 
@@ -21,6 +21,18 @@ export async function deleteAccountAPI(payload: DeleteAccountPayload):Promise<De
     const json = await res.json();
     if (!res.ok) {
         throw new Error(json.error || "Failed to delete account");
+    }
+    return json;
+}
+export async function setUserAdmin(payload: UserIdType){
+    const res = await fetch("/api/user/promote", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+    });
+    const json = await res.json();
+    if (!res.ok) {
+        throw new Error(json.error || "Failed to promote user");
     }
     return json;
 }

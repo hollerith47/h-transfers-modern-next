@@ -1,17 +1,18 @@
 import {z} from "zod";
-import {AccountIdSchema, DeleteTransactionSchema} from "@/schema";
+import {AccountIdSchema, DeleteTransactionSchema, UserIDSchema} from "@/schema";
 
 export type UserRole = "admin" | "manager";
 export interface User {
     id: string
     email: string
+    name?: string
     createdAt: Date,
     accounts: Account[]
     role: UserRole
 }
 
 export interface GetUserRole extends Omit<User, "accounts">{}
-export interface GetUserResponse extends Omit<User, "accounts" | "role">{}
+export type GetUserResponse = Omit<User, "accounts" | "role">
 export interface Account {
     id: string;
     name: string;
@@ -23,6 +24,7 @@ export interface Account {
 }
 export type DeleteAccountResponse = { success: true };
 export type DeleteAccountPayload = z.infer<typeof AccountIdSchema>;
+export type UserIdType = z.infer<typeof UserIDSchema>;
 export type AccountIdType = z.infer<typeof AccountIdSchema>;
 export type TransactionIdType = z.infer<typeof DeleteTransactionSchema>;
 export interface Client {

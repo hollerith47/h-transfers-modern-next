@@ -25,7 +25,7 @@ export default function Providers({children}: { children: React.ReactNode }) {
             <ReactQueryStreamedHydration>
                 {children}
             </ReactQueryStreamedHydration>
-            {process.env.USING_ENV === "local" && <ReactQueryDevtools initialIsOpen={false} />}
+            {process.env.NEXT_PUBLIC_USING_ENV === "local" && <ReactQueryDevtools initialIsOpen={false} />}
         </QueryClientProvider>
     )
 }

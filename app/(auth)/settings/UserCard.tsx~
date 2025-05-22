@@ -1,0 +1,55 @@
+import {User as UserType} from "@/types";
+import UseUserRole from "@/hook/useUserRole";
+
+type Props = {
+    user: UserType;
+    onToggleRole?: (userId: string) => void;
+}
+
+
+export default function UserCard({user, onToggleRole}: Props) {
+    const { currentUserId } = UseUserRole();
+    const isSelf = user.id === currentUserId;
+    const isRootUser = user.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL;
+    const showToggleButton = !isSelf && !isRootUser;
+    const isTargetAdmin = user.role === "admin";
+    const actionLabel = isTargetAdmin ? "Rétrograder" : "Promouvoir";
+    const badgeColor = isTargetAdmin ? "badge-primary" : "badge-secondary";
+    console.log(`${user.name} - currentUserId: ${currentUserId} - userId: ${user.id} | isSelf:${isSelf} isRootUser:${isRootUser}`);
+    return (
+        <li className="mb-2 list-none">
+            <div className="group relative  rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
+                {/* Accent bar */}
+                <div className="absolute inset-y-0 left-0 w-1 bg-primary group-hover:bg-secondary transition-colors duration-300" ></div>
+
+                <div className="p-5 lg:flex lg:items-center lg:justify-between space-y-4 lg:space-y-0">
+                    {/* User Info */}
+                    <div className="flex items-center space-x-4">
+                        <div>
+                            <h4 className="text-lg font-bold group-hover:text-secondary transition-colors">
+                                {user.name}
+                            </h4>
+                            <p className="text-sm text-gray-500">{user.email}</p>
+                            <p className="text-sm text-gray-500">Comptes : {user.accounts.length}</p>
+                        </div>
+                    </div>
+
+                    {/* Status & Action */}
+                    <div className="flex items-center space-x-3">
+                        <span className={`badge badge-md badge-outline normal-case text-sm ${badgeColor}`}>
+                          {user.role}
+                        </span>
+                        {showToggleButton && (
+                            <button
+                                className="btn btn-sm btn-outline btn-primary normal-case hover:btn-secondary transition-colors"
+                                onClick={() => onToggleRole?.(user.id)}
+                            >
+                                {actionLabel}
+                            </button>
+                        )}
+                    </div>
+                </div>
+            </div>
+        </li>
+    );
+}

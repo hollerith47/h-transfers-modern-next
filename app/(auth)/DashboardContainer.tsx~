@@ -3,6 +3,7 @@ import SoldContainer from "@/app/(auth)/SoldContainer";
 import EvolutionChartContainer from "@/app/(auth)/EvolutionChartContainer";
 import UseDashboardData from "@/hook/useDashboardData";
 import Loader from "@/components/ui/Loader";
+import LoadingThreeDots from "@/components/ui/LoadingThreeDots";
 
 export default function DashboardContainer() {
     const {isLoading} = UseDashboardData();
@@ -11,7 +12,8 @@ export default function DashboardContainer() {
         <>
             {isLoading ?
                 (
-                    <Loader />
+                    // <Loader fullScreen />
+                    <LoadingThreeDots />
                 ): (
                 <div className="space-y-8">
                     <SoldContainer/>

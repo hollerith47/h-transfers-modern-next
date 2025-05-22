@@ -12,7 +12,7 @@ export const UpdateAccountSchema = AddAccountSchema.extend({
     accountId: z.string().uuid(),
 }).omit({amount: true, currency: true});
 
-export const InitialAccountData = UpdateAccountSchema.omit({accountId: true});
+export const InitialAccountData = UpdateAccountSchema.omit({email: true});
 
 export const AddClientSchema = z.object({
     name: z.string().min(1),
@@ -27,6 +27,10 @@ export const UpdateClientSchema = AddClientSchema.extend({
 export const ByEmailSchema = z.object({
     email: z.string().email(),
 });
+
+export const AddUserToDBSchema = ByEmailSchema.extend({
+    name: z.string().optional().or(z.literal(""))
+})
 
 export const AccountIdSchema = z.object({
     accountId: z.string(),

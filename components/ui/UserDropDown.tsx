@@ -40,7 +40,7 @@ export default function UserDropDown({position}: Props) {
                     <CircleUserRound className="mr-2 size-4"/>
                     <span>Profile</span>
                 </Link>
-                <SignOutButton redirectUrl="/sign-in">
+                <SignOutButton redirectUrl="/landing">
                     <button className="btn btn-sm md:btn-md btn-ghost justify-start">
                         <LogOut/><span>Log out</span>
                     </button>

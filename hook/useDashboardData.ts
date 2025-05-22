@@ -65,7 +65,7 @@ export default function UseDashboardData() {
             },
         ];
         return isAdmin ? rawCards : rawCards.filter((c) => c.value > 0);
-    }, [isAdmin, usdTotal, rubTotal, eurTotal, usdtTotal, usdChange.pctChange, rubChange.pctChange, eurChange.pctChange, usdtChange.pctChange]);
+    }, [usdTotal, usdChange.pctChange, usdChange.accountName, rubTotal, rubChange.pctChange, rubChange.accountName, eurTotal, eurChange.pctChange, eurChange.accountName, usdtTotal, usdtChange.pctChange, usdtChange.accountName, isAdmin]);
 
     // 4) chartData : idem, dans un useMemo séparé
     const chartUsdUsdtData: ChartPoint[] = useMemo(() => [
@@ -136,7 +136,7 @@ export default function UseDashboardData() {
 
     // 1) Tant que la data n’est pas prête, on retourne des structures vides + un flag loading
     if (isLoadingAll) {
-        console.log("is loading all")
+        // console.log("is loading all")
         return {
             cardData: [],
             chartUsdUsdtData: [],
@@ -161,7 +161,7 @@ export default function UseDashboardData() {
         };
     }
 
-    console.log({usdAccounts})
+    // console.log({usdAccounts})
 
     // console.log({ cardData, chartUsdUsdtData, chartRubData, chartEuroData, chartUsdData, chartConfigs: visibleCharts })
     return { cardData, chartUsdUsdtData, chartRubData, chartEuroData, chartUsdData, chartConfigs: visibleCharts };

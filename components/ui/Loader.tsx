@@ -1,3 +1,4 @@
+import LoadingThreeDots from "@/components/ui/LoadingThreeDots";
 type LoaderProps = {
     /** plein écran (overlay) */
     fullScreen?: boolean;
@@ -13,15 +14,16 @@ export default function Loader({fullScreen = false, colorClass = "text-primary"}
 
     return (
         <div className={containerClass}>
-          <span
-              className={[
-                  "loading",
-                  "loading-dots",
-                  "w-12 h-12 md:w-16 md:h-16 lg:w-24 lg:h-24 xl:w-32 xl:h-32 xxl:w-40 xxl:h-40",
-                  colorClass,
-              ].join(" ")}
-          >
-          </span>
+            <div className={[
+                "loading",
+                "loading-dots",
+                "w-12 h-12 md:w-16 md:h-16 lg:w-24 lg:h-24 xl:w-32 xl:h-32 xxl:w-40 xxl:h-40",
+                colorClass,
+            ].join(" ")}
+            >
+                <LoadingThreeDots />
+
+            </div>
         </div>
     );
 }

@@ -1,3 +1,4 @@
+import {motion} from "framer-motion";
 type StatCardProps = {
     label: string;
     value: number;
@@ -19,12 +20,17 @@ export default function StatCard({ label, value, pctChange,locale, symbol = "", 
                         : "bg-gray-100";
 
     return (
-        <div className={`rounded-xl p-4 shadow-md ${bgColor}`}>
+        <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            whileHover={{ scale: 1.1 }}
+            transition={{ duration: 1, ease: "easeInOut" }}
+            className={`rounded-xl p-4 shadow-md ${bgColor}`}>
             <div className="text-xs font-semibold text-gray-600">{label}</div>
             <div className="text-2xl font-bold">{symbol} {value.toLocaleString(locale ? locale : "fr-FR", { maximumFractionDigits: 2 })}</div>
             <div className={`text-sm ${textColor} mt-1 flex items-center gap-1`}>
                 {isUp ? "▲" : "▼"} {Math.abs(pctChange).toFixed(1)} %
             </div>
-        </div>
+        </motion.div>
     );
 }

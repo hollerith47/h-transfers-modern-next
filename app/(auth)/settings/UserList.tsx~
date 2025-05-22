@@ -1,0 +1,52 @@
+import {toast} from "sonner";
+import {User as UserType} from "@/types";
+import UserCard from "@/app/(auth)/settings/UserCard";
+import ConfirmDialog from "@/components/ui/ConfirmDialog";
+import {useState} from "react";
+import {usePromoteUser} from "@/hook/useFetchUsers";
+
+type Props = {
+    users: UserType[]
+}
+export default function UserList({users}: Props) {
+    const {mutateAsync} = usePromoteUser();
+    const [isOpen, setIsOpen] = useState(false);
+    const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
+
+    // Ouvre la modale pour un user donné
+    const openConfirm = (userId: string) => {
+        setSelectedUserId(userId);
+        setIsOpen(true);
+    };
+
+    const handlePromote = async () => {
+        if (!selectedUserId) return;
+        toast.promise(mutateAsync({userId: selectedUserId}), {
+            loading: "Changement de rôle en cours…",
+            success: ({ role }) =>
+                role === "admin"
+                    ? "🔝 Utilisateur promu administrateur !"
+                    : "↩️ Utilisateur rétrogradé en manager.",
+            error: "Erreur lors du changement de rôle. Veuillez réessayer.",
+        });
+    }
+
+    return (
+        <div>
+            <li className="p-4 pb-2 text-xs opacity-60 tracking-wide list-none">Liste des utilisateurs</li>
+            {users.map((user) => (
+                <UserCard key={user.id} user={user} onToggleRole={() => openConfirm(user.id)} />
+            ))}
+            <ConfirmDialog
+                isOpen={isOpen}
+                title="Confirmation"
+                description="Vous etes sur le point de changer le role de l'utilisateur. Confirmer ?"
+                confirmLabel="Oui, je confirme"
+                cancelLabel="Annuler"
+                onConfirm={handlePromote}
+                onCancel={() => setIsOpen(false)}
+            />
+
+        </div>
+    );
+}
