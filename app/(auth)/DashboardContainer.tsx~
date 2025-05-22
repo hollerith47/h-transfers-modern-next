@@ -11,7 +11,7 @@ export default function DashboardContainer() {
         <>
             {isLoading ?
                 (
-                    <Loader fullScreen />
+                    <Loader />
                 ): (
                 <div className="space-y-8">
                     <SoldContainer/>

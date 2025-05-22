@@ -124,3 +124,17 @@ export function useTotalGroupBalance(entries: DashboardEntry[]) {
         return entries.reduce((sum, entry) => sum + entry.stats.balance, 0);
     }, [entries]);
 }
+
+// TODO: Refactor useAccount hook
+
+// export function useAccount(){
+//     const queryClient = useQueryClient();
+//     const {user} = useUser();
+//     const email = user?.primaryEmailAddress?.emailAddress as string;
+//
+//     // Récupération des comptes
+//     const accountsQuery = useQuery({
+//         queryKey: ['accounts', email],
+//         queryFn: () => getAccountsByUser({email})
+//     });
+// }

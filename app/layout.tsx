@@ -5,6 +5,7 @@ import {ClerkProvider} from "@clerk/nextjs";
 import {Toaster} from 'sonner';
 import React from "react";
 import Providers from "@/app/providers";
+import QueryErrorBoundary from "@/components/ui/ErrorBoundary";
 
 const inter = Inter({
     subsets: ['latin'],
@@ -32,8 +33,10 @@ export default function RootLayout({children}: Readonly<{ children: React.ReactN
             <html lang="en" data-theme="corporate" className={`${inter.variable} ${roboto_mono.variable} antialiased`}>
             <body id="top">
             <Providers>
+                <QueryErrorBoundary>
                 {children}
                 <Toaster richColors position="bottom-right"/>
+                </QueryErrorBoundary>
             </Providers>
             </body>
             </html>
