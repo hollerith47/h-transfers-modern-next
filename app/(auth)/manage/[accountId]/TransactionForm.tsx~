@@ -49,7 +49,7 @@ export default function TransactionForm({account}: Props) {
 
     return (
         <>
-            <div key={account.id} className="flex">
+            <div key={account.id}>
                 <TransactionFormModal
                     accountCurrency={account.currency}
                     buttonLabel="Créer Transaction"

@@ -3,12 +3,12 @@ import {ArrowLeftRight} from "lucide-react";
 import {toast} from "sonner";
 import {AddTransactionSchema} from "@/schema";
 import {z} from "zod";
-import TransactionFormModal from "@/components/TransactionFormModal";
 import {Account} from "@/types";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
 import {createTransaction} from "@/app/actions";
 import {getTotalByType} from "@/utils/getTotalByType";
 import {useRouter} from "next/navigation";
+import TransactionFormModal from "@/components/features/transaction/TransactionFormModal";
 
 type Props = {
     account: Account;

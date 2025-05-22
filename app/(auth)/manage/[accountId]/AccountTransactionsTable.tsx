@@ -2,18 +2,20 @@
 import {Account, Transaction} from "@/types";
 import {formateTime} from "@/utils/formatDate";
 import {returnClass, TransactionArrow} from "@/utils/transactionArrow";
-import TablePagination from "@/components/TablePagination";
+// import TablePagination from "@/components/TablePagination";
 import {usePagination} from "@/hook/usePagination";
 import ModifyTransaction from "@/app/(auth)/manage/[accountId]/ModifyTransaction";
 import {useMemo} from "react";
 import {buildClientNameMap, getClientName} from "@/utils/ClientUtils";
 import {formatAmount} from "@/utils/formatAmount";
 import UseUserRole from "@/hook/useUserRole";
-import RenderStatus from "@/components/RenderStatus";
+// import RenderStatus from "@/components/RenderStatus";
 import {UseAccountCurrency} from "@/hook/useAccount";
 import DeleteTransactionButton from "@/app/(auth)/manage/[accountId]/DeleteTransactionButton";
 import {toast} from "sonner";
 import {useFetchClients} from "@/hook/useClient";
+import TablePagination from "@/components/features/transaction/TablePagination";
+import RenderStatus from "@/components/ui/RenderStatus";
 
 type Props = {
     transactions: Transaction[]

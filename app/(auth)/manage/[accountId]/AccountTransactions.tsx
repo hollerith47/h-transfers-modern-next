@@ -3,14 +3,17 @@ import {useState, useMemo} from "react";
 import {toast} from "sonner";
 import {useQuery} from "@tanstack/react-query";
 import {getTransactionsByAccountId} from "@/app/actions";
-import AccountItem from "@/components/AccountItem";
+// import AccountItem from "@/components/AccountItem";
 import AccountTransactionsTable from "@/app/(auth)/manage/[accountId]/AccountTransactionsTable";
 import TransactionForm from "@/app/(auth)/manage/[accountId]/TransactionForm";
-import Loader from "@/components/Loader";
+// import Loader from "@/components/Loader";
 import DeleteAccountButton from "@/app/(auth)/manage/[accountId]/DeleteAccountButton";
 import {Transaction} from "@/types";
-import EmptyTransaction from "@/components/EmptyTransaction";
+// import EmptyTransaction from "@/components/EmptyTransaction";
 import UpdateAccountInfo from "@/app/(auth)/manage/[accountId]/UpdateAccountInfo";
+import Loader from "@/components/ui/Loader";
+import AccountItem from "@/components/features/account/AccountItem";
+import EmptyTransaction from "@/components/ui/EmptyTransaction";
 
 type Props = {
     accountId: string;

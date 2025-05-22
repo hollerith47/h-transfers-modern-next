@@ -6,7 +6,7 @@ import {toast} from 'sonner';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {z} from "zod";
 import {AddClientSchema} from "@/schema";
-import ClientFormModal from "@/components/ClientFormModal";
+import ClientFormModal from "@/components/features/client/ClientFormModal";
 
 export default function ClientForm() {
     const { user } = useUser();

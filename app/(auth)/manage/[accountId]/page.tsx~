@@ -1,6 +1,6 @@
 import AccountTransactions from "@/app/(auth)/manage/[accountId]/AccountTransactions";
 import ContentLayout from "@/app/(auth)/content-layout";
-import BackButton from "@/components/ui/BackButton";
+import BackButton from "@/components/BackButton";
 
 
 export const metadata = {

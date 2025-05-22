@@ -1,8 +1,8 @@
 import UseUserRole from "@/hook/useUserRole";
 import {useState} from "react";
 import {toast} from "sonner";
+import ConfirmDialog from "@/components/ConfirmDialog";
 import {useDeleteTransaction} from "@/hook/useTransaction";
-import ConfirmDialog from "@/components/ui/ConfirmDialog";
 
 type Props = {
     accountId: string,

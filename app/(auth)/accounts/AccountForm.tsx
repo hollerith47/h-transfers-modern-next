@@ -2,15 +2,17 @@
 import {useEffect, useState} from "react";
 import {useUser} from "@clerk/nextjs";
 import {Banknote, ListOrdered, PencilLine, Wallet, X} from "lucide-react";
-import TextFieldInput from "@/components/TextFieldInput";
+// import TextFieldInput from "@/components/TextFieldInput";
 import EmojiPicker from "emoji-picker-react";
 import {AddAccount, updateAccountData} from "@/app/actions";
 import {toast} from 'sonner';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import SelectInput from "@/components/SelectInput";
+// import SelectInput from "@/components/SelectInput";
 import {currencyOptions} from "@/data";
 import {z} from "zod";
 import {InitialAccountData} from "@/schema";
+import TextFieldInput from "@/components/ui/TextFieldInput";
+import SelectInput from "@/components/ui/SelectInput";
 
 type Props = {
     initialData?: z.infer<typeof InitialAccountData>;

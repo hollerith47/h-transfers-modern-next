@@ -5,7 +5,7 @@ import {DeleteAccountPayload} from "@/types";
 import {useRouter} from "next/navigation";
 import UseUserRole from "@/hook/useUserRole";
 import {useState} from "react";
-import ConfirmDialog from "@/components/ui/ConfirmDialog";
+import ConfirmDialog from "@/components/ConfirmDialog";
 
 
 const DeleteAccountButton = ({accountId}: DeleteAccountPayload) => {

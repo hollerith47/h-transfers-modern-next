@@ -1,11 +1,11 @@
 "use client"
 import {useEffect, useState} from "react";
 import {useProtectedRoute} from "@/hook/useProtectedRoute";
-import Sidebar from "@/components/Sidebar";
-import MobileMenuNavBar from "@/components/MobileMenuNavBar";
-import MobileMenuLinks from "@/components/MobileMenuLinks";
 import {useUser} from "@clerk/nextjs";
 import {AddUserToDB} from "@/app/actions";
+import MobileMenuNavBar from "@/components/layout/MobileMenuNavBar";
+import MobileMenuLinks from "@/components/layout/MobileMenuLinks";
+import Sidebar from "@/components/layout/Sidebar";
 
 type Props = {
     children: React.ReactNode;

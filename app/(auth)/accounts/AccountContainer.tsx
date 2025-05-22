@@ -1,10 +1,10 @@
 'use client';
 import Link from "next/link";
-import AccountItem from "@/components/AccountItem";
-import Loader from "@/components/Loader";
 import {Inbox} from "lucide-react";
 import {useMemo, useState} from "react";
 import {useFetchAccounts} from "@/hook/useAccount";
+import Loader from "@/components/ui/Loader";
+import AccountItem from "@/components/features/account/AccountItem";
 
 const CURRENCIES = [
     {value: "all", label: "Tous"},
