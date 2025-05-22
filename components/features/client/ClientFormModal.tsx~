@@ -1,10 +1,10 @@
 "use client";
 import { useState, useEffect, ReactNode } from "react";
 import { X, User as UserIcon, Mail, Phone } from "lucide-react";
+import TextFieldInput from "@/components/TextFieldInput";
 import type {ClientResponse} from "@/types";
 import {AddClientSchema} from "@/schema";
 import {z} from "zod";
-import TextFieldInput from "@/components/ui/TextFieldInput";
 
 type Props = {
     initialClient?: ClientResponse;

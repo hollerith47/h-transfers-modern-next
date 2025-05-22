@@ -1,6 +1,6 @@
 import {ArrowLeftRight, BarChart, Calculator, CogIcon, HandshakeIcon, Wallet} from "lucide-react";
 import {TransactionStatus} from "@/types";
-import {Option} from "@/components/SelectInput";
+import {Option} from "@/components/ui/SelectInput";
 
 export const links = [
     {

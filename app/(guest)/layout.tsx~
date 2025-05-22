@@ -1,5 +1,5 @@
-import GuestNavbar from "@/components/layout/GuestNavbar";
-import Footer from "@/components/layout/Footer";
+import GuestNavbar from "@/components/GuestNavbar";
+import Footer from "@/components/Footer";
 
 export default function Layout({children}: {children: React.ReactNode}) {
     return (

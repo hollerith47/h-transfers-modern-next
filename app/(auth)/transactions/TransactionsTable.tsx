@@ -6,9 +6,9 @@ import {usePagination} from "@/hook/usePagination";
 import {formatDateString} from "@/utils/formatDate";
 import {returnClass, TransactionArrow} from "@/utils/transactionArrow";
 import {formatAmount} from "@/utils/formatAmount";
-import RenderStatus from "@/components/RenderStatus";
-import TablePagination from "@/components/TablePagination";
 import {UseAccountCurrency} from "@/hook/useAccount";
+import RenderStatus from "@/components/ui/RenderStatus";
+import TablePagination from "@/components/features/transaction/TablePagination";
 
 type Props = {
     transactions: Transaction[];

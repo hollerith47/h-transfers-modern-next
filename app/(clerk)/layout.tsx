@@ -1,4 +1,4 @@
-import GuestNavbar from "@/components/GuestNavbar";
+import GuestNavbar from "@/components/layout/GuestNavbar";
 
 export default function Layout({children}: { children: React.ReactNode }) {
     return (

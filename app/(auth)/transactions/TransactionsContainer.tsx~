@@ -1,9 +1,9 @@
 "use client"
 import {useTransactions} from "@/hook/useTransaction";
 import {useMemo, useState} from "react";
+import Loader from "@/components/Loader";
+import EmptyTransaction from "@/components/EmptyTransaction";
 import TransactionsTable from "@/app/(auth)/transactions/TransactionsTable";
-import Loader from "@/components/ui/Loader";
-import EmptyTransaction from "@/components/ui/EmptyTransaction";
 
 export default function TransactionsContainer() {
     const {data: txs=[], isLoading, isError} = useTransactions();
@@ -66,7 +66,7 @@ export default function TransactionsContainer() {
                     <TransactionsTable transactions={filtered}/>
                 </>
             ) : (
-                <EmptyTransaction />
+                <EmptyTransaction/>
             )}
         </div>
     );

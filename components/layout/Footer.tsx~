@@ -1,5 +1,5 @@
+import Logo from "@/components/Logo";
 import Link from "next/link";
-import Logo from "@/components/ui/Logo";
 
 const year = new Date().getFullYear();
 export default function Footer() {
@@ -36,7 +36,8 @@ export default function Footer() {
                         </div>
 
                         <p className="mx-auto mt-6 max-w-md text-center leading-relaxed text-gray-500 lg:text-left">
-                            H Transfers assure vos transfers d&apos;argent en toute securite et rapidité.
+                            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Incidunt consequuntur amet culpa
+                            cum itaque neque.
                         </p>
                     </div>
 

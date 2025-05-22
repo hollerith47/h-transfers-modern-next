@@ -3,10 +3,10 @@ import {usePagination} from "@/hook/usePagination";
 import {formateTime} from "@/utils/formatDate";
 import ModifyClient from "@/app/(auth)/clients/ModifyClient";
 import DeleteClientBtn from "@/app/(auth)/clients/DeleteClientBtn";
-import Loader from "@/components/Loader";
 import {useMemo, useState} from "react";
 import {useFetchClients} from "@/hook/useClient";
 import TablePagination from "@/components/features/transaction/TablePagination";
+import Loader from "@/components/ui/Loader";
 
 export default function ClientTables() {
     const {data: clients=[], isLoading, isError} = useFetchClients();
