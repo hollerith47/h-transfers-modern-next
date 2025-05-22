@@ -1,11 +1,13 @@
-import GuestNavbar from "@/components/GuestNavbar";
-import Footer from "@/components/Footer";
+import GuestNavbar from "@/components/layout/GuestNavbar";
+import Footer from "@/components/layout/Footer";
 
 export default function Layout({children}: {children: React.ReactNode}) {
     return (
         <div>
             <GuestNavbar />
-            {children}
+            <div className="min-h-[57vh]" id="top">
+                {children}
+            </div>
             <div>
                 <Footer />
             </div>

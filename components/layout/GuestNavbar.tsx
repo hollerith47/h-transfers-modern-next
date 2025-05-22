@@ -11,11 +11,11 @@ export default function GuestNavbar() {
             <div className="flex-none">
                 <ul className="menu menu-horizontal px-1 mr-2 flex items-center">
                     <li>
-                        <Link href={"/calculator"} className="badge badge-primary md:text-lg">Envoyer de l&apos;argent</Link>
+                        <Link href={"/calculator"} className="badge badge-sm text-sm badge-primary md:text-lg">Envoyer de l&apos;argent</Link>
                     </li>
                     <li>
                         <details>
-                            <summary><Globe /></summary>
+                            <summary><Globe size="16" /></summary>
                             <ul className="bg-base-100 rounded-t-none">
                                 <li><button>Francais</button></li>
                                 <li><button>English</button></li>

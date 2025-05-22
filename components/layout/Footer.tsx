@@ -6,10 +6,10 @@ export default function Footer() {
 
     return (
         <footer className="bg-gray-100">
-            <div className="relative px-5 max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8 lg:pt-24">
+            <div className="relative px-5 mx-auto py-16 sm:px-6 lg:px-8 lg:pt-24">
                 <div className="absolute end-4 top-4 sm:end-6 sm:top-6 lg:end-8 lg:top-8">
                     <Link
-                        className="inline-block rounded-full bg-primary p-2 text-white shadow-sm transition hover:bg-primary-content sm:p-3 lg:p-4"
+                        className="inline-block rounded-full bg-primary p-2 hover:text-primary text-white shadow-sm transition hover:bg-primary-content sm:p-3 lg:p-4"
                         href="#top"
                     >
                         <span className="sr-only">Back to top</span>
@@ -36,7 +36,7 @@ export default function Footer() {
                         </div>
 
                         <p className="mx-auto mt-6 max-w-md text-center leading-relaxed text-gray-500 lg:text-left">
-                            H Transfers assure vos transfers d&apos;argent en toute securite et rapidité.
+                            Nous assurons vos transfers d&apos;argent en toute sécurité et rapidité.
                         </p>
                     </div>
 
@@ -44,19 +44,19 @@ export default function Footer() {
                         className="mt-12 flex flex-wrap justify-center gap-6 md:gap-8 lg:mt-0 lg:justify-end lg:gap-12"
                     >
                         <li>
-                            <a className="text-gray-700 transition hover:text-gray-700/75" href="#"> About </a>
+                            <a className="text-gray-700 transition hover:text-gray-700/75" href="/about"> About </a>
                         </li>
 
                         <li>
-                            <a className="text-gray-700 transition hover:text-gray-700/75" href="#"> Services </a>
+                            <a className="text-gray-700 transition hover:text-gray-700/75" href="/services"> Services </a>
                         </li>
 
-                        <li>
-                            <a className="text-gray-700 transition hover:text-gray-700/75" href="#"> Projects </a>
-                        </li>
 
                         <li>
-                            <a className="text-gray-700 transition hover:text-gray-700/75" href="#"> Blog </a>
+                            <a className="text-gray-700 transition hover:text-gray-700/75" href="/blog"> Blog </a>
+                        </li>
+                        <li>
+                            <a className="text-gray-700 transition hover:text-gray-700/75" href="/landing"> Accueil </a>
                         </li>
                     </ul>
                 </div>

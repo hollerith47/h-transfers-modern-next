@@ -6,8 +6,8 @@ export default function Page() {
             <div className="flex items-center justify-center flex-col py-10 w-full">
                 <div>
                     <div className="flex flex-col">
-                        <h1 className="text-4xl md:text-5xl font-bold text-center">
-                            Transferer de l&apos;argent n&apos;a<br />  jamais ete aussi facile
+                        <h1 className="text-2xl md:text-5xl font-bold text-center">
+                            Transférer de l&apos;argent n&apos;a<br />  jamais été aussi facile
                         </h1>
                         <p className="py-6 text-gray-800 text-center">
                             Envoyer et recever de l&apos;argent <br /> en toute simplicité avec

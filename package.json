@@ -18,6 +18,7 @@
     "@tanstack/react-query-next-experimental": "^5.76.1",
     "date-fns": "^4.1.0",
     "emoji-picker-react": "^4.12.2",
+    "framer-motion": "^12.12.1",
     "lucide-react": "^0.503.0",
     "nanoid": "^5.1.5",
     "next": "15.3.1",
