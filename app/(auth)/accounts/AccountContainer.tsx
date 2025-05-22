@@ -33,7 +33,7 @@ export default function AccountContainer() {
 
     if (isLoading) {
         // return <Loading />;
-        return <Loader fullScreen size="xl" colorClass="text-primary"/>;
+        return <Loader fullScreen colorClass="text-primary"/>;
     }
 
     if (isError) {

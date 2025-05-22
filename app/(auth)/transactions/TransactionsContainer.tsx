@@ -23,7 +23,7 @@ export default function TransactionsContainer() {
         });
     }, [txs, filterType, filterStatus, searchTerm]);
 
-    if (isLoading) return <Loader fullScreen size="xl"/>;
+    if (isLoading) return <Loader fullScreen />;
     if (isError)   return <div className="p-4">Erreur de chargement.</div>;
 
     // console.log(txs)

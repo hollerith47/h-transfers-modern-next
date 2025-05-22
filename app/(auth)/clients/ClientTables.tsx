@@ -24,7 +24,7 @@ export default function ClientTables() {
     const {page, setPage, totalPages, paginatedData,itemsPerPage} = usePagination(filteredClients, 12);
 
     if (isLoading) {
-        return <Loader fullScreen size="xl" />
+        return <Loader fullScreen />
     }
 
     if (isError) {
