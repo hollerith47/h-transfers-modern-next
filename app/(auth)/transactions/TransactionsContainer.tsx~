@@ -17,6 +17,29 @@ export default function TransactionsContainer() {
         filterDate,   setFilterDate,
     } = useTransactionFilters(txs);
 
+    /*
+    const [filterType, setFilterType] = useState<"all"|"income"|"outcome">("all");
+    const [filterStatus, setFilterStatus] = useState<"all"|"pending"|"completed">("all");
+    const [searchTerm, setSearchTerm] = useState("");
+    const [filterDate, setFilterDate] = useState<string>(""); // YYYY-MM-DD
+
+    const filtered = useMemo(() => {
+        return txs.filter((tx) => {
+            const byType = filterType === "all" || tx.type === filterType;
+            const byStatus = filterStatus === "all" || tx.status === filterStatus;
+            const bySearch = tx.description
+                .toLowerCase()
+                .includes(searchTerm.toLowerCase());
+
+            // Filtre par date : on compare la partie YYYY-MM-DD
+            const txDate = new Date(tx.createdAt)
+                .toISOString()
+                .split("T")[0];
+            const matchesDate = !filterDate || txDate === filterDate;
+            return byType && byStatus && bySearch && matchesDate;
+        });
+    }, [txs, filterType, filterStatus, searchTerm, filterDate]);*/
+
     if (isLoading) return <Loader fullScreen />;
     if (isError)   return <div className="p-4">Erreur de chargement.</div>;
 

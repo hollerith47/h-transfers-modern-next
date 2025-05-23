@@ -48,9 +48,6 @@ export type TransactionStatus = "pending" | "completed";
 export type TransactionType = "income" | "outcome";
 export type Currency = "USD" | "EUR" | "RUB";
 
-export type TxFilterType   = "all" | "income" | "outcome";
-export type TxFilterStatus = "all" | "pending" | "completed";
-
 
 export interface Transaction {
     id: string;

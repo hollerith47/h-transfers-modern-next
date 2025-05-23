@@ -1,16 +1,16 @@
 "use client";
-import {useState, useMemo} from "react";
 import {toast} from "sonner";
 import {useQuery} from "@tanstack/react-query";
 import {getTransactionsByAccountId} from "@/app/actions";
 import AccountTransactionsTable from "@/app/(auth)/manage/[accountId]/AccountTransactionsTable";
 import TransactionForm from "@/app/(auth)/manage/[accountId]/TransactionForm";
 import DeleteAccountButton from "@/app/(auth)/manage/[accountId]/DeleteAccountButton";
-import {Transaction} from "@/types";
 import UpdateAccountInfo from "@/app/(auth)/manage/[accountId]/UpdateAccountInfo";
 import Loader from "@/components/ui/Loader";
 import AccountItem from "@/components/features/account/AccountItem";
 import EmptyTransaction from "@/components/ui/EmptyTransaction";
+import {TransactionFilterBar} from "@/components/features/transaction/TransactionFilterBar";
+import {useTransactionFilters} from "@/hook/useTransactionFilters";
 
 type Props = {
     accountId: string;
@@ -31,38 +31,16 @@ export default function AccountTransactions({accountId}: Props) {
         },
     });
 
-    // Filtre par type de transaction
-    const [filterType, setFilterType] = useState<"all" | "income" | "outcome">("all");
-    const [filterStatus, setFilterStatus] = useState<"all" | "pending" | "completed">("all");
-    // Recherche par description
-    const [searchTerm, setSearchTerm] = useState("");
-    const [filterDate, setFilterDate] = useState<string>(""); // YYYY-MM-DD
+    const transactions = account?.transactions ?? [];
 
-    const filteredTransactions = useMemo((): Transaction[] => {
-        if (!account) return [];
-        return (account.transactions ?? []).filter((tx) => {
-            const matchesType =
-                filterType === "all" || tx.type === filterType;
-            const matchesStatus =
-                filterStatus === "all" || tx.status === filterStatus;
-            const matchesSearch = tx.description
-                .toLowerCase()
-                .includes(searchTerm.toLowerCase());
 
-            // Filtre par date : on compare la partie YYYY-MM-DD
-            const txDate = new Date(tx.createdAt)
-                .toISOString()
-                .split("T")[0];
-            const matchesDate = !filterDate || txDate === filterDate;
-
-            return (
-                matchesType &&
-                matchesStatus &&
-                matchesSearch &&
-                matchesDate
-            );
-        });
-    }, [account, filterType, filterStatus, searchTerm, filterDate]);
+    const {
+        filtered:filteredTransactions,
+        filterType, setFilterType,
+        filterStatus, setFilterStatus,
+        searchTerm,   setSearchTerm,
+        filterDate,   setFilterDate,
+    } = useTransactionFilters(transactions);
 
     if (isLoading) return <Loader fullScreen/>;
     if (isError || !account) return <div>Error loading account.</div>;
@@ -85,64 +63,19 @@ export default function AccountTransactions({accountId}: Props) {
                 </div>
             </div>
 
-            {/* Contrôles de filtre et recherche */}
-            <div className="flex flex-col md:flex-row items-start md:items-center gap-4 mb-4">
-                {/* Filtrer par type */}
-                <select
-                    className="input input-sm md:input-md input-bordered w-full md:w-48"
-                    value={filterType}
-                    onChange={(e) =>
-                        setFilterType(e.target.value as "all" | "income" | "outcome")
-                    }
-                >
-                    <option value="all">Tous les types</option>
-                    <option value="income">Entrées</option>
-                    <option value="outcome">Sorties</option>
-                </select>
-
-                {/* Filtrer par statut */}
-                <select
-                    className="input input-sm md:input-md input-bordered w-full md:w-48"
-                    value={filterStatus}
-                    onChange={(e) =>
-                        setFilterStatus(e.target.value as "all" | "pending" | "completed")
-                    }
-                >
-                    <option value="all">Tous les statuts</option>
-                    <option value="pending">En attente</option>
-                    <option value="completed">Terminée</option>
-                </select>
-
-                {/* Recherche par description */}
-                <input
-                    type="text"
-                    className="input input-sm md:input-md input-bordered w-full md:w-64"
-                    placeholder="Recherche par description"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                />
-
-                <div className="grid grid-cols-2 gap-4 w-full md:w-auto ">
-                    {/* Filtre par date */}
-                    <input
-                        type="date"
-                        lang="fr"
-                        placeholder=""
-                        className="input input-sm md:input-md input-bordered input-bordered w-full md:w-48"
-                        value={filterDate}
-                        onChange={(e) => setFilterDate(e.target.value)}
-                    />
-
-                    {/* Nouveau bouton Rafraîchir */}
-                    <button
-                        className="btn btn-sm md:btn-md btn-outline btn-primary normal-case whitespace-nowrap w-full md:w-32"
-                        onClick={() => refetch()}
-                        disabled={isFetching}
-                    >
-                        {isFetching ? "Chargement…" : "Rafraîchir"}
-                    </button>
-                </div>
-            </div>
+            {/* Bar de recherche */}
+            <TransactionFilterBar
+                filterType    ={filterType}
+                setFilterType ={setFilterType}
+                filterStatus  ={filterStatus}
+                setFilterStatus={setFilterStatus}
+                searchTerm    ={searchTerm}
+                setSearchTerm ={setSearchTerm}
+                filterDate    ={filterDate}
+                setFilterDate ={setFilterDate}
+                onRefresh     ={() => refetch()}
+                isFetching    ={isFetching}
+            />
             {
                 filteredTransactions.length > 0 ? (
                     <AccountTransactionsTable
