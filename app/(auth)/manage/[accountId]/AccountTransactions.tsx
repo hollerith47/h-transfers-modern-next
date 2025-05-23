@@ -3,13 +3,10 @@ import {useState, useMemo} from "react";
 import {toast} from "sonner";
 import {useQuery} from "@tanstack/react-query";
 import {getTransactionsByAccountId} from "@/app/actions";
-// import AccountItem from "@/components/AccountItem";
 import AccountTransactionsTable from "@/app/(auth)/manage/[accountId]/AccountTransactionsTable";
 import TransactionForm from "@/app/(auth)/manage/[accountId]/TransactionForm";
-// import Loader from "@/components/Loader";
 import DeleteAccountButton from "@/app/(auth)/manage/[accountId]/DeleteAccountButton";
 import {Transaction} from "@/types";
-// import EmptyTransaction from "@/components/EmptyTransaction";
 import UpdateAccountInfo from "@/app/(auth)/manage/[accountId]/UpdateAccountInfo";
 import Loader from "@/components/ui/Loader";
 import AccountItem from "@/components/features/account/AccountItem";
@@ -20,7 +17,7 @@ type Props = {
 };
 
 export default function AccountTransactions({accountId}: Props) {
-    const {data: account, isLoading, isError} = useQuery({
+    const {data: account, isLoading, isError, refetch, isFetching} = useQuery({
         queryKey: ["account", accountId],
         queryFn: async () => {
             if (!accountId) return;
@@ -36,25 +33,38 @@ export default function AccountTransactions({accountId}: Props) {
 
     // Filtre par type de transaction
     const [filterType, setFilterType] = useState<"all" | "income" | "outcome">("all");
-    const [filterStatus, setFilterStatus] = useState<"all"|"pending"|"completed">("all");
+    const [filterStatus, setFilterStatus] = useState<"all" | "pending" | "completed">("all");
     // Recherche par description
     const [searchTerm, setSearchTerm] = useState("");
+    const [filterDate, setFilterDate] = useState<string>(""); // YYYY-MM-DD
 
     const filteredTransactions = useMemo((): Transaction[] => {
         if (!account) return [];
-        // on force transactions à être un tableau
         return (account.transactions ?? []).filter((tx) => {
-            const matchesType = filterType === "all" || tx.type === filterType;
-            const byStatus = filterStatus === "all" || tx.status === filterStatus;
+            const matchesType =
+                filterType === "all" || tx.type === filterType;
+            const matchesStatus =
+                filterStatus === "all" || tx.status === filterStatus;
             const matchesSearch = tx.description
                 .toLowerCase()
                 .includes(searchTerm.toLowerCase());
-            return matchesType && byStatus && matchesSearch;
+
+            // Filtre par date : on compare la partie YYYY-MM-DD
+            const txDate = new Date(tx.createdAt)
+                .toISOString()
+                .split("T")[0];
+            const matchesDate = !filterDate || txDate === filterDate;
+
+            return (
+                matchesType &&
+                matchesStatus &&
+                matchesSearch &&
+                matchesDate
+            );
         });
-    }, [account, filterType, filterStatus,searchTerm]);
+    }, [account, filterType, filterStatus, searchTerm, filterDate]);
 
-
-    if (isLoading) return <Loader fullScreen />;
+    if (isLoading) return <Loader fullScreen/>;
     if (isError || !account) return <div>Error loading account.</div>;
 
     // console.log(filteredTransactions)
@@ -68,7 +78,7 @@ export default function AccountTransactions({accountId}: Props) {
                 {/*<div className="flex md:justify-between flex-col gap-2 mt-4 md:mt-0">*/}
                 <div className="flex justify-between md:justify-start md:flex-col gap-2 mt-4 md:mt-0">
                     <TransactionForm account={account}/>
-                    <UpdateAccountInfo account={account} />
+                    <UpdateAccountInfo account={account}/>
                     <div className="hidden md:block">
                         <DeleteAccountButton accountId={account.id}/>
                     </div>
@@ -107,10 +117,31 @@ export default function AccountTransactions({accountId}: Props) {
                 <input
                     type="text"
                     className="input input-sm md:input-md input-bordered w-full md:w-64"
-                    placeholder="Rechercher par description"
+                    placeholder="Recherche par description"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                 />
+
+                <div className="grid grid-cols-2 gap-4 w-full md:w-auto ">
+                    {/* Filtre par date */}
+                    <input
+                        type="date"
+                        lang="fr"
+                        placeholder=""
+                        className="input input-sm md:input-md input-bordered input-bordered w-full md:w-48"
+                        value={filterDate}
+                        onChange={(e) => setFilterDate(e.target.value)}
+                    />
+
+                    {/* Nouveau bouton Rafraîchir */}
+                    <button
+                        className="btn btn-sm md:btn-md btn-outline btn-primary normal-case whitespace-nowrap w-full md:w-32"
+                        onClick={() => refetch()}
+                        disabled={isFetching}
+                    >
+                        {isFetching ? "Chargement…" : "Rafraîchir"}
+                    </button>
+                </div>
             </div>
             {
                 filteredTransactions.length > 0 ? (
@@ -119,7 +150,7 @@ export default function AccountTransactions({accountId}: Props) {
                         account={account}
                     />
                 ) : (
-                    <EmptyTransaction />
+                    <EmptyTransaction/>
                 )
             }
         </>

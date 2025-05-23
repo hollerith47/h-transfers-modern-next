@@ -1,0 +1,15 @@
+@import "tailwindcss";
+
+@plugin "daisyui" {
+    themes: light --default, dark --prefersdark, corporate;
+}
+
+@theme inline {
+    --font-sans: var(--font-inter);
+    --font-mono: var(--font-roboto-mono);
+}
+
+/* global.css */
+.react-datepicker-popper {
+    z-index: 9999 !important;
+}

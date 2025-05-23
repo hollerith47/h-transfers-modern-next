@@ -6,11 +6,12 @@ import Loader from "@/components/ui/Loader";
 import EmptyTransaction from "@/components/ui/EmptyTransaction";
 
 export default function TransactionsContainer() {
-    const {data: txs=[], isLoading, isError} = useTransactions();
+    const {data: txs=[], isLoading, isError , isFetching, refetch} = useTransactions();
 
     const [filterType, setFilterType] = useState<"all"|"income"|"outcome">("all");
     const [filterStatus, setFilterStatus] = useState<"all"|"pending"|"completed">("all");
     const [searchTerm, setSearchTerm] = useState("");
+    const [filterDate, setFilterDate] = useState<string>(""); // YYYY-MM-DD
 
     const filtered = useMemo(() => {
         return txs.filter((tx) => {
@@ -19,9 +20,15 @@ export default function TransactionsContainer() {
             const bySearch = tx.description
                 .toLowerCase()
                 .includes(searchTerm.toLowerCase());
-            return byType && byStatus && bySearch;
+
+            // Filtre par date : on compare la partie YYYY-MM-DD
+            const txDate = new Date(tx.createdAt)
+                .toISOString()
+                .split("T")[0];
+            const matchesDate = !filterDate || txDate === filterDate;
+            return byType && byStatus && bySearch && matchesDate;
         });
-    }, [txs, filterType, filterStatus, searchTerm]);
+    }, [txs, filterType, filterStatus, searchTerm, filterDate]);
 
     if (isLoading) return <Loader fullScreen />;
     if (isError)   return <div className="p-4">Erreur de chargement.</div>;
@@ -60,6 +67,26 @@ export default function TransactionsContainer() {
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                 />
+                <div className="grid grid-cols-2 gap-4 w-full md:w-auto ">
+                    {/* Filtre par date */}
+                    <input
+                        type="date"
+                        lang="fr"
+                        placeholder=""
+                        className="input input-sm md:input-md input-bordered input-bordered w-full md:w-48"
+                        value={filterDate}
+                        onChange={(e) => setFilterDate(e.target.value)}
+                    />
+
+                    {/* Nouveau bouton Rafraîchir */}
+                    <button
+                        className="btn btn-sm md:btn-md btn-outline btn-primary normal-case whitespace-nowrap w-full md:w-32"
+                        onClick={() => refetch()}
+                        disabled={isFetching}
+                    >
+                        {isFetching ? "Chargement…" : "Rafraîchir"}
+                    </button>
+                </div>
             </div>
             {filtered.length > 0 ? (
                 <>

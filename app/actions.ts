@@ -161,7 +161,7 @@ export async function getTransactionsByAccountId(data: z.infer<typeof AccountIdS
 export async function createTransaction(data: z.infer<typeof AddTransactionSchema>){
     const validated = AddTransactionSchema.safeParse(data);
     if (!validated.success) {
-        console.log(validated.error)
+        // console.log(validated.error)
         throw new Error('Error while validating transaction data');
     }
 
