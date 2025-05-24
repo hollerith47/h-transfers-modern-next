@@ -33,6 +33,7 @@ export function TransactionFilterBar({
     useEffect(() => {
         if (filterDate) setIsDateMode(true);
     }, [filterDate]);
+
     return (
         <div className="flex flex-col md:flex-row items-start md:items-center gap-4 mb-4">
             <select
@@ -64,10 +65,12 @@ export function TransactionFilterBar({
             />
 
             <div className="grid grid-cols-2 gap-4 w-full md:w-auto">
+                <label htmlFor="choice" className="btn btn-sm btn-outline btn-secondary md:hidden btn-bordered w-full">Recherche par date:</label>
                 <input
+                    id="choice"
                     type={isDateMode ? "date" : "text"}
                     pattern="\d{2}/\d{2}/\d{4}"
-                    placeholder="recherche par date"
+                    placeholder="Choisir une date:"
                     value={isDateMode ? filterDate : ""}
                     onFocus={() => setIsDateMode(true)}
                     className="input input-sm md:input-md input-bordered w-full"
@@ -79,7 +82,7 @@ export function TransactionFilterBar({
                 />
 
                 <button
-                    className="btn btn-sm md:btn-md btn-outline btn-primary normal-case whitespace-nowrap w-full"
+                    className="btn hidden md:block btn-sm md:btn-md btn-outline btn-primary normal-case whitespace-nowrap w-full"
                     onClick={onRefresh}
                     disabled={isFetching}
                 >
