@@ -9,8 +9,8 @@ import UpdateAccountInfo from "@/app/(auth)/manage/[accountId]/UpdateAccountInfo
 import Loader from "@/components/ui/Loader";
 import AccountItem from "@/components/features/account/AccountItem";
 import EmptyTransaction from "@/components/ui/EmptyTransaction";
-import {TransactionFilterBar} from "@/components/features/transaction/TransactionFilterBar";
 import {useTransactionFilters} from "@/hook/useTransactionFilters";
+import {FilterBarContainer} from "@/components/ui/FilterBarContainer";
 
 type Props = {
     accountId: string;
@@ -64,7 +64,7 @@ export default function AccountTransactions({accountId}: Props) {
             </div>
 
             {/* Bar de recherche */}
-            <TransactionFilterBar
+            <FilterBarContainer
                 filterType    ={filterType}
                 setFilterType ={setFilterType}
                 filterStatus  ={filterStatus}

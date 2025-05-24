@@ -3,7 +3,7 @@ import React, {useEffect, useState} from "react";
 import {TxFilterStatus, TxFilterType} from "@/types";
 
 
-type Props = {
+export type TransactionFilterBarProps = {
     filterType: string;
     setFilterType: React.Dispatch<React.SetStateAction<TxFilterType>>;
     filterStatus: string;
@@ -27,7 +27,7 @@ export function TransactionFilterBar({
                                          setFilterDate,
                                          onRefresh,
                                          isFetching,
-                                     }: Props) {
+                                     }: TransactionFilterBarProps) {
     const [isDateMode, setIsDateMode] = useState(false);
     // si on a un filterDate déjà, forcer le mode date
     useEffect(() => {

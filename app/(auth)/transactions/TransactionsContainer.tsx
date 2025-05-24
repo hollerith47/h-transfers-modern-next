@@ -4,7 +4,7 @@ import TransactionsTable from "@/app/(auth)/transactions/TransactionsTable";
 import Loader from "@/components/ui/Loader";
 import EmptyTransaction from "@/components/ui/EmptyTransaction";
 import {useTransactionFilters} from "@/hook/useTransactionFilters";
-import {TransactionFilterBar} from "@/components/features/transaction/TransactionFilterBar";
+import {FilterBarContainer} from "@/components/ui/FilterBarContainer";
 
 export default function TransactionsContainer() {
     const {data: txs=[], isLoading, isError , isFetching, refetch} = useTransactions();
@@ -23,17 +23,17 @@ export default function TransactionsContainer() {
     // console.log(txs)
     return (
         <div>
-            <TransactionFilterBar
-                filterType    ={filterType}
-                setFilterType ={setFilterType}
-                filterStatus  ={filterStatus}
+            <FilterBarContainer
+                filterType={filterType}
+                filterStatus={filterStatus}
+                filterDate={filterDate}
+                setFilterType={setFilterType}
                 setFilterStatus={setFilterStatus}
-                searchTerm    ={searchTerm}
-                setSearchTerm ={setSearchTerm}
-                filterDate    ={filterDate}
-                setFilterDate ={setFilterDate}
-                onRefresh     ={() => refetch()}
-                isFetching    ={isFetching}
+                searchTerm={searchTerm}
+                setSearchTerm={setSearchTerm}
+                setFilterDate={setFilterDate}
+                onRefresh={() => refetch()}
+                isFetching={isFetching}
             />
             {filtered.length > 0 ? (
                 <>
